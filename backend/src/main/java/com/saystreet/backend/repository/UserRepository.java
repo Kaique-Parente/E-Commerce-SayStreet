@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.saystreet.backend.model.UserModel;
+import com.saystreet.backend.models.UserModel;
 
 @Repository
 public interface UserRepository extends MongoRepository<UserModel, Integer> {
