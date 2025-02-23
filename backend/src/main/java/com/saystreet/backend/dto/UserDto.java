@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserDto {
+
+    private Long cpf;
     
     private String email;
 
@@ -17,4 +19,5 @@ public class UserDto {
 
     private boolean status;
 
+    private String grupo; 
 }
