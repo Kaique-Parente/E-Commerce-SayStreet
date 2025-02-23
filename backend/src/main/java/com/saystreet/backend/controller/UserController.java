@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saystreet.backend.dto.UserDto;
-import com.saystreet.backend.model.UserModel;
+import com.saystreet.backend.models.UserModel;
 import com.saystreet.backend.service.UserService;
 
 @RestController
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody UserDto user){
+    public ResponseEntity<String> create(@RequestBody UserDto user) throws Exception{
         return userService.create(user);
     }
 }
