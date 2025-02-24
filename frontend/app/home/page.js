@@ -33,9 +33,21 @@ export default function Home(){
             <h1>Principal</h1>
 
             <LinksContainer>
-                <a>Listar Produto</a>
-                <a>Listar Usuário</a>
-                <a>Listar Pedidos</a>
+                <a  
+                    style={{cursor: "pointer"}}
+                    onClick={() => window.location.href = './'}>
+                    Listar Produto
+                </a>
+                <a 
+                    style={{cursor: "pointer"}}
+                    onClick={() => window.location.href = './users'}>
+                    Listar Usuários
+                </a>
+                <a 
+                    style={{cursor: "pointer"}}
+                    onClick={() => window.location.href = './'}>
+                    Listar Pedidos
+                </a>
             </LinksContainer>
         </Container>
     );
