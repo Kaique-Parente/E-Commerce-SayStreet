@@ -166,3 +166,33 @@ export async function atualizarUsuario(id, dadosUsuario){
         return null;
     }
 }
+
+export async function loginUsuario(dadosLogin) {
+    const url = "http://localhost:8080/user/login";
+    console.log(url);
+    console.log(dadosLogin);
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosLogin)
+        });
+
+        console.log(response);
+        
+        if (!response.ok) {
+            let errorMessage = await response.text();
+            alert(`Erro: ${response.status} - ${errorMessage}`);
+            return null;
+        }
+
+        return response.text();
+
+    } catch (error) {
+        alert("Erro de conexão: " + error.message);
+        return null;
+    }
+}
