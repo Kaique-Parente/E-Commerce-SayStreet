@@ -38,7 +38,6 @@ public class UserService {
 
         if(!userOpt.get().isStatus()){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário inativado.");
-    
         }
 
         return ResponseEntity.ok("Login realizado com sucesso");
@@ -96,10 +95,8 @@ public class UserService {
         }
     }
 
-    public List<UserDto> listAll() {
-        return userRepository.findAll().stream()
-                .map(user -> new UserDto(user.getNome(), user.getEmail(), user.isStatus(), user.getGrupo()))
-                .collect(Collectors.toList());
+    public List<UserModel> listAll() {
+        return userRepository.findAll();
     }
 
     public boolean alterarStatus(String cpf, boolean status) {

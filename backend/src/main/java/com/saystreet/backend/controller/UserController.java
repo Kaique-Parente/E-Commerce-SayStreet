@@ -43,11 +43,11 @@ public class UserController {
     }
 
     @GetMapping("/listar")
-    public List<UserDto> listar(){
+    public List<UserModel> listar(){
         return userService.listAll();
     }
 
-      @PutMapping("/alterar-status/{cpf}")
+    @PutMapping("/alterar-status/{cpf}")
     public ResponseEntity<String> alterarStatus(@PathVariable String cpf, @RequestParam boolean status) {
         boolean sucesso = userService.alterarStatus(cpf, status);
 
