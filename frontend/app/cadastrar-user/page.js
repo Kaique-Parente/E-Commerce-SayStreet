@@ -25,7 +25,7 @@ const InputContainer = styled.div`
     margin-bottom: 20px;
 `
 
-export default function Usuarios() {
+export default function CadastrarUser() {
     const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastro();
 
     useEffect(() => {

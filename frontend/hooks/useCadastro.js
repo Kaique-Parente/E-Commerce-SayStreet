@@ -23,7 +23,7 @@ export function useCadastro(){
 
                 if(response !== null){
                     alert(response);
-                    window.location.href = './'
+                    window.location.href = './home'
                 } else{
                     setErro(response);
                 }
