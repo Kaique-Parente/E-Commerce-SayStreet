@@ -1,7 +1,10 @@
 package com.saystreet.backend.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +21,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public ResponseEntity<String> login(UserModel user) {
+    public ResponseEntity<String> login(UserModel user) throws Exception {
 
         Optional<UserModel> userOpt = userRepository.findByEmail(user.getEmail());
 
@@ -27,13 +30,20 @@ public class UserService {
         }
 
         UserModel users = userOpt.get();
+        String encryptedPassword = PasswordEncryptionUtil.encrypt(user.getPassword());
 
-        if (!users.getPassword().equals(user.getPassword())) {
+        if (!users.getPassword().equals(encryptedPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha incorretos.");
+        }
+
+        if(!userOpt.get().isStatus()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário inativado.");
+    
         }
 
         return ResponseEntity.ok("Login realizado com sucesso");
     }
+
 
     public ResponseEntity<String> create(UserDto user) throws Exception {
 
@@ -43,16 +53,61 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Esse email já está cadastrado no sistema!");
         }
 
-        String cpf = String.valueOf(user.getCpf());
-
-        if(!CpfValidator.isValidCPF(cpf)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Este CPF não é válido. Por favor, digite um CPF válido.");
+        if (!CpfValidator.isValidCPF(user.getCpf())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Este CPF não é válido. Por favor, digite um CPF válido.");
         }
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(user.getPassword());
-        UserModel userModel = new UserModel(user.getCpf(), user.getEmail(), encryptedPassword, user.getGrupo());
+        UserModel userModel = new UserModel(user.getCpf(), user.getEmail(), user.getNome(),encryptedPassword, user.getGrupo());
         userRepository.save(userModel);
 
         return ResponseEntity.ok("Cadastro realizado com sucesso!");
+    }
+
+
+    public UserModel editar(ObjectId id, UserDto userAtt) throws Exception {
+
+        Optional<UserModel> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            UserModel userModel = userOptional.get();
+
+            if(CpfValidator.isValidCPF(userAtt.getCpf())) {
+                userModel.setCpf(userAtt.getCpf());
+            }else {
+                throw new RuntimeException("CPF inválido");
+            }
+            
+            userModel.setNome(userAtt.getNome());
+            userModel.setPassword(userAtt.getPassword());
+            String encryptedPassword = PasswordEncryptionUtil.encrypt(userAtt.getPassword());
+            userModel.setPassword(encryptedPassword);
+            userModel.setStatus(userAtt.isStatus());
+
+            return userRepository.save(userModel);
+        } else {
+            throw new RuntimeException("Usuário não encontrado com o ID: " + id);
+        }
+    }
+
+    public List<UserDto> listAll() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDto(user.getNome(), user.getEmail(), user.isStatus(), user.getGrupo()))
+                .collect(Collectors.toList());
+    }
+
+    public boolean alterarStatus(String cpf, boolean status) {
+        Optional<UserModel> userOpt = userRepository.findByCpf(cpf);
+    
+        if (userOpt.isPresent()) {
+            UserModel user = userOpt.get();
+            user.setStatus(status);  
+    
+            userRepository.save(user); 
+            return true;  
+        } else {
+            return false;  
+        }
     }
 }

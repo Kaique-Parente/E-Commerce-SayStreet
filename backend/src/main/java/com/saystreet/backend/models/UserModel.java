@@ -1,6 +1,8 @@
 package com.saystreet.backend.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -14,9 +16,15 @@ import lombok.Setter;
 public class UserModel {
     
     @Id
-    private Long cpf;
+    private ObjectId id;
 
+    @Indexed(unique = true)
+    private String cpf;
+
+    @Indexed(unique = true)
     private String email;
+
+    private String nome;
 
     private String password;
 
@@ -24,9 +32,10 @@ public class UserModel {
 
     private boolean status;
 
-    public UserModel(Long cpf, String email, String password, String grupo){
+    public UserModel(String cpf, String email, String nome,String password, String grupo){
         this.cpf = cpf;
         this.email = email;
+        this.nome = nome;
         this.password = password;
         this.grupo = grupo;
         this.status = true;
