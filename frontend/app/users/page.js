@@ -1,7 +1,9 @@
 'use client'
 
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { atualizarStatus, listarUsuario } from "@/services/UserService";
+import Modal from "@/components/Modal";
 
 const Container = styled.div`
     width: 100%;
@@ -25,22 +27,124 @@ const InputContainer = styled.div`
     margin-bottom: 20px;
 `
 
+const TextModal = styled.div`
+    margin: 50px;
+
+    h3 {
+        text-align: center;
+        font-size: 25px;
+        color: black;
+    }
+
+    .botoes {
+        display: flex;
+        justify-content: center;
+        margin-top: 60px;
+
+        gap: 40px;
+    }
+
+    .botoes button {
+        width: 150px;
+        height: 50px;
+
+        border: none;
+        border-radius: 8px;
+        background-color: green;
+
+        cursor: pointer;
+    }
+
+    .botoes button:nth-child(1) {
+        background-color: red;
+    }
+`
+
 export default function Users(){
+
     const [usuarios, setUsuarios] = useState([
         { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo' },
         { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado' },
         { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo' }
     ]);
 
+    const [hiddenModel, setHiddenModel] = useState(true);
+    const [lastStatus, setlastStatus] = useState('Inativar');
+    const [lastUserChange, setLastUserChange] = useState(null);
+    const [idUpdateUser, setIdUpdateUser] = useState(null);
+
+    const atualizarTabela = async () => {
+        try{
+            const response = await listarUsuario();
+            console.log(response);
+
+            setUsuarios(response.map(user => ({
+                id: user.id.timestamp,
+                cpf: user.cpf,
+                nome: user.nome,
+                email: user.email,
+                status: user.status,
+                grupo: user.grupo
+            })));
+
+        }catch (error) {
+            console.error('Erro ao buscar dados', error);
+        }
+    }
+
+    useEffect(() => {
+        atualizarTabela();
+    }, [])
+
+    useEffect(() => {
+        
+        console.log(usuarios);
+
+    }, [usuarios])
+
     const alternarStatus = (id) => {
-        setUsuarios((usuarios) =>
-            usuarios.map((usuario) =>
-                usuario.id === id
-                    ? { ...usuario, status: usuario.status === 'Ativo' ? 'Desativado' : 'Ativo' }
-                    : usuario
-            )
-        );
+        setHiddenModel(false);
+        setIdUpdateUser(id);
+
+        usuarios.map((usuario) => {
+            if(usuario.id === id){
+                setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
+            }
+        });
+        
     };
+
+    const handleConfirmModel = () => {
+        alert(`Você ${lastStatus === "Ativar" ? "Ativou" : "Inativou"} o usuário com sucesso!`);
+
+        setUsuarios((usuarios) => {
+            return usuarios.map((usuario) => {
+                if (usuario.id === idUpdateUser) {
+                    const novoStatus = usuario.status === true ? false : true;
+                    setHiddenModel(false);
+                    setLastUserChange(usuario);
+                    setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
+                    
+                    // Chame a função para alterar o status no backend (API)
+                    atualizarStatus(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
+    
+                    // Cria uma cópia do usuário com o novo status
+                    const updatedUser = { ...usuario, status: novoStatus };
+                    
+                    setHiddenModel(true);
+                    return updatedUser;
+                    
+                }
+                return usuario;
+            });
+        });
+        
+        
+    }
+
+    const handleCloseModel = () => {
+        setHiddenModel(true);
+    }
 
     return(
         <Container>
@@ -54,12 +158,26 @@ export default function Users(){
             </InputContainer>
 
             <div>
+                <Modal isOpen={!hiddenModel}>
+                    <TextModal>
+                        <h3>Você tem certeza que deseja  
+                        <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
+                        </span>
+                        <span> este usuário?</span></h3>
+                        
+                        <div className="botoes">
+                            <button onClick={handleCloseModel}>Cancelar</button>
+                            <button onClick={handleConfirmModel}>Confirmar</button>
+                        </div>
+                    </TextModal>
+                </Modal>
                 <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                         <tr>
                             <th>Nome</th>
                             <th>Email</th>
                             <th>Status</th>
+                            <th>Grupo</th>
                             <th>Alterar</th>
                             <th>Habilitar/Desabilitar</th>
                         </tr>
@@ -69,13 +187,14 @@ export default function Users(){
                             <tr key={usuario.id}>
                                 <td>{usuario.nome}</td>
                                 <td>{usuario.email}</td>
-                                <td>{usuario.status}</td>
+                                <td>{usuario.status ? "Ativo" : "Inativo"}</td>
+                                <td>{usuario.grupo}</td>
                                 <td>
                                     <button onClick={() => alterarUsuario(usuario.id)}>Alterar</button>
                                 </td>
                                 <td>
                                     <button onClick={() => alternarStatus(usuario.id)}>
-                                        {usuario.status === 'Ativo' ? 'Desabilitar' : 'Habilitar'}
+                                        {usuario.status === true ? 'Desabilitar' : 'Habilitar'}
                                     </button>
                                 </td>
                             </tr>

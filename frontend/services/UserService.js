@@ -24,5 +24,60 @@ export async function cadastrarUsuario(dadosUsuario){
         alert("Erro de conexão: " + error.message);
         return null;
     }
+}
+
+export async function listarUsuario(){
+
+    const url = "http://localhost:8080/user/listar";
+    
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        console.log(response);
+        if (!response.ok) {
+            let errorMessage = await response.text();
+            alert(`Erro: ${response.status} - ${errorMessage}`);
+            return null;
+        }
+
+        return response.json();
+
+    } catch (error) {
+        alert("Erro de conexão: " + error.message);
+        return null;
+    }
+}
+
+export async function atualizarStatus(id, novoStatus){
+
+    const url = `http://localhost:8080/user/alterar-status/${id}?status=${novoStatus}`;
+    console.log(id);
+    console.log(novoStatus);
+    try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        console.log(response);
+        if (!response.ok) {
+            let errorMessage = await response.text();
+            alert(`Erro: ${response.status} - ${errorMessage}`);
+            return null;
+        }
+
+        return response.text();
+
+    } catch (error) {
+        alert("Erro de conexão: " + error.message);
+        return null;
+    }
 
 }

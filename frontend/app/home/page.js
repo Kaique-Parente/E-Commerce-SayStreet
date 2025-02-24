@@ -33,9 +33,9 @@ export default function Home(){
             <h1>Principal</h1>
 
             <LinksContainer>
-                <a href="./">Listar Produto</a>
-                <a href="./">Listar Usuário</a>
-                <a href="./">Listar Pedidos</a>
+                <a>Listar Produto</a>
+                <a>Listar Usuário</a>
+                <a>Listar Pedidos</a>
             </LinksContainer>
         </Container>
     );
