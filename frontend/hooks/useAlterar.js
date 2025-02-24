@@ -11,7 +11,7 @@ export function useAlterar(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVerify, setPasswordVerify] = useState('');
-    const [grupo, setGrupo] = useState('');
+    const [grupo, setGrupo] = useState('admin');
 
     const [erro, setErro] = useState(null);
 
@@ -33,7 +33,7 @@ export function useAlterar(){
                     // Preenche os dados nos hooks com os dados retornados
                     setNome(usuario.nome || '');
                     setEmail(usuario.email || '');
-                    setGrupo(usuario.grupo || '');
+                    setGrupo(usuario.grupo === '' ? grupo : usuario.grupo);
                     setPassword('');  // Senha não é retornada, pois é apenas para alteração
                     setPasswordVerify(''); // Confirmação de senha também
                 } else {

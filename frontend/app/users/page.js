@@ -23,9 +23,21 @@ const Container = styled.div`
 const InputContainer = styled.div`
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 5px;
 
+    height: 20px;
     margin-bottom: 20px;
+
+    button{
+        margin-left: 5px;
+    }
+
+    a{
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+    }
 `
 
 const TextModal = styled.div`
@@ -160,12 +172,23 @@ export default function Users(){
         <Container>
             <h1>Lista de Usuário</h1>
 
-            <InputContainer>
-                <label className="label" htmlFor="nome">Nome:</label>
-                <input  type="text" id="nome"/>
-                <button>Procurar</button>
-                <a><img></img></a>
-            </InputContainer>
+            
+                <InputContainer>
+                    <label className="label" htmlFor="nome">Nome:</label>
+                    <input  type="text" id="nome"/>
+                    <button>Procurar</button>
+                    <a 
+                        onClick={() => window.location.href = './cadastrar-user'}
+                        style={{
+                            display: "flex", 
+                            justifyContent: "center", 
+                            fontSize: 40, 
+                            color: "white", 
+                            cursor: "pointer"}}
+                    >+</a>
+                </InputContainer>
+               
+           
 
             <div>
                 <Modal isOpen={!hiddenModel}>

@@ -10,7 +10,7 @@ export function useCadastro(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVerify, setPasswordVerify] = useState('');
-    const [grupo, setGrupo] = useState('');
+    const [grupo, setGrupo] = useState('admin');
 
     const [erro, setErro] = useState(null);
 
@@ -24,7 +24,7 @@ export function useCadastro(){
                 if(response !== null){
                     alert(response);
 
-                    window.location.href = './home'
+                    window.location.href = './users';
                 } else{
                     setErro(response);
                 }

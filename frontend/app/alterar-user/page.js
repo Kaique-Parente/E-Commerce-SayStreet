@@ -35,6 +35,10 @@ export default function AlterarUser() {
         }
     }, [erro])
 
+    useEffect(() => {
+        console.log(grupo);
+    }, [grupo])
+
     return (
         <div>
             <Container>
