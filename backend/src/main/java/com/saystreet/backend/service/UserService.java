@@ -26,14 +26,14 @@ public class UserService {
         Optional<UserModel> userOpt = userRepository.findByEmail(user.getEmail());
 
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha incorretos.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado!");
         }
 
         UserModel users = userOpt.get();
         String encryptedPassword = PasswordEncryptionUtil.encrypt(user.getPassword());
 
         if (!users.getPassword().equals(encryptedPassword)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha incorretos.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta!");
         }
 
         if(!userOpt.get().isStatus()){
