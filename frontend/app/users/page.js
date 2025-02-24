@@ -3,6 +3,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { atualizarStatus, listarUsuario } from "@/services/UserService";
+import { useAlterar } from "@/hooks/useAlterar";
 import Modal from "@/components/Modal";
 
 const Container = styled.div`
@@ -72,7 +73,8 @@ export default function Users(){
     const [lastStatus, setlastStatus] = useState('Inativar');
     const [lastUserChange, setLastUserChange] = useState(null);
     const [idUpdateUser, setIdUpdateUser] = useState(null);
-
+    const {setCpfAlterar} = useAlterar();
+    
     const atualizarTabela = async () => {
         try{
             const response = await listarUsuario();
@@ -92,6 +94,14 @@ export default function Users(){
         }
     }
 
+    const alterarUsuario = async (id) => {
+        // Encontre o usuário
+        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
+    
+        if (usuarioEncontrado) {
+            window.location.href = `/alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`; 
+        }
+    };
     useEffect(() => {
         atualizarTabela();
     }, [])
