@@ -47,6 +47,11 @@ public class UserController {
         return userService.listAll();
     }
 
+    @GetMapping("/encontrarId/{cpf}")
+    public ResponseEntity<String> encontrar(@PathVariable String cpf){
+        return ResponseEntity.ok(userService.encontrarId(cpf));
+    }
+
     @PutMapping("/alterar-status/{cpf}")
     public ResponseEntity<String> alterarStatus(@PathVariable String cpf, @RequestParam boolean status) {
         boolean sucesso = userService.alterarStatus(cpf, status);
