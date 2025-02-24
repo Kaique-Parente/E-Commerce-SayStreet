@@ -28,6 +28,10 @@ const ContainerContent = styled.div`
         font-weight: bold;
     }
 
+    h3 {
+        margin: 15px 0;
+    }
+
     button {
         background: none;
         border: 1px solid white;
@@ -53,12 +57,17 @@ const InputContainer = styled.div`
 
     margin-bottom: 20px;
 
-    input {
+    input, select{
         background-color: #5f3e3e;
 
         padding: 8px;
         border-radius: 8px;
         border: 2px solid white;
+    }
+
+    select {
+        font-size: 16px;
+        margin-top: 10px;
     }
 `
 
@@ -111,7 +120,6 @@ export default function CadastrarUser() {
                                 id="grupoSelect"
                                 value={grupo}
                                 onChange={handleGrupoChange}
-                                style={{ padding: "8px", fontSize: "16px", marginTop: "10px" }}
                             >
                                 <option value="admin">Admin</option>
                                 <option value="estoquista">Estoquista</option>
