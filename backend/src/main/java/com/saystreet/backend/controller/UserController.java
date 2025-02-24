@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<UserModel> editar(@PathVariable ObjectId id, @RequestBody UserDto user) throws Exception{
+    public ResponseEntity<String> editar(@PathVariable ObjectId id, @RequestBody UserDto user) throws Exception{
         return ResponseEntity.ok(userService.editar(id, user));
     }
 

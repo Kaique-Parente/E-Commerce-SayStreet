@@ -70,7 +70,7 @@ public class UserService {
     }
 
 
-    public UserModel editar(ObjectId id, UserDto userAtt) throws Exception {
+    public String editar(ObjectId id, UserDto userAtt) throws Exception {
 
         Optional<UserModel> userOptional = userRepository.findById(id);
 
@@ -88,8 +88,10 @@ public class UserService {
             String encryptedPassword = PasswordEncryptionUtil.encrypt(userAtt.getPassword());
             userModel.setPassword(encryptedPassword);
             userModel.setStatus(userAtt.isStatus());
+            userModel.setGrupo(userAtt.getGrupo());
 
-            return userRepository.save(userModel);
+            userRepository.save(userModel);
+            return "Usuário atualizado com sucesso!";
         } else {
             throw new RuntimeException("Usuário não encontrado com o ID: " + id);
         }
