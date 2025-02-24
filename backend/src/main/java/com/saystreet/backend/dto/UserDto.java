@@ -1,11 +1,9 @@
 package com.saystreet.backend.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
@@ -22,4 +20,11 @@ public class UserDto {
     private boolean status;
 
     private String grupo; 
+
+    public UserDto(String nome, String email, boolean status, String grupo){
+        this.nome = nome;
+        this.email = email;
+        this.status = status;
+        this.grupo = grupo;
+    }
 }

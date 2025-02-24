@@ -1,6 +1,8 @@
 package com.saystreet.backend.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -14,8 +16,12 @@ import lombok.Setter;
 public class UserModel {
     
     @Id
+    private ObjectId id;
+
+    @Indexed(unique = true)
     private String cpf;
 
+    @Indexed(unique = true)
     private String email;
 
     private String nome;
