@@ -47,8 +47,13 @@ public class UserController {
         return userService.listAll();
     }
 
+    @GetMapping("/encontrarUsuario/{cpf}")
+    public ResponseEntity<UserModel> encontrarUsuario(@PathVariable String cpf){
+        return ResponseEntity.ok(userService.encontrarUsuario(cpf));
+    }
+
     @GetMapping("/encontrarId/{cpf}")
-    public ResponseEntity<String> encontrar(@PathVariable String cpf){
+    public ResponseEntity<String> encontrarId(@PathVariable String cpf){
         return ResponseEntity.ok(userService.encontrarId(cpf));
     }
 

@@ -122,4 +122,13 @@ public class UserService {
 
         return null;
     }
+
+    public UserModel encontrarUsuario(String Cpf){
+        Optional<UserModel> user = userRepository.findByCpf(Cpf);
+        if(user.isPresent()){
+            return user.get();
+        }
+
+        return null;
+    }
 }
