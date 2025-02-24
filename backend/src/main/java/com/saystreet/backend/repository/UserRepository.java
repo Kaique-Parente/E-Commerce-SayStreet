@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.saystreet.backend.models.UserModel;
 
 @Repository
-public interface UserRepository extends MongoRepository<UserModel, Integer> {
+public interface UserRepository extends MongoRepository<UserModel, String> {
     
     Optional<UserModel> findByEmail(String email);
+    Optional<UserModel> findByCpf(String cpf);
 }

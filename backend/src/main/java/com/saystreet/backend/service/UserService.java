@@ -43,14 +43,18 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Esse email já está cadastrado no sistema!");
         }
 
-        String cpf = String.valueOf(user.getCpf());
+        userOpt = userRepository.findByCpf(user.getCpf());
 
-        if(!CpfValidator.isValidCPF(cpf)){
+        if (!userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Esse CPF já está cadastrado no sistema!");
+        }
+
+        if(!CpfValidator.isValidCPF(user.getCpf())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Este CPF não é válido. Por favor, digite um CPF válido.");
         }
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(user.getPassword());
-        UserModel userModel = new UserModel(user.getCpf(), user.getEmail(), encryptedPassword, user.getGrupo());
+        UserModel userModel = new UserModel(user.getCpf(), user.getEmail(), user.getNome(), encryptedPassword, user.getGrupo());
         userRepository.save(userModel);
 
         return ResponseEntity.ok("Cadastro realizado com sucesso!");

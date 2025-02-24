@@ -11,9 +11,11 @@ import lombok.Setter;
 @Getter
 public class UserDto {
 
-    private Long cpf;
+    private String cpf;
     
     private String email;
+
+    private String nome;
 
     private String password;
 

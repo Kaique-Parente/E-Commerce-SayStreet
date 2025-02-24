@@ -14,9 +14,11 @@ import lombok.Setter;
 public class UserModel {
     
     @Id
-    private Long cpf;
+    private String cpf;
 
     private String email;
+
+    private String nome;
 
     private String password;
 
@@ -24,9 +26,10 @@ public class UserModel {
 
     private boolean status;
 
-    public UserModel(Long cpf, String email, String password, String grupo){
+    public UserModel(String cpf, String email, String nome, String password, String grupo){
         this.cpf = cpf;
         this.email = email;
+        this.nome = nome;
         this.password = password;
         this.grupo = grupo;
         this.status = true;
