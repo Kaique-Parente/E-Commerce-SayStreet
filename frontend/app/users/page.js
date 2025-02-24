@@ -85,7 +85,8 @@ export default function Users(){
     const [lastStatus, setlastStatus] = useState('Inativar');
     const [lastUserChange, setLastUserChange] = useState(null);
     const [idUpdateUser, setIdUpdateUser] = useState(null);
-    const {setCpfAlterar} = useAlterar();
+    
+    const [nomeFiltro, setNomeFiltro] = useState('');
     
     const atualizarTabela = async () => {
         try{
@@ -168,15 +169,25 @@ export default function Users(){
         setHiddenModel(true);
     }
 
+    const handleNomeFiltro = (e) => {
+        setNomeFiltro(e.target.value);
+    };
+
+
+    console.log(usuarios);
+    const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
+        String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
+    )
+    : usuarios);
+
     return(
         <Container>
             <h1>Lista de Usuário</h1>
 
-            
                 <InputContainer>
-                    <label className="label" htmlFor="nome">Nome:</label>
-                    <input  type="text" id="nome"/>
-                    <button>Procurar</button>
+                    <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
+                    <input  type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro}/>
+
                     <a 
                         onClick={() => window.location.href = './cadastrar-user'}
                         style={{
@@ -216,7 +227,7 @@ export default function Users(){
                         </tr>
                     </thead>
                     <tbody>
-                        {usuarios.map((usuario) => (
+                        {usuariosFiltrados.map((usuario) => (
                             <tr key={usuario.id}>
                                 <td>{usuario.nome}</td>
                                 <td>{usuario.email}</td>
