@@ -23,6 +23,7 @@ export function useCadastro(){
 
                 if(response !== null){
                     alert(response);
+
                     window.location.href = './home'
                 } else{
                     setErro(response);
@@ -31,6 +32,7 @@ export function useCadastro(){
                 setErro("As senhas não são iguais!");
             }
        }catch(error){
+            console.log(error);
             setErro("Erro de comunicação com o servidor!");
         }
     }
