@@ -64,9 +64,9 @@ const TextModal = styled.div`
 export default function Users(){
 
     const [usuarios, setUsuarios] = useState([
-        { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo' },
-        { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado' },
-        { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo' }
+        { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo', grupo: 'admin' },
+        { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado', grupo: 'admin' },
+        { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo', grupo: 'admin' }
     ]);
 
     const [hiddenModel, setHiddenModel] = useState(true);

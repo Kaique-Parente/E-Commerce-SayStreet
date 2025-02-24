@@ -1,12 +1,13 @@
 'use client'
 
-import { cadastrarUsuario } from "@/services/UserService";
+import { atualizarUsuario, cadastrarUsuario, encontrarIdBanco, encontrarUsuarioCpf } from "@/services/UserService";
 import { useEffect, useState } from "react"
 
 export function useAlterar(){
 
     const [nome, setNome] = useState('');
-    const [cpfAlterar, setCpfAlterar] = useState('ddddddddddd');
+    const [cpfAlterar, setCpfAlterar] = useState('');
+    const [idBanco, setIdBanco] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVerify, setPasswordVerify] = useState('');
@@ -15,11 +16,33 @@ export function useAlterar(){
     const [erro, setErro] = useState(null);
 
     useEffect(() => {
-        console.log(cpfAlterar);
-    }, [])
+        // Pega os parâmetros da URL
+        const queryParams = new URLSearchParams(window.location.search);
+        const cpf = queryParams.get('cpfAlterar'); // Pega o valor de cpfAlterar
+        setCpfAlterar(cpf);
+    }, []);
 
     useEffect(() => {
-        console.log(cpfAlterar);
+        const carregarUsuario = async () => {
+            if (cpfAlterar) {
+                const usuario = await encontrarUsuarioCpf(cpfAlterar); // Chama o serviço para pegar os dados do usuário
+                if (usuario) {
+                    const idBanco = await encontrarIdBanco(cpfAlterar);
+                    setIdBanco(idBanco);
+                    console.log(idBanco);
+                    // Preenche os dados nos hooks com os dados retornados
+                    setNome(usuario.nome || '');
+                    setEmail(usuario.email || '');
+                    setGrupo(usuario.grupo || '');
+                    setPassword('');  // Senha não é retornada, pois é apenas para alteração
+                    setPasswordVerify(''); // Confirmação de senha também
+                } else {
+                    setErro('Usuário não encontrado');
+                }
+            }
+        };
+
+        carregarUsuario();
     }, [cpfAlterar])
 
     const handleSubmit = async (e) => {
@@ -27,11 +50,12 @@ export function useAlterar(){
 
        try{
             if(password === passwordVerify){
-                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
+                const response = await atualizarUsuario(idBanco,{cpf: cpfAlterar, email, nome, password, grupo});
+                console.log(response);
 
                 if(response !== null){
                     alert(response);
-
+                    window.location.href = './users';
                 } else{
                     setErro(response);
                 }

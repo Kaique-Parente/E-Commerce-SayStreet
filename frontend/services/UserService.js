@@ -83,7 +83,8 @@ export async function atualizarStatus(id, novoStatus){
 
 export async function encontrarUsuarioCpf(cpf){
 
-    const url = `localhost:8080/user/encontrarUsuario/${cpf}`;
+    const url = `http://localhost:8080/user/encontrarUsuario/${cpf}`;
+    console.log(url);
 
     try {
         const response = await fetch(url, {
@@ -108,9 +109,9 @@ export async function encontrarUsuarioCpf(cpf){
     }
 }
 
-export async function encontrarId(cpf){
+export async function encontrarIdBanco(cpf){
 
-    const url = `localhost:8080/user/encontrarId/${cpf}`;
+    const url = `http://localhost:8080/user/encontrarId/${cpf}`;
 
 
     try {
@@ -119,6 +120,36 @@ export async function encontrarId(cpf){
             headers: {
                 'Content-Type': 'application/json',
             }
+        });
+
+        console.log(response);
+        if (!response.ok) {
+            let errorMessage = await response.text();
+            alert(`Erro: ${response.status} - ${errorMessage}`);
+            return null;
+        }
+
+        return response.text();
+
+    } catch (error) {
+        alert("Erro de conexão: " + error.message);
+        return null;
+    }
+}
+
+export async function atualizarUsuario(id, dadosUsuario){
+
+    const url = `http://localhost:8080/user/editar/${id}`;
+    console.log(url);
+    console.log(dadosUsuario);
+
+    try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosUsuario)
         });
 
         console.log(response);
