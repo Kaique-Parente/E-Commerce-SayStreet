@@ -8,18 +8,46 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+`
+
+const ContainerContent = styled.div`
+    background-color: #62656773;
+    
+    display: flex;
+    align-items: center;
     flex-direction: column;
-
-    border: 1px solid white;
-
     gap: 30px;
+
+    padding: 100px 80px;
+    border-radius: 12px;
+
+    h1 {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    button {
+        background: none;
+        border: 1px solid white;
+        border-radius: 8px;
+
+        padding: 10px 20px;
+        margin-top: 10px;
+
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: rgba(98, 101, 103, 0.9);
+    }
 `
 
 const LinksContainer = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 
     a{
         font-size: 30px;
@@ -27,28 +55,30 @@ const LinksContainer = styled.div`
     }
 `
 
-export default function Home(){
+export default function Home() {
     return (
         <Container>
-            <h1>Principal</h1>
+            <ContainerContent>
+                <h1>Principal</h1>
 
-            <LinksContainer>
-                <a  
-                    style={{cursor: "pointer"}}
-                    onClick={() => window.location.href = './'}>
-                    Listar Produto
-                </a>
-                <a 
-                    style={{cursor: "pointer"}}
-                    onClick={() => window.location.href = './users'}>
-                    Listar Usuários
-                </a>
-                <a 
-                    style={{cursor: "pointer"}}
-                    onClick={() => window.location.href = './'}>
-                    Listar Pedidos
-                </a>
-            </LinksContainer>
+                <LinksContainer>
+                    <a
+                        style={{ cursor: "pointer" }}
+                        onClick={() => window.location.href = './'}>
+                        Listar Produto
+                    </a>
+                    <a
+                        style={{ cursor: "pointer" }}
+                        onClick={() => window.location.href = './users'}>
+                        Listar Usuários
+                    </a>
+                    <a
+                        style={{ cursor: "pointer" }}
+                        onClick={() => window.location.href = './'}>
+                        Listar Pedidos
+                    </a>
+                </LinksContainer>
+            </ContainerContent>
         </Container>
     );
 }
