@@ -1,6 +1,7 @@
 'use client'
 
 import { atualizarUsuario, cadastrarUsuario, encontrarIdBanco, encontrarUsuarioCpf } from "@/services/UserService";
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from "react"
 
 export function useAlterar(){
@@ -15,10 +16,12 @@ export function useAlterar(){
 
     const [erro, setErro] = useState(null);
 
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
     useEffect(() => {
         // Pega os parâmetros da URL
-        const queryParams = new URLSearchParams(window.location.search);
-        const cpf = queryParams.get('cpfAlterar'); // Pega o valor de cpfAlterar
+        const cpf = searchParams.get('cpfAlterar'); // Pega o valor de cpfAlterar
         setCpfAlterar(cpf);
     }, []);
 
@@ -55,7 +58,7 @@ export function useAlterar(){
 
                 if(response !== null){
                     alert(response);
-                    window.location.href = './users';
+                    router.push('./users');
                 } else{
                     setErro(response);
                 }

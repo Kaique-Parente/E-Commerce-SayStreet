@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -62,21 +63,17 @@ export default function Home() {
                 <h1>Principal</h1>
 
                 <LinksContainer>
-                    <a
-                        style={{ cursor: "pointer" }}
-                        onClick={() => window.location.href = './'}>
-                        Listar Produto
-                    </a>
-                    <a
-                        style={{ cursor: "pointer" }}
-                        onClick={() => window.location.href = './users'}>
-                        Listar Usuários
-                    </a>
-                    <a
-                        style={{ cursor: "pointer" }}
-                        onClick={() => window.location.href = './'}>
-                        Listar Pedidos
-                    </a>
+                    <Link href="./" style={{cursor: "pointer"}}>
+                        <span>Listar Produto</span>
+                    </Link>
+
+                    <Link href="./users" style={{cursor: "pointer"}}>
+                        <span>Listar Usuários</span>
+                    </Link>
+
+                    <Link href="./" style={{cursor: "pointer"}}>
+                        <span>Listar Pedidos</span>
+                    </Link>
                 </LinksContainer>
             </ContainerContent>
         </Container>

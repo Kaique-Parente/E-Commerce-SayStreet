@@ -1,6 +1,7 @@
 'use client'
 
 import { cadastrarUsuario } from "@/services/UserService";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 
 export function useCadastro(){
@@ -14,6 +15,8 @@ export function useCadastro(){
 
     const [erro, setErro] = useState(null);
 
+    const router = useRouter();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -24,7 +27,7 @@ export function useCadastro(){
                 if(response !== null){
                     alert(response);
 
-                    window.location.href = './users';
+                    router.push('./users');
                 } else{
                     setErro(response);
                 }

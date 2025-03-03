@@ -1,12 +1,14 @@
 'use client'
 
 import { loginUsuario } from "@/services/UserService";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function UseLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [erro, setErro] = useState(null);
+    const router = useRouter();
 
     // Função para envio do formulário
     const handleSubmit = async (e) => {
@@ -17,7 +19,7 @@ export default function UseLogin() {
 
             if (response !== null) {
                 alert(response);
-                window.location.href = './home';
+                router.push('./home');
             } else {
                 setErro(response);
             }

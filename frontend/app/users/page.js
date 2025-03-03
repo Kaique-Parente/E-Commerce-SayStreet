@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { atualizarStatus, listarUsuario } from "@/services/UserService";
 import { useAlterar } from "@/hooks/useAlterar";
 import Modal from "@/components/Modal";
+import { useRouter } from "next/navigation";
 
 const Container = styled.div`
     width: 100%;
@@ -87,6 +88,8 @@ export default function Users(){
     const [idUpdateUser, setIdUpdateUser] = useState(null);
     
     const [nomeFiltro, setNomeFiltro] = useState('');
+
+    const router = useRouter();
     
     const atualizarTabela = async () => {
         try{
@@ -112,7 +115,7 @@ export default function Users(){
         const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
     
         if (usuarioEncontrado) {
-            window.location.href = `/alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`; 
+            router.push(`/alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
         }
     };
     useEffect(() => {
@@ -169,6 +172,10 @@ export default function Users(){
         setHiddenModel(true);
     }
 
+    const handleOpenCadastrar = () => {
+        router.push('./cadastrar-user');
+    }
+
     const handleNomeFiltro = (e) => {
         setNomeFiltro(e.target.value);
     };
@@ -189,7 +196,7 @@ export default function Users(){
                     <input  type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro}/>
 
                     <a 
-                        onClick={() => window.location.href = './cadastrar-user'}
+                        onClick={handleOpenCadastrar}
                         style={{
                             display: "flex", 
                             justifyContent: "center", 
@@ -198,8 +205,6 @@ export default function Users(){
                             cursor: "pointer"}}
                     >+</a>
                 </InputContainer>
-               
-           
 
             <div>
                 <Modal isOpen={!hiddenModel}>
