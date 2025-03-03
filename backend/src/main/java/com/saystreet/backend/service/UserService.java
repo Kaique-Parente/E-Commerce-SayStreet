@@ -2,7 +2,6 @@ package com.saystreet.backend.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,8 +124,17 @@ public class UserService {
         return null;
     }
 
-    public UserModel encontrarUsuario(String Cpf){
+    public UserModel encontrarUsuarioCpf(String Cpf){
         Optional<UserModel> user = userRepository.findByCpf(Cpf);
+        if(user.isPresent()){
+            return user.get();
+        }
+
+        return null;
+    }
+
+    public UserModel encontrarUsuarioEmail(String email){
+        Optional<UserModel> user = userRepository.findByEmail(email);
         if(user.isPresent()){
             return user.get();
         }

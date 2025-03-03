@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +47,34 @@ public class UserController {
     public List<UserModel> listar(){
         return userService.listAll();
     }
+    
+    @GetMapping("/encontrarUsuarioCpf/{cpf}")
+    public ResponseEntity<?> encontrarUsuarioCpf(@PathVariable String cpf) {
+        UserModel user = userService.encontrarUsuarioCpf(cpf);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Não foi possível encontrar nenhum usuário com CPF: " + cpf);
+        }
+        return ResponseEntity.ok(user);
+    }
 
-    @GetMapping("/encontrarUsuario/{cpf}")
-    public ResponseEntity<UserModel> encontrarUsuario(@PathVariable String cpf){
-        return ResponseEntity.ok(userService.encontrarUsuario(cpf));
+    @GetMapping("/encontrarUsuarioEmail/{email}")
+    public ResponseEntity<?> encontrarUsuarioEmail(@PathVariable String email) {
+        UserModel user = userService.encontrarUsuarioEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Não foi possível encontrar nenhum usuário com e-mail: " + email);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/encontrarId/{cpf}")
-    public ResponseEntity<String> encontrarId(@PathVariable String cpf){
+    public ResponseEntity<?> encontrarId(@PathVariable String cpf) {
+        UserModel user = userService.encontrarUsuarioCpf(cpf);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Não foi possível encontrar nenhum usuário com CPF: " + cpf);
+        }
         return ResponseEntity.ok(userService.encontrarId(cpf));
     }
 
