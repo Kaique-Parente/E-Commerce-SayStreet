@@ -58,16 +58,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/encontrarUsuarioEmail/{email}")
-    public ResponseEntity<?> encontrarUsuarioEmail(@PathVariable String email) {
-        UserModel user = userService.encontrarUsuarioEmail(email);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Não foi possível encontrar nenhum usuário com e-mail: " + email);
-        }
-        return ResponseEntity.ok(user);
-    }
-
     @GetMapping("/encontrarId/{cpf}")
     public ResponseEntity<?> encontrarId(@PathVariable String cpf) {
         UserModel user = userService.encontrarUsuarioCpf(cpf);
@@ -76,6 +66,16 @@ public class UserController {
                     .body("Não foi possível encontrar nenhum usuário com CPF: " + cpf);
         }
         return ResponseEntity.ok(userService.encontrarId(cpf));
+    }
+
+    @GetMapping("/encontrarSetorUsuarioEmail/{email}")
+    public ResponseEntity<String> encontrarSetorUsuarioEmail(@PathVariable String email) {
+        String setor = userService.encontrarSetorUsuarioEmail(email);
+        if (setor == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Não foi possível encontrar nenhum usuário com e-mail: " + email);
+        }
+        return ResponseEntity.ok(setor);
     }
 
     @PutMapping("/alterar-status/{cpf}")

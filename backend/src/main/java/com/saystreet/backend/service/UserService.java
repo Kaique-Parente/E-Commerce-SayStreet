@@ -133,10 +133,10 @@ public class UserService {
         return null;
     }
 
-    public UserModel encontrarUsuarioEmail(String email){
+    public String encontrarSetorUsuarioEmail(String email){
         Optional<UserModel> user = userRepository.findByEmail(email);
         if(user.isPresent()){
-            return user.get();
+            return user.get().getGrupo();
         }
 
         return null;
