@@ -1,5 +1,7 @@
 'use client'
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -57,23 +59,42 @@ const LinksContainer = styled.div`
 `
 
 export default function Home() {
+    const searchParams = useSearchParams();
+    const [setor, setSetor] = useState('');
+
+    useEffect(() => {
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+    }, [])
+
     return (
         <Container>
             <ContainerContent>
                 <h1>Principal</h1>
 
                 <LinksContainer>
-                    <Link href="./" style={{cursor: "pointer"}}>
-                        <span>Listar Produto</span>
-                    </Link>
+                    {setor === 'adm' ? (
+                        <>
+                            <Link href="./users" style={{cursor: "pointer"}}>
+                                <span>Listar Usuários</span>
+                            </Link>
 
-                    <Link href="./users" style={{cursor: "pointer"}}>
-                        <span>Listar Usuários</span>
-                    </Link>
+                            <Link href="./" style={{cursor: "pointer"}}>
+                                <span>Listar Produto</span>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="./" style={{cursor: "pointer"}}>
+                                <span>Listar Produto</span>
+                            </Link>
 
-                    <Link href="./" style={{cursor: "pointer"}}>
-                        <span>Listar Pedidos</span>
-                    </Link>
+                            <Link href="./" style={{cursor: "pointer"}}>
+                                <span>Listar Pedido</span>
+                            </Link>
+                        </>
+                    )}
+                    
                 </LinksContainer>
             </ContainerContent>
         </Container>

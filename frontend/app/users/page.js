@@ -115,7 +115,7 @@ export default function Users(){
         const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
     
         if (usuarioEncontrado) {
-            router.push(`/alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
+            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
         }
     };
     useEffect(() => {

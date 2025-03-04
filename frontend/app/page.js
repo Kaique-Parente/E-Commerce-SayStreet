@@ -1,7 +1,6 @@
 'use client'
 
 import UseLogin from "@/hooks/useLogin";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -65,7 +64,6 @@ const InputContainer = styled.div`
 
 export default function Login(){
     const { email, password, erro, setEmail, setPassword, handleSubmit, handleEmailChange, handlePasswordChange } = UseLogin();
-    const router = useRouter();
     
     useEffect(() => {
         if (erro) {
