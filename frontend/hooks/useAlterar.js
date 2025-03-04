@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 export function useAlterar(){
 
     const [nome, setNome] = useState('');
-    const [cpfAlterar, setCpfAlterar] = useState('');
+    const [cpf, setCpf] = useState('');
     const [idBanco, setIdBanco] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,21 +16,23 @@ export function useAlterar(){
 
     const [erro, setErro] = useState(null);
 
+    const [cpfUrl, setCpfUrl] = useState(''); // Não foi exportado
     const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
         // Pega os parâmetros da URL
-        const cpf = searchParams.get('cpfAlterar'); // Pega o valor de cpfAlterar
-        setCpfAlterar(cpf);
+        const cpfUrl = searchParams.get('cpfAlterar'); // Pega o valor de cpfUrl
+        setCpfUrl(cpfUrl);
+        setCpf(cpfUrl);
     }, []);
 
     useEffect(() => {
         const carregarUsuario = async () => {
-            if (cpfAlterar) {
-                const usuario = await encontrarUsuarioCpf(cpfAlterar); // Chama o serviço para pegar os dados do usuário
+            if (cpfUrl) {
+                const usuario = await encontrarUsuarioCpf(cpfUrl); // Chama o serviço para pegar os dados do usuário
                 if (usuario) {
-                    const idBanco = await encontrarIdBanco(cpfAlterar);
+                    const idBanco = await encontrarIdBanco(cpfUrl);
                     setIdBanco(idBanco);
                     console.log(idBanco);
                     // Preenche os dados nos hooks com os dados retornados
@@ -46,14 +48,14 @@ export function useAlterar(){
         };
 
         carregarUsuario();
-    }, [cpfAlterar])
+    }, [cpfUrl])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
        try{
             if(password === passwordVerify){
-                const response = await atualizarUsuario(idBanco,{cpf: cpfAlterar, email, nome, password, grupo});
+                const response = await atualizarUsuario(idBanco,{cpf, email, nome, password, grupo});
                 console.log(response);
 
                 if(response !== null){
@@ -98,8 +100,8 @@ export function useAlterar(){
     return{
         nome,
         setNome,
-        cpfAlterar,
-        setCpfAlterar,
+        cpf,
+        setCpf,
         email,
         setEmail,
         password,
