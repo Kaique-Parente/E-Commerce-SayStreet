@@ -16,11 +16,15 @@ export default function UseLogin() {
 
         try {
             const response = await loginUsuario({ email, password });
-            const setor = await encontrarSetorUsuarioEmail(email);
 
-            if (response !== null) {
+            if(response !== null){
                 alert(response);
-                router.push(`./home?setor=${setor}`);
+                const setor = await encontrarSetorUsuarioEmail(email);
+
+                if(setor !== null) {
+                    router.push(`./home?setor=${setor}`);
+                }
+                
             } else {
                 setErro(response);
             }
