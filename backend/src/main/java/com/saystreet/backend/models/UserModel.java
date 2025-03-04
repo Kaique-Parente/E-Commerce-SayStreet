@@ -1,35 +1,42 @@
 package com.saystreet.backend.models;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Document(collection = "user")
+@Entity
+@Table(name = "usuario")
 @NoArgsConstructor
 @Getter
 @Setter
 public class UserModel {
     
     @Id
-    private ObjectId id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Indexed(unique = true)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Indexed(unique = true)
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String grupo;
 
+    @Column(nullable = false)
     private boolean status;
 
     public UserModel(String cpf, String email, String nome, String password, String grupo){

@@ -3,7 +3,6 @@ package com.saystreet.backend.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +68,7 @@ public class UserService {
     }
 
 
-    public String editar(ObjectId id, UserDto userAtt) throws Exception {
+    public String editar(Long id, UserDto userAtt) throws Exception {
 
         Optional<UserModel> userOptional = userRepository.findById(id);
 

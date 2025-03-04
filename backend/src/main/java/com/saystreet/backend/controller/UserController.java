@@ -2,7 +2,6 @@ package com.saystreet.backend.controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<String> editar(@PathVariable ObjectId id, @RequestBody UserDto user) throws Exception{
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody UserDto user) throws Exception{
         return ResponseEntity.ok(userService.editar(id, user));
     }
 
