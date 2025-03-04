@@ -116,7 +116,7 @@ public class UserService {
     public String encontrarId(String Cpf){
         Optional<UserModel> user = userRepository.findByCpf(Cpf);
         if(user.isPresent()){
-            String id = user.get().getId().toString();
+            String id = user.get().getUser_id().toString();
             return id;
         }
 
