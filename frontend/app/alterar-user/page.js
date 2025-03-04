@@ -73,7 +73,7 @@ const InputContainer = styled.div`
 `
 
 export default function AlterarUser() {
-    const { nome, setNome, cpfAlterar, setCpfAlterar, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useAlterar();
+    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useAlterar();
 
     useEffect(() => {
         if (erro) {
@@ -99,7 +99,7 @@ export default function AlterarUser() {
 
                         <InputContainer>
                             <label className="label" htmlFor="cpf">CPF:</label>
-                            <input required type="text" id="cpf" onChange={handleCpfChange} value={cpfAlterar} />
+                            <input required type="text" id="cpf" onChange={handleCpfChange} value={cpf} />
                         </InputContainer>
 
                         <h3>Informação de Contato</h3>

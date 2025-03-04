@@ -29,12 +29,12 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserModel user) throws Exception{
-        return userService.login(user);
+        return ResponseEntity.ok(userService.login(user));
     }
 
     @PostMapping("/create")
     public ResponseEntity<String> create(@RequestBody UserDto user) throws Exception{
-        return userService.create(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(user));
     }
 
     @PutMapping("/editar/{id}")
@@ -49,43 +49,23 @@ public class UserController {
     
     @GetMapping("/encontrarUsuarioCpf/{cpf}")
     public ResponseEntity<?> encontrarUsuarioCpf(@PathVariable String cpf) {
-        UserModel user = userService.encontrarUsuarioCpf(cpf);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Não foi possível encontrar nenhum usuário com CPF: " + cpf);
-        }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.encontrarUsuarioCpf(cpf));
     }
-
+    
     @GetMapping("/encontrarId/{cpf}")
     public ResponseEntity<?> encontrarId(@PathVariable String cpf) {
-        UserModel user = userService.encontrarUsuarioCpf(cpf);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Não foi possível encontrar nenhum usuário com CPF: " + cpf);
-        }
         return ResponseEntity.ok(userService.encontrarId(cpf));
     }
-
+    
     @GetMapping("/encontrarSetorUsuarioEmail/{email}")
     public ResponseEntity<String> encontrarSetorUsuarioEmail(@PathVariable String email) {
-        String setor = userService.encontrarSetorUsuarioEmail(email);
-        if (setor == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Não foi possível encontrar nenhum usuário com e-mail: " + email);
-        }
-        return ResponseEntity.ok(setor);
+        return ResponseEntity.ok(userService.encontrarSetorUsuarioEmail(email));
     }
-
+    
     @PutMapping("/alterar-status/{cpf}")
     public ResponseEntity<String> alterarStatus(@PathVariable String cpf, @RequestParam boolean status) {
-        boolean sucesso = userService.alterarStatus(cpf, status);
-
-        if (sucesso) {
-            return ResponseEntity.ok("Status do usuário alterado com sucesso.");
-        } else {
-            return ResponseEntity.status(404).body("Usuário não encontrado.");
-        }
+        userService.alterarStatus(cpf, status);
+        return ResponseEntity.ok("Status do usuário alterado com sucesso.");
     }
 
 }
