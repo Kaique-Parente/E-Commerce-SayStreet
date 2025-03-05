@@ -22,6 +22,34 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import RadiusButton from './RadiusButton';
+import styled from 'styled-components';
+
+const TableCellContainer = styled.div`
+
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background-color: yellow;
+    font-size: 0.875rem;
+    cursor: pointer;
+    gap: 5px;
+
+    &:hover {
+      background-color: #f5e74e; /* Adicionando um efeito de hover */
+    }
+  }
+`;
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -204,7 +232,6 @@ export default function Tabela(props) {
                     role="checkbox"
                     tabIndex={-1}
                     key={row.id}
-                    sx={{ cursor: 'pointer' }}
                   >
                     {Object.entries(row).map(([key, value], cellIndex) => {
                          if (ids.includes(key)) {
@@ -218,10 +245,17 @@ export default function Tabela(props) {
                     })}
                     
                     <TableCell>
-                        <button onClick={() => props.handleAlterarUsuario(row.id)}>Alterar</button>
-                        <button onClick={() => props.handleAlternarStatus(row.id)}>
-                          {row.status === true ? 'Inativar' : 'Ativar'}
-                        </button>
+                        <TableCellContainer>
+                          <button onClick={() => props.handleAlterarUsuario(row.id)}>
+                              <Image width={14} height={14} alt='Um icone de lápis' src="/editar.png"/>
+                              Alterar
+                          </button>
+                          <RadiusButton 
+                            checked={row.status}
+                            handleChange={props.handleAlternarStatus}
+                            rowId={row.id}
+                          />
+                        </TableCellContainer>
                     </TableCell>
                   </TableRow>
                 );
