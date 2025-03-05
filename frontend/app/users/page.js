@@ -6,6 +6,7 @@ import { atualizarStatus, listarUsuario } from "@/services/UserService";
 import { useAlterar } from "@/hooks/useAlterar";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
+import Tabela from "@/components/MUI/Tabela";
 
 const Container = styled.div`
     width: 100%;
@@ -81,6 +82,34 @@ export default function Users(){
         { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado', grupo: 'admin' },
         { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo', grupo: 'admin' }
     ]);
+
+    const tableHeaderSetores = [
+        {
+            id: 'nome',
+            numeric: false,
+            disablePadding: false,
+            label: 'Nome',
+        },
+        {
+            id: 'categoria',
+            numeric: false,
+            disablePadding: false,
+            label: 'Categoria',
+        },
+        {
+            id: 'unMedida',
+            numeric: false,
+            disablePadding: false,
+            label: 'Unidade Medida',
+        },
+        {
+            id: 'sku',
+            numeric: true,
+            disablePadding: false,
+            label: 'SKU Produto',
+        },
+    ];
+    
 
     const [hiddenModel, setHiddenModel] = useState(true);
     const [lastStatus, setlastStatus] = useState('Inativar');
@@ -180,6 +209,29 @@ export default function Users(){
         setNomeFiltro(e.target.value);
     };
 
+    //* MUI */
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [resetSelect, setResetSelect] = useState(false);
+    
+    const handleSelected = (selected) =>{
+        const newRow = Array.isArray(selected)
+        ? usuarios.filter((row) => selected.includes(row.id))  // Seleção múltipla
+        : usuarios.filter((row) => row.id === selected);  // Seleção única
+
+        setSelectedRows(newRow);
+    }
+
+    const handleUpdateTable = () => {
+        setUpdateTable(!updateTable);
+
+        setUpdateTablePressionado(true);
+        setResetSelect(!resetSelect)
+
+        setTimeout(() => {
+            setUpdateTablePressionado(false);
+        }, 2000)
+    }
+
 
     console.log(usuarios);
     const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
@@ -220,7 +272,20 @@ export default function Users(){
                         </div>
                     </TextModal>
                 </Modal>
-                <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+                <Tabela
+                    title="Produtos" 
+                    tableHeader={tableHeaderSetores} 
+                    rows={usuarios} 
+                    fontHeader={12}
+                    visibilityDense={false}
+                    disableHead={true}
+                    disableDelete={true}
+                    height={580}
+                    updateSelect={handleSelected}
+                    resetSelect={resetSelect}
+                    rowsPerPage={25}
+                />
+                <table border="1">
                     <thead>
                         <tr>
                             <th>Nome</th>

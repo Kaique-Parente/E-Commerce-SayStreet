@@ -129,19 +129,6 @@ function EnhancedTableToolbar(props) {
           {props.title}
         </Typography>
       )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton onClick={props.handleDeleteRow}>
-            <DeleteIcon style={{display: props.disableDelete ? 'none' : 'flex'}}/>
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
     </Toolbar>
   );
 }
