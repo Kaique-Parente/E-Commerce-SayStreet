@@ -56,4 +56,13 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoService.editarProduto(id, produtoDto, arquivo));
     }
     
+    @PutMapping("/alterar-status/{id}")
+    public ResponseEntity<String> alterarStatus(
+            @PathVariable Long id,
+            @RequestParam boolean status) {
+
+        produtoService.alterarStatus(id, status);
+
+        return ResponseEntity.ok("Status do produto alterado com sucesso!");
+    }
 }
