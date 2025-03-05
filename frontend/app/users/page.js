@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
 import useUsers from "@/hooks/useUsers";
 import Link from "next/link";
+import Image from "next/image";
 
 const Container = styled.div`
     width: 100%;
@@ -24,25 +25,59 @@ const Container = styled.div`
     gap: 30px;
 `
 
+const ContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
 const InputContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: 5px;
 
     height: 20px;
-    margin-bottom: 20px;
+    margin: 20px 0px 35px 0px;
 
-    button{
-        margin-left: 5px;
-    }
+    font-size: 18px;
+`
+const CreateContainer = styled.div`
+   a{
+        background-color: #3B8C6E;
 
-    a{
-        width: 40px;
-        height: 40px;
-        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        
+        border-radius: 4px;
+
+   }
+
+   a:hover {
+        background-color: #2F7359; 
     }
 `
+
+const SearchContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    position: relative;
+
+    input{
+        border: 0.5px solid black;
+        border-radius: 4px;
+
+        width: 300px;
+        padding: 8px 8px 8px 35px;
+    }
+`
+
+const SearchIcon = styled(Image)`
+  position: absolute;
+  left: 10px;
+`;
 
 const TextModal = styled.div`
     margin: 50px;
@@ -139,53 +174,66 @@ export default function Users() {
 
     return (
         <Container>
-            <h1>Lista de Usuário</h1>
+            <ContentContainer>
+                <div>
+                    <h1>Lista de Usuário</h1>
+                </div>
 
-            <InputContainer>
-                <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
-                <input type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro} />
+                <InputContainer>
+                    <CreateContainer>
+                        <Link
+                            href={'./cadastrar-user'}
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "10px",
 
-                <Link
-                    href={'./cadastrar-user'}
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        fontSize: 40,
-                        color: "black",
-                        cursor: "pointer"
-                    }}
-                >+</Link>
-            </InputContainer>
+                                cursor: "pointer"
+                            }}
+                        >
+                            <Image width={14} height={14} alt='Um icone de mais' src="/mais.png" />
+                            <span>Novo usuário</span>
+                        </Link>
+                    </CreateContainer>
 
-            <div>
-                <Modal isOpen={!hiddenModel}>
-                    <TextModal>
-                        <h3>Você tem certeza que deseja
-                            <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
-                            </span>
-                            <span> este usuário?</span></h3>
+                    <SearchContainer>
+                        <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/pesquisar.png" />
+                        <input type="text" id="nome" placeholder="Pesquisar por Nome:" 
+                            value={nomeFiltro} onChange={handleNomeFiltro} 
+                        />
+                    </SearchContainer>
+                </InputContainer>
 
-                        <div className="botoes">
-                            <button onClick={handleCloseModel}>Cancelar</button>
-                            <button onClick={handleConfirmModel}>Confirmar</button>
-                        </div>
-                    </TextModal>
-                </Modal>
-                <Tabela
-                    title="Produtos"
-                    tableHeader={tableHeaderSetores}
-                    rows={usuarios}
-                    nomeFiltro={nomeFiltro}
-                    fontHeader={12}
-                    visibilityDense={false}
-                    disableHead={true}
-                    disableDelete={true}
-                    height={580}
-                    rowsPerPage={15}
-                    handleAlterarUsuario={handleAlterarUsuario}
-                    handleAlternarStatus={handleAlternarStatus}
-                />
-            </div>
+                <div>
+                    <Modal isOpen={!hiddenModel}>
+                        <TextModal>
+                            <h3>Você tem certeza que deseja
+                                <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
+                                </span>
+                                <span> este usuário?</span></h3>
+
+                            <div className="botoes">
+                                <button onClick={handleCloseModel}>Cancelar</button>
+                                <button onClick={handleConfirmModel}>Confirmar</button>
+                            </div>
+                        </TextModal>
+                    </Modal>
+                    <Tabela
+                        title="Produtos"
+                        tableHeader={tableHeaderSetores}
+                        rows={usuarios}
+                        nomeFiltro={nomeFiltro}
+                        fontHeader={12}
+                        visibilityDense={false}
+                        disableHead={true}
+                        disableDelete={true}
+                        height={580}
+                        rowsPerPage={15}
+                        handleAlterarUsuario={handleAlterarUsuario}
+                        handleAlternarStatus={handleAlternarStatus}
+                    />
+                </div>
+            </ContentContainer>
         </Container>
     );
 }
