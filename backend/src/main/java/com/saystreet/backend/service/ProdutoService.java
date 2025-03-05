@@ -107,4 +107,13 @@ public class ProdutoService {
             return "Erro ao atualizar o produto: " + e.getMessage();
         }
     }
+
+    public void alterarStatus(Long id, boolean status){
+
+        ProdutoModel produtoExistente = buscarProdutoPorId(id);
+        
+        produtoExistente.setProduto_status(status);
+        
+        produtoRepository.save(produtoExistente);
+    }
 }
