@@ -153,27 +153,6 @@ export default function Tabela(props) {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-  
-  const handleAlterarUsuario = async (id) => {
-      // Encontre o usuário
-      const usuarioEncontrado = props.rows.find((usuario) => usuario.id === id);
-      console.log(props.rows);
-  
-      if (usuarioEncontrado) {
-          router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
-      }
-  };
-
-  const handleAlternarStatus = (id) => {
-      props.setHiddenModel(false);
-      props.setIdUpdateUser(id);
-     
-      props.rows.map((usuario) => {
-          if(usuario.id === id){
-            props.setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
-          }
-      });
-  };
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
   const emptyRows =
@@ -236,8 +215,8 @@ export default function Tabela(props) {
                     })}
                     
                     <TableCell>
-                        <button onClick={() => handleAlterarUsuario(row.id)}>Alterar</button>
-                        <button onClick={() => handleAlternarStatus(row.id)}>
+                        <button onClick={() => props.handleAlterarUsuario(row.id)}>Alterar</button>
+                        <button onClick={() => props.handleAlternarStatus(row.id)}>
                           {row.status === true ? 'Inativar' : 'Ativar'}
                         </button>
                     </TableCell>

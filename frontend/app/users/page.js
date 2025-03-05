@@ -75,7 +75,7 @@ const TextModal = styled.div`
     }
 `
 
-export default function Users(){
+export default function Users() {
 
     const [usuarios, setUsuarios] = useState([
         { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo', grupo: 'admin' },
@@ -115,13 +115,13 @@ export default function Users(){
             label: 'Opções',
         },
     ];
-    
+
 
     const [hiddenModel, setHiddenModel] = useState(true);
     const [lastStatus, setlastStatus] = useState('Inativar');
     const [lastUserChange, setLastUserChange] = useState(null);
     const [idUpdateUser, setIdUpdateUser] = useState(null);
-    
+
     const [nomeFiltro, setNomeFiltro] = useState('');
     const [statusUsuario, setStatusUsuario] = useState('');
 
@@ -132,13 +132,13 @@ export default function Users(){
     }, [])
 
     useEffect(() => {
-        
+
         console.log(usuarios);
 
     }, [usuarios])
-    
+
     const atualizarTabela = async () => {
-        try{
+        try {
             const response = await listarUsuario();
             console.log(response);
 
@@ -151,7 +151,7 @@ export default function Users(){
                 grupo: user.grupo
             })));
 
-        }catch (error) {
+        } catch (error) {
             console.error('Erro ao buscar dados', error);
         }
     }
@@ -163,26 +163,25 @@ export default function Users(){
             return usuarios.map((usuario) => {
                 if (usuario.id === idUpdateUser) {
                     const novoStatus = usuario.status === true ? false : true;
-                    alert(usuario.status)
                     setHiddenModel(false);
                     setLastUserChange(usuario);
                     setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
-                    
+
                     // Chame a função para alterar o status no backend (API)
                     atualizarStatus(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
-    
+
                     // Cria uma cópia do usuário com o novo status
                     const updatedUser = { ...usuario, status: novoStatus };
-                    
+
                     setHiddenModel(true);
                     return updatedUser;
-                    
+
                 }
                 return usuario;
             });
         });
-        
-        
+
+
     }
 
     const handleCloseModel = () => {
@@ -200,35 +199,58 @@ export default function Users(){
     const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
         String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
     )
-    : usuarios);
+        : usuarios);
 
-    return(
+
+    const handleAlterarUsuario = async (id) => {
+        // Encontre o usuário
+        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
+        console.log(usuarios);
+
+        if (usuarioEncontrado) {
+            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`);
+        }
+    };
+
+    const handleAlternarStatus = (id) => {
+        setHiddenModel(false);
+        setIdUpdateUser(id);
+
+        usuarios.map((usuario) => {
+            if (usuario.id === id) {
+                setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
+            }
+        });
+    };
+
+    return (
         <Container>
             <h1>Lista de Usuário</h1>
 
-                <InputContainer>
-                    <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
-                    <input  type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro}/>
+            <InputContainer>
+                <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
+                <input type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro} />
 
-                    <a 
-                        onClick={handleOpenCadastrar}
-                        style={{
-                            display: "flex", 
-                            justifyContent: "center", 
-                            fontSize: 40, 
-                            color: "white", 
-                            cursor: "pointer"}}
-                    >+</a>
-                </InputContainer>
+                <a
+                    onClick={handleOpenCadastrar}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        fontSize: 40,
+                        color: "white",
+                        cursor: "pointer"
+                    }}
+                >+</a>
+            </InputContainer>
 
             <div>
                 <Modal isOpen={!hiddenModel}>
                     <TextModal>
-                        <h3>Você tem certeza que deseja  
-                        <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
-                        </span>
-                        <span> este usuário?</span></h3>
-                        
+                        <h3>Você tem certeza que deseja
+                            <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
+                            </span>
+                            <span> este usuário?</span></h3>
+
                         <div className="botoes">
                             <button onClick={handleCloseModel}>Cancelar</button>
                             <button onClick={handleConfirmModel}>Confirmar</button>
@@ -236,20 +258,17 @@ export default function Users(){
                     </TextModal>
                 </Modal>
                 <Tabela
-                    title="Produtos" 
-                    tableHeader={tableHeaderSetores} 
-                    rows={usuarios} 
+                    title="Produtos"
+                    tableHeader={tableHeaderSetores}
+                    rows={usuarios}
                     fontHeader={12}
                     visibilityDense={false}
                     disableHead={true}
                     disableDelete={true}
                     height={580}
-                    rowsPerPage={20}
-                    nomeStatusAlterado={lastStatus}
-                    setHiddenModel={setHiddenModel}
-                    setIdUpdateUser={setIdUpdateUser}
-                    setlastStatus={setlastStatus}
-                    atualizarTabela={atualizarTabela}
+                    rowsPerPage={15}
+                    handleAlterarUsuario={handleAlterarUsuario}
+                    handleAlternarStatus={handleAlternarStatus}
                 />
                 <table border="1">
                     <thead>
