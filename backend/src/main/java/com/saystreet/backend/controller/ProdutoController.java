@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,7 @@ public class ProdutoController {
             @RequestParam("produto") String produtoJson,
             @RequestParam("file") MultipartFile arquivo) throws JsonMappingException, JsonProcessingException {
         
-        // Convertendo o JSON para ProdutoModel
+        // Convertendo o JSON para ProdutoDTO
         ProdutoDto produto = new ObjectMapper().readValue(produtoJson, ProdutoDto.class);
 
         return ResponseEntity.ok(produtoService.create(produto, arquivo));
@@ -41,6 +42,18 @@ public class ProdutoController {
     public ResponseEntity<ProdutoModel> buscarProduto(@PathVariable Long id) {
         ProdutoModel produto = produtoService.buscarProdutoPorId(id);
         return ResponseEntity.ok(produto);
+    }
+
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<String> editarProduto(
+            @PathVariable Long id,
+            @RequestParam("produto") String produtoJson,
+            @RequestParam("file") MultipartFile arquivo) throws JsonProcessingException {
+
+        // Convertendo o JSON para ProdutoDTO        
+        ProdutoDto produtoDto = new ObjectMapper().readValue(produtoJson, ProdutoDto.class);
+
+        return ResponseEntity.ok(produtoService.editarProduto(id, produtoDto, arquivo));
     }
     
 }
