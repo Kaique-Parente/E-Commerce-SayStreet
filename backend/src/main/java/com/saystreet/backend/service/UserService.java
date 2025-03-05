@@ -95,7 +95,6 @@ public class UserService {
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(userAtt.getPassword());
         userModel.setPassword(encryptedPassword);
-        userModel.setStatus(userAtt.isStatus());
         userModel.setGrupo(userAtt.getGrupo());
 
         userRepository.save(userModel);
