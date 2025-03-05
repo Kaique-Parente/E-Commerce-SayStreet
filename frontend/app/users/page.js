@@ -91,22 +91,22 @@ export default function Users(){
             label: 'Nome',
         },
         {
-            id: 'categoria',
+            id: 'email',
             numeric: false,
             disablePadding: false,
-            label: 'Categoria',
+            label: 'Email',
         },
         {
-            id: 'unMedida',
+            id: 'status',
             numeric: false,
             disablePadding: false,
-            label: 'Unidade Medida',
+            label: 'Status',
         },
         {
-            id: 'sku',
-            numeric: true,
+            id: 'grupo',
+            numeric: false,
             disablePadding: false,
-            label: 'SKU Produto',
+            label: 'Grupo',
         },
     ];
     
@@ -130,7 +130,7 @@ export default function Users(){
                 cpf: user.cpf,
                 nome: user.nome,
                 email: user.email,
-                status: user.status,
+                status: user.status ? 'Ativo' : 'Inativo',
                 grupo: user.grupo
             })));
 
