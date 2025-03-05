@@ -9,11 +9,13 @@ import lombok.Setter;
 @Setter
 public class ProdutoDto {
     
-    private String produto_nome;
+    private String produto_name;
     
     private double produto_avaliacao;
 
     private Integer produto_qtd;
 
     private boolean status;
+
+    private String nome_imagem;
 }
