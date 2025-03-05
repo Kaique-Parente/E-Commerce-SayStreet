@@ -209,30 +209,6 @@ export default function Users(){
         setNomeFiltro(e.target.value);
     };
 
-    //* MUI */
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [resetSelect, setResetSelect] = useState(false);
-    
-    const handleSelected = (selected) =>{
-        const newRow = Array.isArray(selected)
-        ? usuarios.filter((row) => selected.includes(row.id))  // Seleção múltipla
-        : usuarios.filter((row) => row.id === selected);  // Seleção única
-
-        setSelectedRows(newRow);
-    }
-
-    const handleUpdateTable = () => {
-        setUpdateTable(!updateTable);
-
-        setUpdateTablePressionado(true);
-        setResetSelect(!resetSelect)
-
-        setTimeout(() => {
-            setUpdateTablePressionado(false);
-        }, 2000)
-    }
-
-
     console.log(usuarios);
     const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
         String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
@@ -281,9 +257,7 @@ export default function Users(){
                     disableHead={true}
                     disableDelete={true}
                     height={580}
-                    updateSelect={handleSelected}
-                    resetSelect={resetSelect}
-                    rowsPerPage={25}
+                    rowsPerPage={20}
                 />
                 <table border="1">
                     <thead>
