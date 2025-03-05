@@ -69,4 +69,42 @@ public class ProdutoService {
             throw new NoSuchElementException("Produto não encontrado!");
         }
     }
+
+    public String editarProduto(Long id, ProdutoDto produtoDto, MultipartFile arquivo) {
+        try {
+            Optional<ProdutoModel> produtoExistenteOpt = produtoRepository.findById(id);
+            
+            if (!produtoExistenteOpt.isPresent()) {
+                return "Produto não encontrado.";
+            }
+    
+            ProdutoModel produtoExistente = produtoExistenteOpt.get();
+            
+            produtoExistente.setProduto_name(produtoDto.getProduto_name());
+            produtoExistente.setProduto_avaliacao(produtoDto.getProduto_avaliacao());
+            produtoExistente.setProduto_qtd(produtoDto.getProduto_qtd());
+            produtoExistente.setProduto_status(produtoDto.isStatus());
+    
+            // Verifica se tem uma imagem para att
+            if (!arquivo.isEmpty()) {
+
+                File diretorio = new File(UPLOAD_DIR);
+                if (!diretorio.exists()) {
+                    diretorio.mkdirs();
+                }
+    
+                String nomeArquivo = UUID.randomUUID().toString() + "_" + arquivo.getOriginalFilename();
+                Path caminhoArquivo = Paths.get(UPLOAD_DIR, nomeArquivo);
+                Files.write(caminhoArquivo, arquivo.getBytes());
+
+                produtoExistente.setNome_imagem(nomeArquivo);
+            }
+            produtoRepository.save(produtoExistente);
+    
+            return "Produto atualizado com sucesso!";
+    
+        } catch (IOException e) {
+            return "Erro ao atualizar o produto: " + e.getMessage();
+        }
+    }
 }
