@@ -1,7 +1,6 @@
 package com.saystreet.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +36,14 @@ public class ProdutoModel {
     @Column(nullable = false)
     private boolean produto_status;
 
+    private String nome_imagem;
 
-    //criar um atributo para armazenar imagens:
+    public ProdutoModel(String name, double avali, Integer qtd, String img){
+        this.produto_name = name;
+        this.produto_avaliacao = avali;
+        this.produto_qtd = qtd;
+        this.nome_imagem = img;
+        this.produto_status = true;
+    }
 
 }
