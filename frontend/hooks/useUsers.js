@@ -70,10 +70,6 @@ export default function useUsers() {
         setHiddenModel(true);
     }
 
-    const handleOpenCadastrar = () => {
-        router.push('./cadastrar-user');
-    }
-
     const handleNomeFiltro = (e) => {
         setNomeFiltro(e.target.value);
     };
@@ -115,7 +111,6 @@ export default function useUsers() {
         atualizarTabela,
         handleConfirmModel,
         handleCloseModel,
-        handleOpenCadastrar,
         handleNomeFiltro,
         handleAlterarUsuario,
         handleAlternarStatus

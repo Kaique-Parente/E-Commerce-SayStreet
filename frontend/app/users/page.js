@@ -8,6 +8,7 @@ import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
 import useUsers from "@/hooks/useUsers";
+import Link from "next/link";
 
 const Container = styled.div`
     width: 100%;
@@ -94,7 +95,6 @@ export default function Users() {
         atualizarTabela,
         handleConfirmModel,
         handleCloseModel,
-        handleOpenCadastrar,
         handleNomeFiltro,
         handleAlterarUsuario,
         handleAlternarStatus
@@ -145,16 +145,16 @@ export default function Users() {
                 <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
                 <input type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro} />
 
-                <a
-                    onClick={handleOpenCadastrar}
+                <Link
+                    href={'./cadastrar-user'}
                     style={{
                         display: "flex",
                         justifyContent: "center",
                         fontSize: 40,
-                        color: "white",
+                        color: "black",
                         cursor: "pointer"
                     }}
-                >+</a>
+                >+</Link>
             </InputContainer>
 
             <div>
