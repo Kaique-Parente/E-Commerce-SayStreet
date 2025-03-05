@@ -7,6 +7,7 @@ import { useAlterar } from "@/hooks/useAlterar";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
+import useUsers from "@/hooks/useUsers";
 
 const Container = styled.div`
     width: 100%;
@@ -77,11 +78,31 @@ const TextModal = styled.div`
 
 export default function Users() {
 
-    const [usuarios, setUsuarios] = useState([
-        { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo', grupo: 'admin' },
-        { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado', grupo: 'admin' },
-        { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo', grupo: 'admin' }
-    ]);
+    const {
+        usuarios,
+        hiddenModel,
+        lastStatus,
+        lastUserChange,
+        idUpdateUser,
+        nomeFiltro,
+        setUsuarios,
+        setHiddenModel,
+        setlastStatus,
+        setLastUserChange,
+        setIdUpdateUser,
+        setNomeFiltro,
+        atualizarTabela,
+        handleConfirmModel,
+        handleCloseModel,
+        handleOpenCadastrar,
+        handleNomeFiltro,
+        handleAlterarUsuario,
+        handleAlternarStatus
+    } = useUsers();
+
+    useEffect(() => {
+        atualizarTabela();
+    }, [])
 
     const tableHeaderSetores = [
         {
@@ -115,113 +136,6 @@ export default function Users() {
             label: 'Opções',
         },
     ];
-
-
-    const [hiddenModel, setHiddenModel] = useState(true);
-    const [lastStatus, setlastStatus] = useState('Inativar');
-    const [lastUserChange, setLastUserChange] = useState(null);
-    const [idUpdateUser, setIdUpdateUser] = useState(null);
-
-    const [nomeFiltro, setNomeFiltro] = useState('');
-    const [statusUsuario, setStatusUsuario] = useState('');
-
-    const router = useRouter();
-
-    useEffect(() => {
-        atualizarTabela();
-    }, [])
-
-    useEffect(() => {
-
-        console.log(usuarios);
-
-    }, [usuarios])
-
-    const atualizarTabela = async () => {
-        try {
-            const response = await listarUsuario();
-            console.log(response);
-
-            setUsuarios(response.map(user => ({
-                id: user.id.timestamp,
-                cpf: user.cpf,
-                nome: user.nome,
-                email: user.email,
-                status: user.status,
-                grupo: user.grupo
-            })));
-
-        } catch (error) {
-            console.error('Erro ao buscar dados', error);
-        }
-    }
-
-    const handleConfirmModel = () => {
-        alert(`Você ${lastStatus === "Ativar" ? "Ativou" : "Inativou"} o usuário com sucesso!`);
-
-        setUsuarios((usuarios) => {
-            return usuarios.map((usuario) => {
-                if (usuario.id === idUpdateUser) {
-                    const novoStatus = usuario.status === true ? false : true;
-                    setHiddenModel(false);
-                    setLastUserChange(usuario);
-                    setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
-
-                    // Chame a função para alterar o status no backend (API)
-                    atualizarStatus(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
-
-                    // Cria uma cópia do usuário com o novo status
-                    const updatedUser = { ...usuario, status: novoStatus };
-
-                    setHiddenModel(true);
-                    return updatedUser;
-
-                }
-                return usuario;
-            });
-        });
-
-
-    }
-
-    const handleCloseModel = () => {
-        setHiddenModel(true);
-    }
-
-    const handleOpenCadastrar = () => {
-        router.push('./cadastrar-user');
-    }
-
-    const handleNomeFiltro = (e) => {
-        setNomeFiltro(e.target.value);
-    };
-
-    const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
-        String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
-    )
-        : usuarios);
-
-
-    const handleAlterarUsuario = async (id) => {
-        // Encontre o usuário
-        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
-        console.log(usuarios);
-
-        if (usuarioEncontrado) {
-            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`);
-        }
-    };
-
-    const handleAlternarStatus = (id) => {
-        setHiddenModel(false);
-        setIdUpdateUser(id);
-
-        usuarios.map((usuario) => {
-            if (usuario.id === id) {
-                setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
-            }
-        });
-    };
 
     return (
         <Container>
@@ -261,6 +175,7 @@ export default function Users() {
                     title="Produtos"
                     tableHeader={tableHeaderSetores}
                     rows={usuarios}
+                    nomeFiltro={nomeFiltro}
                     fontHeader={12}
                     visibilityDense={false}
                     disableHead={true}
@@ -270,36 +185,6 @@ export default function Users() {
                     handleAlterarUsuario={handleAlterarUsuario}
                     handleAlternarStatus={handleAlternarStatus}
                 />
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Grupo</th>
-                            <th>Alterar</th>
-                            <th>Habilitar/Desabilitar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usuariosFiltrados.map((usuario) => (
-                            <tr key={usuario.id}>
-                                <td>{usuario.nome}</td>
-                                <td>{usuario.email}</td>
-                                <td>{usuario.status ? "Ativo" : "Inativo"}</td>
-                                <td>{usuario.grupo}</td>
-                                <td>
-                                    <button>Alterar</button>
-                                </td>
-                                <td>
-                                    <button>
-                                        {usuario.status === true ? 'Desabilitar' : 'Habilitar'}
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
             </div>
         </Container>
     );

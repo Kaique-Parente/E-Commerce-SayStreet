@@ -154,16 +154,19 @@ export default function Tabela(props) {
     setDense(event.target.checked);
   };
 
-  // Avoid a layout jump when reaching the last page with empty props.rows.
+  const filteredRows = props.rows.filter(row =>
+    row.nome.toLowerCase().includes(props.nomeFiltro.toLowerCase())
+  );
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredRows.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      [...props.rows]
+      [...filteredRows]
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [props.rows, order, orderBy, page, rowsPerPage]
+    [filteredRows, order, orderBy, page, rowsPerPage]
   );
 
   let ids = props.tableHeader.map(element => element.id);
