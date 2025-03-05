@@ -108,6 +108,12 @@ export default function Users(){
             disablePadding: false,
             label: 'Grupo',
         },
+        {
+            id: 'opcoes',
+            numeric: false,
+            disablePadding: false,
+            label: 'Opções',
+        },
     ];
     
 
@@ -117,8 +123,19 @@ export default function Users(){
     const [idUpdateUser, setIdUpdateUser] = useState(null);
     
     const [nomeFiltro, setNomeFiltro] = useState('');
+    const [statusUsuario, setStatusUsuario] = useState('');
 
     const router = useRouter();
+
+    useEffect(() => {
+        atualizarTabela();
+    }, [])
+
+    useEffect(() => {
+        
+        console.log(usuarios);
+
+    }, [usuarios])
     
     const atualizarTabela = async () => {
         try{
@@ -130,7 +147,7 @@ export default function Users(){
                 cpf: user.cpf,
                 nome: user.nome,
                 email: user.email,
-                status: user.status ? 'Ativo' : 'Inativo',
+                status: user.status,
                 grupo: user.grupo
             })));
 
@@ -139,36 +156,6 @@ export default function Users(){
         }
     }
 
-    const alterarUsuario = async (id) => {
-        // Encontre o usuário
-        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
-    
-        if (usuarioEncontrado) {
-            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
-        }
-    };
-    useEffect(() => {
-        atualizarTabela();
-    }, [])
-
-    useEffect(() => {
-        
-        console.log(usuarios);
-
-    }, [usuarios])
-
-    const alternarStatus = (id) => {
-        setHiddenModel(false);
-        setIdUpdateUser(id);
-
-        usuarios.map((usuario) => {
-            if(usuario.id === id){
-                setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
-            }
-        });
-        
-    };
-
     const handleConfirmModel = () => {
         alert(`Você ${lastStatus === "Ativar" ? "Ativou" : "Inativou"} o usuário com sucesso!`);
 
@@ -176,6 +163,7 @@ export default function Users(){
             return usuarios.map((usuario) => {
                 if (usuario.id === idUpdateUser) {
                     const novoStatus = usuario.status === true ? false : true;
+                    alert(usuario.status)
                     setHiddenModel(false);
                     setLastUserChange(usuario);
                     setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
@@ -209,7 +197,6 @@ export default function Users(){
         setNomeFiltro(e.target.value);
     };
 
-    console.log(usuarios);
     const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
         String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
     )
@@ -258,6 +245,11 @@ export default function Users(){
                     disableDelete={true}
                     height={580}
                     rowsPerPage={20}
+                    nomeStatusAlterado={lastStatus}
+                    setHiddenModel={setHiddenModel}
+                    setIdUpdateUser={setIdUpdateUser}
+                    setlastStatus={setlastStatus}
+                    atualizarTabela={atualizarTabela}
                 />
                 <table border="1">
                     <thead>
@@ -278,10 +270,10 @@ export default function Users(){
                                 <td>{usuario.status ? "Ativo" : "Inativo"}</td>
                                 <td>{usuario.grupo}</td>
                                 <td>
-                                    <button onClick={() => alterarUsuario(usuario.id)}>Alterar</button>
+                                    <button>Alterar</button>
                                 </td>
                                 <td>
-                                    <button onClick={() => alternarStatus(usuario.id)}>
+                                    <button>
                                         {usuario.status === true ? 'Desabilitar' : 'Habilitar'}
                                     </button>
                                 </td>

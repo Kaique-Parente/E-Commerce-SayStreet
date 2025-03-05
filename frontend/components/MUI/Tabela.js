@@ -21,6 +21,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { useRouter } from 'next/navigation';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -132,6 +133,8 @@ export default function Tabela(props) {
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(props.rowsPerPage || 5);
 
+  const router = useRouter();
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -149,6 +152,27 @@ export default function Tabela(props) {
 
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
+  };
+  
+  const handleAlterarUsuario = async (id) => {
+      // Encontre o usuário
+      const usuarioEncontrado = props.rows.find((usuario) => usuario.id === id);
+      console.log(props.rows);
+  
+      if (usuarioEncontrado) {
+          router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
+      }
+  };
+
+  const handleAlternarStatus = (id) => {
+      props.setHiddenModel(false);
+      props.setIdUpdateUser(id);
+     
+      props.rows.map((usuario) => {
+          if(usuario.id === id){
+            props.setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
+          }
+      });
   };
 
   // Avoid a layout jump when reaching the last page with empty props.rows.
@@ -202,15 +226,21 @@ export default function Tabela(props) {
                   >
                     {Object.entries(row).map(([key, value], cellIndex) => {
                          if (ids.includes(key)) {
+
                           return (
                             <TableCell key={cellIndex} align="left">
-                              {value}
+                              {key === "status" ? (value === true ? "Ativo" : "Inativo") : value}
                             </TableCell>
                           );
                         }
                     })}
-                  
                     
+                    <TableCell>
+                        <button onClick={() => handleAlterarUsuario(row.id)}>Alterar</button>
+                        <button onClick={() => handleAlternarStatus(row.id)}>
+                          {row.status === true ? 'Inativar' : 'Ativar'}
+                        </button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
