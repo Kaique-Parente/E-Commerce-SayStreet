@@ -179,8 +179,15 @@ export default function CadastrarProduto() {
             {imageUrl && <img src={imageUrl} alt="Imagem do Produto" />}
         </div>
     );
-*/
+    */
 
+    //** Parte do vídeo */
+
+    const [hostedUrl, setHostedUrl] = useState([]);
+
+    useEffect(() => {
+        console.log(hostedUrl);
+    }, [hostedUrl])
 
     return (
         <div>
@@ -221,7 +228,11 @@ export default function CadastrarProduto() {
                                 onChange={handleFileChange}
                             />
 
-                            <CldUploadWidget uploadPreset="ml_default">
+                            <CldUploadWidget
+                                uploadPreset="ml_default"
+                                onSuccess={(results) => setHostedUrl((prevHostedUrl) =>
+                                    [...prevHostedUrl, results?.info?.url])}
+                            >
                                 {({ open }) => {
                                     return (
                                         <button type="button" onClick={() => open()}>
@@ -237,7 +248,19 @@ export default function CadastrarProduto() {
                         </ButtonsContainer>
                     </form>
 
-                    <Image src={'/pesquisar.png'} alt="Imagem do Produto" width={300} height={300} />
+                    {hostedUrl?.map((url, idx) => (
+                        <div key={idx}>
+                            <div>
+                                {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
+                                <button onClick={() => {
+                                    setHostedUrl((prevHostedUrl) => prevHostedUrl.filter((_, i) => i !== idx));
+                                }}>
+                                    XXX
+                                </button>
+                                <Image src={url} alt="Imagem do Produto" width={300} height={300} />
+                            </div>
+                        </div>
+                    ))}
                 </ContainerContent>
             </Container>
         </div >
