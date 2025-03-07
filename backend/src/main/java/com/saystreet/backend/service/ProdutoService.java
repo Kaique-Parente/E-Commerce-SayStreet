@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -125,5 +126,9 @@ public class ProdutoService {
         produtoRepository.save(produtoExistente);
 
         return "Quantidade do produto atualizada com sucesso!";
+    }
+
+    public List<ProdutoModel> listAll(){
+       return produtoRepository.findAll();
     }
 }
