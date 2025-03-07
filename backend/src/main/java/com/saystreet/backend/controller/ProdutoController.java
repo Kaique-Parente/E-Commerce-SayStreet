@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,8 +46,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<String> editarProduto(
-            @PathVariable Long id,
+    public ResponseEntity<String> editarProduto(@PathVariable Long id,
             @RequestParam("produto") String produtoJson,
             @RequestParam("file") MultipartFile arquivo) throws JsonProcessingException {
 
@@ -57,12 +57,14 @@ public class ProdutoController {
     }
     
     @PutMapping("/alterar-status/{id}")
-    public ResponseEntity<String> alterarStatus(
-            @PathVariable Long id,
-            @RequestParam boolean status) {
-
-        produtoService.alterarStatus(id, status);
-
-        return ResponseEntity.ok("Status do produto alterado com sucesso!");
+    public ResponseEntity<String> alterarStatus(@PathVariable Long id, @RequestParam boolean status) {
+        return ResponseEntity.ok(produtoService.alterarStatus(id, status));
     }
+
+    @PutMapping("/alterar-qtd/{id}")
+    public ResponseEntity<?> alterarQtd(@PathVariable Long id, @RequestBody ProdutoDto produtoDto){
+        return ResponseEntity.ok(produtoService.editarQTD(id, produtoDto));
+    }
+
+
 }
