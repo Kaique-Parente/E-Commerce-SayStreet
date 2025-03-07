@@ -2,6 +2,8 @@
 
 import Modal from "@/components/Modal";
 import { useCadastro } from "@/hooks/useCadastro"
+import { CheckBox } from "@mui/icons-material";
+import { Checkbox, FormControlLabel } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -122,18 +124,19 @@ export default function CadastrarProduto() {
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
 
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
+
+    const handleRemoveImage = (idx) => {
+        setHostedUrl((prevUrls) => prevUrls.filter((_, i) => i !== idx));
     };
 
     const handleUpload = async () => {
-        if (!file) {
+        if (!hostedFile) {
             alert('Selecione um arquivo primeiro.');
             return;
         }
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', hostedFile);
         formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET); // Usando a variável de ambiente
 
         // Enviar o arquivo para o Cloudinary
@@ -158,17 +161,20 @@ export default function CadastrarProduto() {
             imagemUrl: imageUrl,     // URL da imagem que vem do Cloudinary
         };
 
+        /*
         const response = await fetch('http://localhost:8080/api/produtos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(produtoData),
         });
+        
 
         if (response.ok) {
             alert('Produto salvo com a URL da imagem!');
         } else {
             alert('Erro ao salvar produto no backend.');
         }
+        */
     };
 
     /*
@@ -184,9 +190,11 @@ export default function CadastrarProduto() {
     //** Parte do vídeo */
 
     const [hostedUrl, setHostedUrl] = useState([]);
+    const [ImageUrlProduct, setImageUrlProduct] = useState([{}]);
 
     useEffect(() => {
         console.log(hostedUrl);
+        console.log(ImageUrlProduct);
     }, [hostedUrl])
 
     return (
@@ -230,8 +238,12 @@ export default function CadastrarProduto() {
 
                             <CldUploadWidget
                                 uploadPreset="ml_default"
-                                onSuccess={(results) => setHostedUrl((prevHostedUrl) =>
-                                    [...prevHostedUrl, results?.info?.url])}
+                                onSuccess={(results) => {
+                                    setHostedUrl((prevHostedUrl) => [
+                                        ...prevHostedUrl,
+                                        { url: results?.info?.url, principal: prevHostedUrl.length === 0 },
+                                    ]);
+                                }}
                             >
                                 {({ open }) => {
                                     return (
@@ -248,7 +260,7 @@ export default function CadastrarProduto() {
                         </ButtonsContainer>
                     </form>
 
-                    {hostedUrl?.map((url, idx) => (
+                    {hostedUrl?.map((obj, idx) => (
                         <div key={idx}>
                             <div>
                                 {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
@@ -257,7 +269,24 @@ export default function CadastrarProduto() {
                                 }}>
                                     XXX
                                 </button>
-                                <Image src={url} alt="Imagem do Produto" width={300} height={300} />
+
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={obj.principal}
+                                            onChange={() => {
+                                                setHostedUrl((prevHostedUrl) =>
+                                                    prevHostedUrl.map((item, i) => ({
+                                                        ...item,
+                                                        principal: i === idx, // Define `true` apenas para o item clicado
+                                                    }))
+                                                );
+                                            }}
+                                        />
+                                    }
+                                    label="Produto Principal"
+                                />
+                                <Image src={obj.url} alt="Imagem do Produto" width={300} height={300} />
                             </div>
                         </div>
                     ))}
