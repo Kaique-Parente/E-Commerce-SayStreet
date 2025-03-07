@@ -34,7 +34,6 @@ export function useAlterar(){
                 if (usuario) {
                     const idBanco = await encontrarIdBanco(cpfUrl);
                     setIdBanco(idBanco);
-                    console.log(idBanco);
                     // Preenche os dados nos hooks com os dados retornados
                     setNome(usuario.nome || '');
                     setEmail(usuario.email || '');

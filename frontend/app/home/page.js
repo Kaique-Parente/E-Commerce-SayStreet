@@ -73,7 +73,7 @@ export default function Home() {
                 <h1>Principal</h1>
 
                 <LinksContainer>
-                    {setor === 'adm' ? (
+                    {setor === 'admin' ? (
                         <>
                             <Link href="./users" style={{cursor: "pointer"}}>
                                 <span>Listar Usuários</span>

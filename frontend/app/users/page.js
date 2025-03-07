@@ -6,6 +6,10 @@ import { atualizarStatus, listarUsuario } from "@/services/UserService";
 import { useAlterar } from "@/hooks/useAlterar";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
+import Tabela from "@/components/MUI/Tabela";
+import useUsers from "@/hooks/useUsers";
+import Link from "next/link";
+import Image from "next/image";
 
 const Container = styled.div`
     width: 100%;
@@ -21,25 +25,59 @@ const Container = styled.div`
     gap: 30px;
 `
 
+const ContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
 const InputContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: 5px;
 
     height: 20px;
-    margin-bottom: 20px;
+    margin: 20px 0px 35px 0px;
 
-    button{
-        margin-left: 5px;
-    }
+    font-size: 18px;
+`
+const CreateContainer = styled.div`
+   a{
+        background-color: #3B8C6E;
 
-    a{
-        width: 40px;
-        height: 40px;
-        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        
+        border-radius: 4px;
+
+   }
+
+   a:hover {
+        background-color: #2F7359; 
     }
 `
+
+const SearchContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    position: relative;
+
+    input{
+        border: 0.5px solid black;
+        border-radius: 4px;
+
+        width: 300px;
+        padding: 8px 8px 8px 35px;
+    }
+`
+
+const SearchIcon = styled(Image)`
+  position: absolute;
+  left: 10px;
+`;
 
 const TextModal = styled.div`
     margin: 50px;
@@ -74,183 +112,128 @@ const TextModal = styled.div`
     }
 `
 
-export default function Users(){
+export default function Users() {
 
-    const [usuarios, setUsuarios] = useState([
-        { id: 1, nome: 'João', email: 'joao@example.com', status: 'Ativo', grupo: 'admin' },
-        { id: 2, nome: 'Maria', email: 'maria@example.com', status: 'Desativado', grupo: 'admin' },
-        { id: 3, nome: 'Carlos', email: 'carlos@example.com', status: 'Ativo', grupo: 'admin' }
-    ]);
+    const {
+        usuarios,
+        hiddenModel,
+        lastStatus,
+        lastUserChange,
+        idUpdateUser,
+        nomeFiltro,
+        setUsuarios,
+        setHiddenModel,
+        setlastStatus,
+        setLastUserChange,
+        setIdUpdateUser,
+        setNomeFiltro,
+        atualizarTabela,
+        handleConfirmModel,
+        handleCloseModel,
+        handleNomeFiltro,
+        handleAlterarUsuario,
+        handleAlternarStatus
+    } = useUsers();
 
-    const [hiddenModel, setHiddenModel] = useState(true);
-    const [lastStatus, setlastStatus] = useState('Inativar');
-    const [lastUserChange, setLastUserChange] = useState(null);
-    const [idUpdateUser, setIdUpdateUser] = useState(null);
-    
-    const [nomeFiltro, setNomeFiltro] = useState('');
-
-    const router = useRouter();
-    
-    const atualizarTabela = async () => {
-        try{
-            const response = await listarUsuario();
-            console.log(response);
-
-            setUsuarios(response.map(user => ({
-                id: user.id.timestamp,
-                cpf: user.cpf,
-                nome: user.nome,
-                email: user.email,
-                status: user.status,
-                grupo: user.grupo
-            })));
-
-        }catch (error) {
-            console.error('Erro ao buscar dados', error);
-        }
-    }
-
-    const alterarUsuario = async (id) => {
-        // Encontre o usuário
-        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
-    
-        if (usuarioEncontrado) {
-            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`); 
-        }
-    };
     useEffect(() => {
         atualizarTabela();
     }, [])
 
-    useEffect(() => {
-        
-        console.log(usuarios);
+    const tableHeaderSetores = [
+        {
+            id: 'nome',
+            numeric: false,
+            disablePadding: false,
+            label: 'Nome',
+        },
+        {
+            id: 'email',
+            numeric: false,
+            disablePadding: false,
+            label: 'Email',
+        },
+        {
+            id: 'status',
+            numeric: false,
+            disablePadding: false,
+            label: 'Status',
+        },
+        {
+            id: 'grupo',
+            numeric: false,
+            disablePadding: false,
+            label: 'Grupo',
+        },
+        {
+            id: 'opcoes',
+            numeric: false,
+            disablePadding: false,
+            label: 'Opções',
+        },
+    ];
 
-    }, [usuarios])
-
-    const alternarStatus = (id) => {
-        setHiddenModel(false);
-        setIdUpdateUser(id);
-
-        usuarios.map((usuario) => {
-            if(usuario.id === id){
-                setlastStatus(usuario.status === true ? "Inativar" : "Ativar");
-            }
-        });
-        
-    };
-
-    const handleConfirmModel = () => {
-        alert(`Você ${lastStatus === "Ativar" ? "Ativou" : "Inativou"} o usuário com sucesso!`);
-
-        setUsuarios((usuarios) => {
-            return usuarios.map((usuario) => {
-                if (usuario.id === idUpdateUser) {
-                    const novoStatus = usuario.status === true ? false : true;
-                    setHiddenModel(false);
-                    setLastUserChange(usuario);
-                    setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
-                    
-                    // Chame a função para alterar o status no backend (API)
-                    atualizarStatus(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
-    
-                    // Cria uma cópia do usuário com o novo status
-                    const updatedUser = { ...usuario, status: novoStatus };
-                    
-                    setHiddenModel(true);
-                    return updatedUser;
-                    
-                }
-                return usuario;
-            });
-        });
-        
-        
-    }
-
-    const handleCloseModel = () => {
-        setHiddenModel(true);
-    }
-
-    const handleOpenCadastrar = () => {
-        router.push('./cadastrar-user');
-    }
-
-    const handleNomeFiltro = (e) => {
-        setNomeFiltro(e.target.value);
-    };
-
-
-    console.log(usuarios);
-    const usuariosFiltrados = (nomeFiltro ? usuarios.filter((usuario) =>
-        String(usuario.nome).toLowerCase().includes(nomeFiltro.toLowerCase()),
-    )
-    : usuarios);
-
-    return(
+    return (
         <Container>
-            <h1>Lista de Usuário</h1>
+            <ContentContainer>
+                <div>
+                    <h1>Lista de Usuário</h1>
+                </div>
 
                 <InputContainer>
-                    <label className="label" htmlFor="nome">Pesquisar por Nome:</label>
-                    <input  type="text" id="nome" value={nomeFiltro} onChange={handleNomeFiltro}/>
+                    <CreateContainer>
+                        <Link
+                            href={'./cadastrar-user'}
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "10px",
 
-                    <a 
-                        onClick={handleOpenCadastrar}
-                        style={{
-                            display: "flex", 
-                            justifyContent: "center", 
-                            fontSize: 40, 
-                            color: "white", 
-                            cursor: "pointer"}}
-                    >+</a>
+                                cursor: "pointer"
+                            }}
+                        >
+                            <Image width={14} height={14} alt='Um icone de mais' src="/mais.png" />
+                            <span>Novo usuário</span>
+                        </Link>
+                    </CreateContainer>
+
+                    <SearchContainer>
+                        <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/pesquisar.png" />
+                        <input type="text" id="nome" placeholder="Pesquisar por Nome:" 
+                            value={nomeFiltro} onChange={handleNomeFiltro} 
+                        />
+                    </SearchContainer>
                 </InputContainer>
 
-            <div>
-                <Modal isOpen={!hiddenModel}>
-                    <TextModal>
-                        <h3>Você tem certeza que deseja  
-                        <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
-                        </span>
-                        <span> este usuário?</span></h3>
-                        
-                        <div className="botoes">
-                            <button onClick={handleCloseModel}>Cancelar</button>
-                            <button onClick={handleConfirmModel}>Confirmar</button>
-                        </div>
-                    </TextModal>
-                </Modal>
-                <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Grupo</th>
-                            <th>Alterar</th>
-                            <th>Habilitar/Desabilitar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usuariosFiltrados.map((usuario) => (
-                            <tr key={usuario.id}>
-                                <td>{usuario.nome}</td>
-                                <td>{usuario.email}</td>
-                                <td>{usuario.status ? "Ativo" : "Inativo"}</td>
-                                <td>{usuario.grupo}</td>
-                                <td>
-                                    <button onClick={() => alterarUsuario(usuario.id)}>Alterar</button>
-                                </td>
-                                <td>
-                                    <button onClick={() => alternarStatus(usuario.id)}>
-                                        {usuario.status === true ? 'Desabilitar' : 'Habilitar'}
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                <div>
+                    <Modal isOpen={!hiddenModel}>
+                        <TextModal>
+                            <h3>Você tem certeza que deseja
+                                <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
+                                </span>
+                                <span> este usuário?</span></h3>
+
+                            <div className="botoes">
+                                <button onClick={handleCloseModel}>Cancelar</button>
+                                <button onClick={handleConfirmModel}>Confirmar</button>
+                            </div>
+                        </TextModal>
+                    </Modal>
+                    <Tabela
+                        title="Produtos"
+                        tableHeader={tableHeaderSetores}
+                        rows={usuarios}
+                        nomeFiltro={nomeFiltro}
+                        fontHeader={12}
+                        visibilityDense={false}
+                        disableHead={true}
+                        disableDelete={true}
+                        height={580}
+                        rowsPerPage={15}
+                        handleAlterarUsuario={handleAlterarUsuario}
+                        handleAlternarStatus={handleAlternarStatus}
+                    />
+                </div>
+            </ContentContainer>
         </Container>
     );
 }
