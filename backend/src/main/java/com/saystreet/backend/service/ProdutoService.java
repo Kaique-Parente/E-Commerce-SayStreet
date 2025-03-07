@@ -108,12 +108,22 @@ public class ProdutoService {
         }
     }
 
-    public void alterarStatus(Long id, boolean status){
+    public String alterarStatus(Long id, boolean status){
 
         ProdutoModel produtoExistente = buscarProdutoPorId(id);
         
         produtoExistente.setProduto_status(status);
-        
         produtoRepository.save(produtoExistente);
+
+        return "Status do produto alterado com sucesso!";
+    }
+
+    public String editarQTD (Long id, ProdutoDto produtoDto){
+        
+        ProdutoModel produtoExistente = buscarProdutoPorId(id);
+        produtoExistente.setProduto_qtd(produtoDto.getProduto_qtd());
+        produtoRepository.save(produtoExistente);
+
+        return "Quantidade do produto atualizada com sucesso!";
     }
 }
