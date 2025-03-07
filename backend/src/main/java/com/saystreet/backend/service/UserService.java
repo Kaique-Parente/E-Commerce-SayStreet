@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +74,7 @@ public class UserService {
     }
 
 
-    public String editar(ObjectId id, UserDto userAtt) throws Exception {
+    public String editar(Long id, UserDto userAtt) throws Exception {
 
         Optional<UserModel> userOptional = userRepository.findById(id);
 
@@ -120,6 +119,7 @@ public class UserService {
 
     public String encontrarId(String Cpf) {
         Optional<UserModel> user = userRepository.findByCpf(Cpf);
+        
         if (user.isPresent()) {
             String id = user.get().getId().toString();
             return id;
