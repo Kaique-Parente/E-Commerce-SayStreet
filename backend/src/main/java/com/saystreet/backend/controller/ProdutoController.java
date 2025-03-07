@@ -1,5 +1,7 @@
 package com.saystreet.backend.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -65,6 +67,12 @@ public class ProdutoController {
     public ResponseEntity<?> alterarQtd(@PathVariable Long id, @RequestBody ProdutoDto produtoDto){
         return ResponseEntity.ok(produtoService.editarQTD(id, produtoDto));
     }
+
+    @GetMapping("/listar")
+    public List<ProdutoModel> listar() {
+        return produtoService.listAll();
+    }
+    
 
 
 }
