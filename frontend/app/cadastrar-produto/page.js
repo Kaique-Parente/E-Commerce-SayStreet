@@ -265,8 +265,19 @@ export default function CadastrarProduto() {
                             <div>
                                 {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
                                 <button onClick={() => {
-                                    setHostedUrl((prevHostedUrl) => prevHostedUrl.filter((_, i) => i !== idx));
-                                }}>
+                                    setHostedUrl((prevHostedUrl) => {
+                                        // Remove o item clicado
+                                        const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
+
+                                        // Se o item removido era o principal, define o primeiro como principal (se existir)
+                                        if (obj.principal && updatedList.length > 0) {
+                                            updatedList[0] = { ...updatedList[0], principal: true };
+                                        }
+
+                                        return updatedList;
+                                    });
+                                }}
+                                >
                                     XXX
                                 </button>
 
