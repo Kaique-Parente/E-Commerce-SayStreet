@@ -1,6 +1,7 @@
 'use client'
 
 import Modal from "@/components/Modal";
+import { useCadastroProduto } from "@/hooks/useCadastroProduto";
 import { useCadastroUser } from "@/hooks/useCadastroUser"
 import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
@@ -106,41 +107,22 @@ const ButtonsContainer = styled.div`
 
 export default function CadastrarProduto() {
 
-    const [hostedUrl, setHostedUrl] = useState([]);
-    const [nome, setNome] = useState("");
-    const [preco, setPreco] = useState(0.0);
-    const [estoque, setEstoque] = useState(0);
-    const [descricao, setDescricao] = useState("");
-    const [avaliacao, setAvaliacao] = useState(0.5);
-
-    const handleNomeChange = (event) => setNome(event.target.value);
-    const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value));
-    const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value));
-    const handleDescricaoChange = (event) => setDescricao(event.target.value);
-    const handleAvaliacaoChange = (event) => setAvaliacao(parseFloat(event.target.value));
-
-
-    const handleSuccessFile = (results) => {
-        setHostedUrl((prevHostedUrl) => [
-            ...prevHostedUrl,
-            { url: results?.info?.url, principal: prevHostedUrl.length === 0 },
-        ]);
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const produto = {
-            produto_nome: nome,
-            produto_preco: preco,
-            produto_estoque: estoque,
-            produto_descricao: descricao,
-            produto_avaliacao: avaliacao,
-            produto_imagens: hostedUrl
-        }
-
-        console.log(produto);
-    }
+    const {
+        hostedUrl,
+        nome,
+        preco,
+        estoque,
+        descricao,
+        avaliacao,
+        setHostedUrl,
+        handleNomeChange,
+        handlePrecoChange,
+        handleEstoqueChange,
+        handleDescricaoChange,
+        handleAvaliacaoChange,
+        handleSuccessFile,
+        handleSubmit,
+    } = useCadastroProduto();
 
     useEffect(() => {
         console.log(hostedUrl);
