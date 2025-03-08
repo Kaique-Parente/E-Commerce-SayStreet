@@ -1,134 +1,153 @@
 package com.saystreet.backend.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.saystreet.backend.dto.ImageDto;
 import com.saystreet.backend.dto.ProdutoDto;
+import com.saystreet.backend.models.ImageModel;
 import com.saystreet.backend.models.ProdutoModel;
 import com.saystreet.backend.repository.ProdutoRepository;
 
 @Service
 public class ProdutoService {
-    
-    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads";
+
+    // private static final String UPLOAD_DIR = System.getProperty("user.dir") +
+    // "/uploads";
 
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public String create(ProdutoDto produtoDto, MultipartFile arquivo) {
+    // Método para criar um produto
+    public String create(ProdutoDto produtoDto) {
         try {
-            if (arquivo.isEmpty()) {
-                return "Arquivo não pode estar vazio.";
+            ProdutoModel produto = ProdutoModel.builder()
+                    .produtoName(produtoDto.getProduto_name())
+                    .produtoAvaliacao(produtoDto.getProduto_avaliacao())
+                    .produtoQtd(produtoDto.getProduto_qtd())
+                    .produtoStatus(true)
+                    .build();
+
+            List<ImageModel> imagens = new ArrayList<>();
+            boolean temPrincipal = false;
+
+            if (produtoDto.getUrlImagens() != null && !produtoDto.getUrlImagens().isEmpty()) {
+                for (ImageDto imgDTO : produtoDto.getUrlImagens()) {
+                    boolean isPrincipal = imgDTO.isPrincipal();
+
+                    if (isPrincipal) {
+                        if (temPrincipal) {
+                            throw new IllegalArgumentException("Só pode haver uma imagem principal.");
+                        }
+                        temPrincipal = true;
+                    }
+
+                    imagens.add(ImageModel.builder()
+                            .url(imgDTO.getUrl())
+                            .produto(produto)
+                            .principal(isPrincipal)
+                            .build());
+                }
             }
 
-            // Criar diretório se não existir
-            File diretorio = new File(UPLOAD_DIR);
-            if (!diretorio.exists()) {
-                diretorio.mkdirs();
+            // Caso nenhuma imagem tenha sido marcada como principal, a primeira será
+            // definida como true
+            if (!temPrincipal && !imagens.isEmpty()) {
+                imagens.get(0).setPrincipal(true);
             }
 
-            // Criar um nome único para o arquivo
-            String nomeArquivo = UUID.randomUUID().toString() + "_" + arquivo.getOriginalFilename();
-            Path caminhoArquivo = Paths.get(UPLOAD_DIR, nomeArquivo);
-            Files.write(caminhoArquivo, arquivo.getBytes());
+            produto.setImagens(imagens);
+            produtoRepository.save(produto);
 
-
-            ProdutoModel produtoSalvo = new ProdutoModel(produtoDto.getProduto_name(), 
-            produtoDto.getProduto_avaliacao(), produtoDto.getProduto_qtd(), nomeArquivo);
-            produtoRepository.save(produtoSalvo);
-
-            return "Produto salvo com sucesso!";
-
-        } catch (IOException e) {
-            return "Erro ao salvar arquivo: " + e.getMessage();
+            return "Produto criado com sucesso";
+        } catch (Exception e) {
+            return "Erro ao salvar produto: " + e.getMessage();
         }
     }
 
+    // Método para buscar um produto pelo ID
     public ProdutoModel buscarProdutoPorId(Long id) {
         Optional<ProdutoModel> produtoOpt = produtoRepository.findById(id);
-        
+
         if (produtoOpt.isPresent()) {
             ProdutoModel produto = produtoOpt.get();
-    
-            // Definir o caminho completo da imagem
-            String caminhoImagem = UPLOAD_DIR + "/" + produto.getNome_imagem();
-            produto.setNome_imagem(caminhoImagem);
-    
             return produto;
-        } else {
-            throw new NoSuchElementException("Produto não encontrado!");
         }
+        throw new NoSuchElementException("Produto não encontrado!");
     }
 
-    public String editarProduto(Long id, ProdutoDto produtoDto, MultipartFile arquivo) {
+    // Méotodo para editar um produto, verificando se existe um produto com o ID
+    // informado
+    public String editarProduto(Long id, ProdutoDto produtoDto) {
         try {
-            Optional<ProdutoModel> produtoExistenteOpt = produtoRepository.findById(id);
-            
-            if (!produtoExistenteOpt.isPresent()) {
-                return "Produto não encontrado.";
-            }
-    
-            ProdutoModel produtoExistente = produtoExistenteOpt.get();
-            
-            produtoExistente.setProduto_name(produtoDto.getProduto_name());
-            produtoExistente.setProduto_avaliacao(produtoDto.getProduto_avaliacao());
-            produtoExistente.setProduto_qtd(produtoDto.getProduto_qtd());
-            produtoExistente.setProduto_status(produtoDto.isStatus());
-    
-            // Verifica se tem uma imagem para att
-            if (!arquivo.isEmpty()) {
+            ProdutoModel produtoExistente = buscarProdutoPorId(id);
 
-                File diretorio = new File(UPLOAD_DIR);
-                if (!diretorio.exists()) {
-                    diretorio.mkdirs();
+            produtoExistente.setProdutoName(produtoDto.getProduto_name());
+            produtoExistente.setProdutoAvaliacao(produtoDto.getProduto_avaliacao());
+            produtoExistente.setProdutoQtd(produtoDto.getProduto_qtd());
+            produtoExistente.setProdutoStatus(produtoDto.isStatus());
+
+            List<ImageModel> imagens = new ArrayList<>();
+            boolean temPrincipal = false;
+
+            // Atualiza as imagens do produto
+            if (produtoDto.getUrlImagens() != null && !produtoDto.getUrlImagens().isEmpty()) {
+                for (ImageDto imgDTO : produtoDto.getUrlImagens()) {
+                    boolean isPrincipal = imgDTO.isPrincipal();
+
+                    if (isPrincipal) {
+                        if (temPrincipal) {
+                            throw new IllegalArgumentException("Só pode haver uma imagem principal.");
+                        }
+                        temPrincipal = true;
+                    }
+
+                    imagens.add(ImageModel.builder()
+                            .url(imgDTO.getUrl())
+                            .produto(produtoExistente)
+                            .principal(isPrincipal)
+                            .build());
                 }
-    
-                String nomeArquivo = UUID.randomUUID().toString() + "_" + arquivo.getOriginalFilename();
-                Path caminhoArquivo = Paths.get(UPLOAD_DIR, nomeArquivo);
-                Files.write(caminhoArquivo, arquivo.getBytes());
-
-                produtoExistente.setNome_imagem(nomeArquivo);
             }
             produtoRepository.save(produtoExistente);
-    
+
             return "Produto atualizado com sucesso!";
-    
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             return "Erro ao atualizar o produto: " + e.getMessage();
         }
     }
 
-    public String alterarStatus(Long id, boolean status){
+    // Método para alterar o status do produto, verificando se existe um produto com
+    // o ID informado
+    public String alterarStatus(Long id, boolean status) {
 
         ProdutoModel produtoExistente = buscarProdutoPorId(id);
-        
-        produtoExistente.setProduto_status(status);
+
+        produtoExistente.setProdutoStatus(status);
         produtoRepository.save(produtoExistente);
 
         return "Status do produto alterado com sucesso!";
     }
 
-    public String editarQTD (Long id, ProdutoDto produtoDto){
-        
+    // Método para editar a quantidade do produto, verificando se existe um produto
+    // com ID informado
+    public String editarQTD(Long id, ProdutoDto produtoDto) {
+
         ProdutoModel produtoExistente = buscarProdutoPorId(id);
-        produtoExistente.setProduto_qtd(produtoDto.getProduto_qtd());
+        produtoExistente.setProdutoQtd(produtoDto.getProduto_qtd());
         produtoRepository.save(produtoExistente);
 
         return "Quantidade do produto atualizada com sucesso!";
     }
 
-    public List<ProdutoModel> listAll(){
-       return produtoRepository.findAll();
+    // Método para listar todos os produtos
+    public List<ProdutoModel> listAll() {
+        return produtoRepository.findAll();
     }
 }
