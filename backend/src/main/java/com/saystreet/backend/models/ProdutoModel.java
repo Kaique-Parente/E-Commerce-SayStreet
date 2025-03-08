@@ -1,49 +1,62 @@
 package com.saystreet.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table (name = "produto")
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class ProdutoModel {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long produto_id;
+    @Column(name = "produto_id")
+    private Long produtoId;
 
-    @Column(nullable = false, length = 200)
-    private String produto_name;
+    @Column(name = "produto_name", nullable = false, length = 200)
+    private String produtoName;
     
-    @Column(nullable = false)
+    @Column(name = "produto_avali", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Double produto_avaliacao;
+    private Double produtoAvaliacao;
 
-    @Column(nullable = false)
-    private Integer produto_qtd;
+    @Column(name = "produto_qtd", nullable = false)
+    private Integer produtoQtd;
 
-    @Column(nullable = false)
-    private boolean produto_status;
+    @Column(name = "produto_Status", nullable = false)
+    private boolean produtoStatus;
 
-    private String nome_imagem;
-
-    public ProdutoModel(String name, double avali, Integer qtd, String img){
-        this.produto_name = name;
-        this.produto_avaliacao = avali;
-        this.produto_qtd = qtd;
-        this.nome_imagem = img;
-        this.produto_status = true;
+    @OneToMany(mappedBy = "produto", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Setter(value = AccessLevel.NONE)
+    @Builder.Default
+    @JsonManagedReference
+    private List<ImageModel> imagens = new ArrayList<>();
+    
+    public void setImagens(List<ImageModel> imagens) {
+        imagens.forEach(imagem -> imagem.setProduto(this));
+        this.imagens = imagens;
     }
-
 }
