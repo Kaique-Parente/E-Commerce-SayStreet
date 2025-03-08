@@ -1,6 +1,6 @@
 'use client'
 
-import { useCadastro } from "@/hooks/useCadastro"
+import { useCadastroUser } from "@/hooks/useCadastroUser"
 import { useEffect } from "react";
 import styled from "styled-components";
 
@@ -73,7 +73,7 @@ const InputContainer = styled.div`
 `
 
 export default function CadastrarUser() {
-    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastro();
+    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastroUser();
 
     useEffect(() => {
         if (erro) {

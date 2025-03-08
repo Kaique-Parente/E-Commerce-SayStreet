@@ -1,7 +1,7 @@
 'use client'
 
 import Modal from "@/components/Modal";
-import { useCadastro } from "@/hooks/useCadastro"
+import { useCadastroUser } from "@/hooks/useCadastroUser"
 import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
@@ -104,103 +104,9 @@ const ButtonsContainer = styled.div`
     }
 `
 
-const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    console.log(file);
-}
-
 export default function CadastrarProduto() {
-    //const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastro();
-
-    const [isOpen, setIsOpen] = useState(false);
-    const fileInputRef = useRef(null);
-
-    const handleCloseModel = () => {
-        setIsOpen(false);
-    }
-
-    /*
-    useEffect(() => {
-        if (erro) {
-            alert(erro.toString());
-        }
-    }, [erro])
-    */
-
-    const [file, setFile] = useState(null);
-    const [imageUrl, setImageUrl] = useState(null);
-
-
-    const handleRemoveImage = (idx) => {
-        setHostedUrl((prevUrls) => prevUrls.filter((_, i) => i !== idx));
-    };
-
-    const handleUpload = async () => {
-        if (!hostedFile) {
-            alert('Selecione um arquivo primeiro.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', hostedFile);
-        formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET); // Usando a variável de ambiente
-
-        // Enviar o arquivo para o Cloudinary
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            setImageUrl(data.secure_url); // Recebe a URL da imagem do Cloudinary
-            alert('Upload realizado com sucesso!');
-            saveImageUrl(data.secure_url);  // Envia a URL para o backend para salvar no banco
-        } else {
-            alert('Erro ao fazer upload.');
-        }
-    };
-
-    const saveImageUrl = async (imageUrl) => {
-        const produtoData = {
-            nome: 'Produto exemplo', // Exemplo de nome do produto
-            imagemUrl: imageUrl,     // URL da imagem que vem do Cloudinary
-        };
-
-        /*
-        const response = await fetch('http://localhost:8080/api/produtos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(produtoData),
-        });
-        
-
-        if (response.ok) {
-            alert('Produto salvo com a URL da imagem!');
-        } else {
-            alert('Erro ao salvar produto no backend.');
-        }
-        */
-    };
-
-    /*
-    return (
-        <div>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload}>Enviar para Cloudinary</button>
-            {imageUrl && <img src={imageUrl} alt="Imagem do Produto" />}
-        </div>
-    );
-    */
-
-    //** Parte do vídeo */
 
     const [hostedUrl, setHostedUrl] = useState([]);
-
-    useEffect(() => {
-        console.log(hostedUrl);
-    }, [hostedUrl])
-
     const [nome, setNome] = useState("");
     const [preco, setPreco] = useState(0.0);
     const [estoque, setEstoque] = useState(0);
@@ -208,14 +114,18 @@ export default function CadastrarProduto() {
     const [avaliacao, setAvaliacao] = useState(0.5);
 
     const handleNomeChange = (event) => setNome(event.target.value);
-    const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
-    const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value) || 0);
+    const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value));
+    const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value));
     const handleDescricaoChange = (event) => setDescricao(event.target.value);
-    const handleAvaliacaoChange = (event) => setAvaliacao(parseFloat(event.target.value) || 0);
+    const handleAvaliacaoChange = (event) => setAvaliacao(parseFloat(event.target.value));
 
-    useEffect(() => {
-        console.log('Avaliação: ' + avaliacao);
-    }, [avaliacao])
+
+    const handleSuccessFile = (results) => {
+        setHostedUrl((prevHostedUrl) => [
+            ...prevHostedUrl,
+            { url: results?.info?.url, principal: prevHostedUrl.length === 0 },
+        ]);
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -231,6 +141,10 @@ export default function CadastrarProduto() {
 
         console.log(produto);
     }
+
+    useEffect(() => {
+        console.log(hostedUrl);
+    }, [hostedUrl])
 
     const router = useRouter();
 
@@ -275,20 +189,9 @@ export default function CadastrarProduto() {
                         </InputContainer>
 
                         <ButtonsContainer>
-                            <input
-                                style={{ position: "absolute", right: "-99999px" }}
-                                type="file"
-                                onChange={handleFileChange}
-                            />
-
                             <CldUploadWidget
                                 uploadPreset="ml_default"
-                                onSuccess={(results) => {
-                                    setHostedUrl((prevHostedUrl) => [
-                                        ...prevHostedUrl,
-                                        { url: results?.info?.url, principal: prevHostedUrl.length === 0 },
-                                    ]);
-                                }}
+                                onSuccess={handleSuccessFile}
                             >
                                 {({ open }) => {
                                     return (

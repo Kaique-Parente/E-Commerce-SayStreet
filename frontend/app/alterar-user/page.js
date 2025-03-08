@@ -1,7 +1,7 @@
 'use client'
 
 import { useAlterar } from "@/hooks/useAlterar";
-import { useCadastro } from "@/hooks/useCadastro"
+import { useCadastroUser } from "@/hooks/useCadastroUser"
 import { useEffect } from "react";
 import styled from "styled-components";
 

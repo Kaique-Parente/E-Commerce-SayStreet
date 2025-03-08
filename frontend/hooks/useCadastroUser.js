@@ -4,7 +4,7 @@ import { cadastrarUsuario } from "@/services/UserService";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 
-export function useCadastro(){
+export function useCadastroUser(){
 
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
