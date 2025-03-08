@@ -1,5 +1,8 @@
 package com.saystreet.backend.dto;
 
+import java.util.List;
+
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,5 +20,5 @@ public class ProdutoDto {
 
     private boolean status;
 
-    private String nome_imagem;
+    private List<ImageDto> urlImagens;
 }
