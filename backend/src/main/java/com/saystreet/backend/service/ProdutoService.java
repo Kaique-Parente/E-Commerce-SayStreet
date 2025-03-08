@@ -27,17 +27,19 @@ public class ProdutoService {
     public String create(ProdutoDto produtoDto) {
         try {
             ProdutoModel produto = ProdutoModel.builder()
-                    .produtoName(produtoDto.getProduto_name())
-                    .produtoAvaliacao(produtoDto.getProduto_avaliacao())
-                    .produtoQtd(produtoDto.getProduto_qtd())
+                    .produtoNome(produtoDto.getProdutoNome())
+                    .produtoPreco(produtoDto.getProdutoPreco())
+                    .produtoQtd(produtoDto.getProdutoQtd())
+                    .produtoDesc(produtoDto.getProdutoDesc())
+                    .produtoAvaliacao(produtoDto.getProdutoAvaliacao())
                     .produtoStatus(true)
                     .build();
 
             List<ImageModel> imagens = new ArrayList<>();
             boolean temPrincipal = false;
 
-            if (produtoDto.getUrlImagens() != null && !produtoDto.getUrlImagens().isEmpty()) {
-                for (ImageDto imgDTO : produtoDto.getUrlImagens()) {
+            if (produtoDto.getProdutoImagens() != null && !produtoDto.getProdutoImagens().isEmpty()) {
+                for (ImageDto imgDTO : produtoDto.getProdutoImagens()) {
                     boolean isPrincipal = imgDTO.isPrincipal();
 
                     if (isPrincipal) {
@@ -87,17 +89,19 @@ public class ProdutoService {
         try {
             ProdutoModel produtoExistente = buscarProdutoPorId(id);
 
-            produtoExistente.setProdutoName(produtoDto.getProduto_name());
-            produtoExistente.setProdutoAvaliacao(produtoDto.getProduto_avaliacao());
-            produtoExistente.setProdutoQtd(produtoDto.getProduto_qtd());
+            produtoExistente.setProdutoNome(produtoDto.getProdutoNome());
+            produtoExistente.setProdutoPreco(produtoDto.getProdutoPreco());
+            produtoExistente.setProdutoQtd(produtoDto.getProdutoQtd());
+            produtoExistente.setProdutoDesc(produtoDto.getProdutoDesc());
+            produtoExistente.setProdutoAvaliacao(produtoDto.getProdutoAvaliacao());
             produtoExistente.setProdutoStatus(produtoDto.isStatus());
 
             List<ImageModel> imagens = new ArrayList<>();
             boolean temPrincipal = false;
 
             // Atualiza as imagens do produto
-            if (produtoDto.getUrlImagens() != null && !produtoDto.getUrlImagens().isEmpty()) {
-                for (ImageDto imgDTO : produtoDto.getUrlImagens()) {
+            if (produtoDto.getProdutoImagens() != null && !produtoDto.getProdutoImagens().isEmpty()) {
+                for (ImageDto imgDTO : produtoDto.getProdutoImagens()) {
                     boolean isPrincipal = imgDTO.isPrincipal();
 
                     if (isPrincipal) {
@@ -140,7 +144,7 @@ public class ProdutoService {
     public String editarQTD(Long id, ProdutoDto produtoDto) {
 
         ProdutoModel produtoExistente = buscarProdutoPorId(id);
-        produtoExistente.setProdutoQtd(produtoDto.getProduto_qtd());
+        produtoExistente.setProdutoQtd(produtoDto.getProdutoQtd());
         produtoRepository.save(produtoExistente);
 
         return "Quantidade do produto atualizada com sucesso!";
