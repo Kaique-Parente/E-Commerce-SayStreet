@@ -3,7 +3,7 @@
 import Modal from "@/components/Modal";
 import { useCadastro } from "@/hooks/useCadastro"
 import { CheckBox } from "@mui/icons-material";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +25,7 @@ const ContainerContent = styled.div`
     align-items: center;
     justify-content: center;
 
-    width: 920px;
+    min-width: 920px;
     gap: 100px;
 
     padding: 100px 80px;
@@ -54,7 +54,7 @@ const InputContainer = styled.div`
 
     margin-bottom: 20px;
 
-    input, select{
+    input, select, .input-styles{
         background-color: #5f3e3e;
 
         padding: 8px;
@@ -65,6 +65,13 @@ const InputContainer = styled.div`
     select {
         font-size: 16px;
         margin-top: 10px;
+    }
+
+    textarea{
+        height: 100px;
+    }
+
+    span{
     }
 `
 
@@ -95,17 +102,13 @@ const ButtonsContainer = styled.div`
     }
 `
 
-const TextModal = styled.div`
-   
-`
-
 const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     console.log(file);
 }
 
 export default function CadastrarProduto() {
-    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastro();
+    //const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastro();
 
     const [isOpen, setIsOpen] = useState(false);
     const fileInputRef = useRef(null);
@@ -114,12 +117,13 @@ export default function CadastrarProduto() {
         setIsOpen(false);
     }
 
+    /*
     useEffect(() => {
         if (erro) {
             alert(erro.toString());
         }
     }, [erro])
-
+    */
 
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
@@ -190,43 +194,69 @@ export default function CadastrarProduto() {
     //** Parte do vídeo */
 
     const [hostedUrl, setHostedUrl] = useState([]);
-    const [ImageUrlProduct, setImageUrlProduct] = useState([{}]);
 
     useEffect(() => {
         console.log(hostedUrl);
-        console.log(ImageUrlProduct);
     }, [hostedUrl])
+
+   
+
+    const [nome, setNome] = useState("");
+    const [preco, setPreco] = useState(0.0);
+    const [estoque, setEstoque] = useState(0);
+    const [descricao, setDescricao] = useState("");
+    const [avaliacao, setAvaliacao] = useState(0.5);
+
+    const handleNomeChange = (event) => setNome(event.target.value);
+    const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
+    const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value) || 0);
+    const handleDescricaoChange = (event) => setDescricao(event.target.value);
+    const handleAvaliacaoChange = (event) => setAvaliacao(parseFloat(event.target.value) || 0);
+
+    useEffect(() => {
+        console.log('Avaliação: ' + avaliacao);
+    }, [avaliacao])
+
+    
 
     return (
         <div>
             <Container>
                 <ContainerContent>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <h2>Cadastrar Produto</h2>
 
                         <InputContainer>
                             <label className="label" htmlFor="nome">Nome do Produto:</label>
-                            <input type="text" id="nome" onChange={handleNomeChange} value={nome} />
+                            <input required type="text" id="nome" onChange={handleNomeChange} value={nome} />
                         </InputContainer>
 
                         <InputContainer>
-                            <label className="label" htmlFor="cpf">Preço:</label>
-                            <input required type="text" id="cpf" onChange={handleCpfChange} value={cpf} />
+                            <label className="label" htmlFor="preco">Preço:</label>
+                            <input required type="number" id="preco" onChange={handlePrecoChange} value={preco} />
                         </InputContainer>
 
                         <InputContainer>
-                            <label className="label" htmlFor="email">Em estoque:</label>
-                            <input required type="email" id="email" onChange={handleEmailChange} value={email} />
+                            <label className="label" htmlFor="estoque">Em estoque:</label>
+                            <input required type="number" id="estoque" onChange={handleEstoqueChange} value={estoque} />
                         </InputContainer>
 
                         <InputContainer>
-                            <label className="label" htmlFor="password">Descrição detalhada:</label>
-                            <input required type="password" id="password" onChange={handlePasswordChange} value={password} />
+                            <label className="label" htmlFor="descricao">Descrição detalhada:</label>
+                            <textarea required className="input-styles" id="descricao" onChange={handleDescricaoChange} value={descricao} />
                         </InputContainer>
 
                         <InputContainer>
-                            <label className="label" htmlFor="passwordVerify">Avaliação:</label>
-                            <input required type="password" id="passwordVerify" onChange={handlePasswordVerifyChange} value={passwordVerify} />
+                            <label className="label" htmlFor="avaliacao">Avaliação:</label>
+                            <Rating
+                                name="simple-uncontrolled"
+                                className="input-styles"
+                                value={avaliacao}
+                                onChange={handleAvaliacaoChange}
+                                precision={0.5}
+                                defaultValue={0.5}
+                                size="large"
+                            />
                         </InputContainer>
 
                         <ButtonsContainer>
