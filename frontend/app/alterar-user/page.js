@@ -1,6 +1,6 @@
 'use client'
 
-import { useAlterar } from "@/hooks/useAlterar";
+import { useAlterarUser } from "@/hooks/useAlterarUser";
 import { useCadastroUser } from "@/hooks/useCadastroUser"
 import { useEffect } from "react";
 import styled from "styled-components";
@@ -74,7 +74,7 @@ const InputContainer = styled.div`
 `
 
 export default function AlterarUser() {
-    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useAlterar();
+    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useAlterarUser();
 
     useEffect(() => {
         if (erro) {

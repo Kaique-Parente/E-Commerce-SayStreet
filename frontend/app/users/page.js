@@ -3,7 +3,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { atualizarStatus, listarUsuario } from "@/services/UserService";
-import { useAlterar } from "@/hooks/useAlterar";
+import { useAlterarUser } from "@/hooks/useAlterarUser";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";

@@ -4,7 +4,7 @@ import { atualizarUsuario, cadastrarUsuario, encontrarIdBanco, encontrarUsuarioC
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from "react"
 
-export function useAlterar(){
+export function useAlterarUser(){
 
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
