@@ -25,12 +25,12 @@ export function useCadastroProduto(){
     e.preventDefault();
 
     const produto = {
-      produto_nome: nome,
-      produto_preco: preco,
-      produto_estoque: estoque,
-      produto_descricao: descricao,
-      produto_avaliacao: avaliacao,
-      produto_imagens: hostedUrl,
+      produtoNome: nome,
+      produtoPreco: preco,
+      produtoQtd: estoque,
+      produtoDescricao: descricao,
+      produtoAvaliacao: avaliacao,
+      produtoImagens: hostedUrl,
     };
 
     console.log(produto);

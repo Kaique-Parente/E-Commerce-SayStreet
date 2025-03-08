@@ -59,12 +59,12 @@ export function useAlterarProduto() {
     e.preventDefault();
 
     const produto = {
-      produto_nome: nome,
-      produto_preco: preco,
-      produto_estoque: estoque,
-      produto_descricao: descricao,
-      produto_avaliacao: avaliacao,
-      produto_imagens: hostedUrl,
+      nome: nome,
+      preco: preco,
+      estoque: estoque,
+      descricao: descricao,
+      avaliacao: avaliacao,
+      imagens: hostedUrl,
     };
 
     console.log(produto);
