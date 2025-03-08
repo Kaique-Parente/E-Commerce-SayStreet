@@ -27,7 +27,7 @@ export default function useUsers() {
             console.log(response);
 
             setUsuarios(response.map(user => ({
-                id: user.id.timestamp,
+                id: user.id,
                 cpf: user.cpf,
                 nome: user.nome,
                 email: user.email,

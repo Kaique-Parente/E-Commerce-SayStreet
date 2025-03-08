@@ -161,6 +161,7 @@ export default function Tabela(props) {
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(props.rowsPerPage || 5);
 
+  
   const router = useRouter();
 
   const handleRequestSort = (event, property) => {
@@ -200,6 +201,12 @@ export default function Tabela(props) {
   let ids = props.tableHeader.map(element => element.id);
   ids = ids.filter(element => element !== 'nomeS'); 
 
+
+  React.useEffect(() => {
+    console.log(visibleRows);
+    console.log(props.rows);
+  },[visibleRows])
+
   return (
     <Box sx={{ width: '100%'}}>
       <Paper sx={{ width: '100%', mb: 2, background: props.activateBodyHamburguer ? '0' : '#ffffff'}}>
@@ -234,8 +241,8 @@ export default function Tabela(props) {
                     key={row.id}
                   >
                     {Object.entries(row).map(([key, value], cellIndex) => {
+                       
                          if (ids.includes(key)) {
-
                           return (
                             <TableCell key={cellIndex} align="left">
                               {key === "status" ? (value === true ? "Ativo" : "Inativo") : value}
