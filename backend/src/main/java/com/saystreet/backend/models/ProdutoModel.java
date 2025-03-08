@@ -36,9 +36,12 @@ public class ProdutoModel {
     @Column(name = "produto_id")
     private Long produtoId;
 
-    @Column(name = "produto_name", nullable = false, length = 200)
-    private String produtoName;
+    @Column(name = "produto_nome", nullable = false, length = 200)
+    private String produtoNome;
     
+    @Column(name = "produto_desc", nullable = false)
+    private String produtoDesc;
+
     @Column(name = "produto_avali", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Double produtoAvaliacao;
@@ -48,6 +51,9 @@ public class ProdutoModel {
 
     @Column(name = "produto_Status", nullable = false)
     private boolean produtoStatus;
+
+    @Column(name = "produto_preco", nullable = false)
+    private double produtoPreco;
 
     @OneToMany(mappedBy = "produto", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
     @Setter(value = AccessLevel.NONE)
