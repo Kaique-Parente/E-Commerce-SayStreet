@@ -6,6 +6,7 @@ import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -55,11 +56,15 @@ const InputContainer = styled.div`
     margin-bottom: 20px;
 
     input, select, .input-styles{
-        background-color: #5f3e3e;
+        background-color:rgb(85, 76, 76);
 
         padding: 8px;
         border-radius: 8px;
         border: 2px solid white;
+    }
+
+    input, select, textarea {
+        color: rgb(196, 190, 190);
     }
 
     select {
@@ -69,9 +74,6 @@ const InputContainer = styled.div`
 
     textarea{
         height: 100px;
-    }
-
-    span{
     }
 `
 
@@ -199,8 +201,6 @@ export default function CadastrarProduto() {
         console.log(hostedUrl);
     }, [hostedUrl])
 
-   
-
     const [nome, setNome] = useState("");
     const [preco, setPreco] = useState(0.0);
     const [estoque, setEstoque] = useState(0);
@@ -217,13 +217,28 @@ export default function CadastrarProduto() {
         console.log('Avaliação: ' + avaliacao);
     }, [avaliacao])
 
-    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const produto = {
+            produto_nome: nome,
+            produto_preco: preco,
+            produto_estoque: estoque,
+            produto_descricao: descricao,
+            produto_avaliacao: avaliacao,
+            produto_imagens: hostedUrl
+        }
+
+        console.log(produto);
+    }
+
+    const router = useRouter();
 
     return (
         <div>
             <Container>
                 <ContainerContent>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <h2>Cadastrar Produto</h2>
 
                         <InputContainer>
@@ -285,8 +300,8 @@ export default function CadastrarProduto() {
                             </CldUploadWidget>
 
 
-                            <button className="btn-confirmar" type="button">Confirmar</button>
-                            <button className="btn-cancelar" type="button">Cancelar</button>
+                            <button className="btn-confirmar" type="submit">Confirmar</button>
+                            <button className="btn-cancelar" onClick={() => router.back('./home')} type="button">Cancelar</button>
                         </ButtonsContainer>
                     </form>
 
