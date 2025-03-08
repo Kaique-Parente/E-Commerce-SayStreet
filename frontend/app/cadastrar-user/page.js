@@ -58,7 +58,8 @@ const InputContainer = styled.div`
     margin-bottom: 20px;
 
     input, select{
-        background-color: #5f3e3e;
+        background-color:rgb(85, 76, 76);
+        color: rgb(196, 190, 190);
 
         padding: 8px;
         border-radius: 8px;
