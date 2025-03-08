@@ -1,0 +1,239 @@
+'use client'
+
+import Modal from "@/components/Modal";
+import { useAlterarProduto } from "@/hooks/useAlterarProduto";
+import { useCadastroProduto } from "@/hooks/useCadastroProduto";
+import { useCadastroUser } from "@/hooks/useCadastroUser"
+import { CheckBox } from "@mui/icons-material";
+import { Checkbox, FormControlLabel, Rating } from "@mui/material";
+import { CldUploadWidget } from "next-cloudinary";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+
+const Container = styled.div`
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+const ContainerContent = styled.div`
+    background-color: #62656773;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 920px;
+    gap: 100px;
+
+    padding: 100px 80px;
+    border-radius: 12px;
+
+    h2 {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        margin: 15px 0;
+    }
+
+    button:hover {
+        background-color: rgba(98, 101, 103, 0.9);
+    }
+`
+
+const InputContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    gap: 5px;
+
+    margin-bottom: 20px;
+
+    input, select, .input-styles{
+        background-color:rgb(85, 76, 76);
+
+        padding: 8px;
+        border-radius: 8px;
+        border: 2px solid white;
+    }
+
+    input, select, textarea {
+        color: rgb(196, 190, 190);
+    }
+
+    select {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    textarea{
+        height: 100px;
+    }
+`
+
+const ButtonsContainer = styled.div`
+    button {
+        background: none;
+        border: 1px solid white;
+        border-radius: 8px;
+
+        padding: 10px 20px;
+        margin-top: 10px;
+
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+
+    .btn-cancelar{
+        width: 150px;
+    }
+
+    .btn-confirmar{
+        width: 220px;
+    }
+`
+
+export default function AlterarProduto() {
+
+    const {
+        hostedUrl,
+        nome,
+        preco,
+        estoque,
+        descricao,
+        avaliacao,
+        setHostedUrl,
+        handleNomeChange,
+        handlePrecoChange,
+        handleEstoqueChange,
+        handleDescricaoChange,
+        handleAvaliacaoChange,
+        handleSuccessFile,
+        handleSubmit,
+    } = useAlterarProduto();
+
+    useEffect(() => {
+        console.log(hostedUrl);
+    }, [hostedUrl])
+
+    const router = useRouter();
+
+    return (
+        <div>
+            <Container>
+                <ContainerContent>
+                    <form onSubmit={handleSubmit}>
+                        <h2>Alterar Produto</h2>
+
+                        <InputContainer>
+                            <label className="label" htmlFor="nome">Nome do Produto:</label>
+                            <input required type="text" id="nome" onChange={handleNomeChange} value={nome} />
+                        </InputContainer>
+
+                        <InputContainer>
+                            <label className="label" htmlFor="preco">Preço:</label>
+                            <input required type="number" id="preco" onChange={handlePrecoChange} value={preco} />
+                        </InputContainer>
+
+                        <InputContainer>
+                            <label className="label" htmlFor="estoque">Em estoque:</label>
+                            <input required type="number" id="estoque" onChange={handleEstoqueChange} value={estoque} />
+                        </InputContainer>
+
+                        <InputContainer>
+                            <label className="label" htmlFor="descricao">Descrição detalhada:</label>
+                            <textarea required className="input-styles" id="descricao" onChange={handleDescricaoChange} value={descricao} />
+                        </InputContainer>
+
+                        <InputContainer>
+                            <label className="label" htmlFor="avaliacao">Avaliação:</label>
+                            <Rating
+                                name="simple-uncontrolled"
+                                className="input-styles"
+                                value={avaliacao}
+                                onChange={handleAvaliacaoChange}
+                                precision={0.5}
+                                defaultValue={0.5}
+                                size="large"
+                            />
+                        </InputContainer>
+
+                        <ButtonsContainer>
+                            <CldUploadWidget
+                                uploadPreset="ml_default"
+                                onSuccess={handleSuccessFile}
+                            >
+                                {({ open }) => {
+                                    return (
+                                        <button type="button" onClick={() => open()}>
+                                            Adicionar Imagens do Produto
+                                        </button>
+                                    );
+                                }}
+                            </CldUploadWidget>
+
+
+                            <button className="btn-confirmar" type="submit">Confirmar</button>
+                            <button className="btn-cancelar" onClick={() => router.back('./home')} type="button">Cancelar</button>
+                        </ButtonsContainer>
+                    </form>
+
+                    {hostedUrl?.map((obj, idx) => (
+                        <div key={idx}>
+                            <div>
+                                {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
+                                <button onClick={() => {
+                                    setHostedUrl((prevHostedUrl) => {
+                                        // Remove o item clicado
+                                        const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
+
+                                        // Se o item removido era o principal, define o primeiro como principal (se existir)
+                                        if (obj.principal && updatedList.length > 0) {
+                                            updatedList[0] = { ...updatedList[0], principal: true };
+                                        }
+
+                                        return updatedList;
+                                    });
+                                }}
+                                >
+                                    XXX
+                                </button>
+
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={obj.principal}
+                                            onChange={() => {
+                                                setHostedUrl((prevHostedUrl) =>
+                                                    prevHostedUrl.map((item, i) => ({
+                                                        ...item,
+                                                        principal: i === idx, // Define `true` apenas para o item clicado
+                                                    }))
+                                                );
+                                            }}
+                                        />
+                                    }
+                                    label="Produto Principal"
+                                />
+                                <Image src={obj.url} alt="Imagem do Produto" width={300} height={300} />
+                            </div>
+                        </div>
+                    ))}
+                </ContainerContent>
+            </Container>
+        </div >
+    );
+}
