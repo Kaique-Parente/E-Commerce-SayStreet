@@ -130,7 +130,6 @@ export default function Produtos() {
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlterarProduto,
         handleAlternarStatus
     } = useProdutos();
 
@@ -173,9 +172,11 @@ export default function Produtos() {
         },
     ];
 
-    const searchParams = useSearchParams();
     const [setor, setSetor] = useState('');
     const [viewButtonVisible, setViewButtonVisible] = useState(false);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         atualizarTabela();
@@ -189,6 +190,15 @@ export default function Produtos() {
             setViewButtonVisible(true);
         }
     }, [setor])
+
+    const handleAlterarProduto = async (id) => {
+        const produtoEncontrado = produtos.find((produto) => produto.id === id);
+        console.log(produtos);
+
+        if (produtoEncontrado) {
+            router.push(`./alterar-produto?id=${produtoEncontrado.id}&setor=${setor}`);
+        }
+    };
 
     return (
         <Container>

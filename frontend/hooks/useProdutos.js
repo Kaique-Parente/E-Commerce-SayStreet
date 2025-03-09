@@ -12,6 +12,7 @@ export default function useProdutos() {
     const [idUpdateProduto, setIdUpdateProduto] = useState(null);
     const [nomeFiltro, setNomeFiltro] = useState('');
 
+    
     const router = useRouter();
 
     const atualizarTabela = async () => {
@@ -63,15 +64,6 @@ export default function useProdutos() {
         setNomeFiltro(e.target.value);
     };
 
-    const handleAlterarProduto = async (id) => {
-        const produtoEncontrado = produtos.find((produto) => produto.id === id);
-        console.log(produtos);
-
-        if (produtoEncontrado) {
-            router.push(`./alterar-produto?id=${produtoEncontrado.id}`);
-        }
-    };
-
     const handleAlternarStatus = (id) => {
         setHiddenModel(false);
         setIdUpdateProduto(id);
@@ -100,7 +92,6 @@ export default function useProdutos() {
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlterarProduto,
         handleAlternarStatus
     };
 }

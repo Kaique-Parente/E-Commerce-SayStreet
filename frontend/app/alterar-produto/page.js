@@ -4,11 +4,12 @@ import Modal from "@/components/Modal";
 import { useAlterarProduto } from "@/hooks/useAlterarProduto";
 import { useCadastroProduto } from "@/hooks/useCadastroProduto";
 import { useCadastroUser } from "@/hooks/useCadastroUser"
+import { atualizarProduto } from "@/services/ProdutoService";
 import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -109,13 +110,13 @@ const ButtonsContainer = styled.div`
 export default function AlterarProduto() {
 
     const {
+        idProduto,
         hostedUrl,
         nome,
         preco,
         qtd,
         descricao,
         avaliacao,
-        erro,
         setHostedUrl,
         handleNomeChange,
         handlePrecoChange,
@@ -123,14 +124,61 @@ export default function AlterarProduto() {
         handleDescricaoChange,
         handleAvaliacaoChange,
         handleSuccessFile,
-        handleSubmit,
     } = useAlterarProduto();
+
+
+    const [setor, setSetor] = useState('');
+    const [isEstoquista, setIsEstoquista] = useState('');
+
+    const [erro, setErro] = useState(null);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+        setIsEstoquista(setor === 'estoquista');
+    }, [])
 
     useEffect(() => {
         console.log(hostedUrl);
     }, [hostedUrl])
 
-    const router = useRouter();
+
+    useEffect(() => {
+        console.log(isEstoquista);
+    }, [isEstoquista])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        const produto = {
+          produtoNome: nome,
+          produtoPreco: preco,
+          produtoQtd: qtd,
+          produtoDesc: descricao,
+          produtoAvaliacao: avaliacao,
+          produtoImagens: hostedUrl,
+        };
+    
+        try {
+              const response = await atualizarProduto(idProduto, produto);
+        
+              if (response !== null) {
+                alert(response);
+        
+                router.push(`./produtos?setor=${setor}`);
+              } else {
+                setErro(response);
+              }
+        
+        
+            } catch (error) {
+              console.log(error);
+              setErro("Erro de comunicação com o servidor!");
+            }
+      };
 
     return (
         <div>
@@ -141,22 +189,22 @@ export default function AlterarProduto() {
 
                         <InputContainer>
                             <label className="label" htmlFor="nome">Nome do Produto:</label>
-                            <input required type="text" id="nome" onChange={handleNomeChange} value={nome} />
+                            <input required type="text" id="nome" onChange={handleNomeChange} value={nome} disabled={isEstoquista} />
                         </InputContainer>
 
                         <InputContainer>
                             <label className="label" htmlFor="preco">Preço:</label>
-                            <input required type="number" id="preco" onChange={handlePrecoChange} value={preco} />
+                            <input required type="number" id="preco" onChange={handlePrecoChange} value={preco} disabled={isEstoquista} />
                         </InputContainer>
 
                         <InputContainer>
                             <label className="label" htmlFor="qtd">Em estoque:</label>
-                            <input required type="number" id="qtd" onChange={handleQtdChange} value={qtd} />
+                            <input required type="number" id="qtd" onChange={handleQtdChange} value={qtd} disabled={false} />
                         </InputContainer>
 
                         <InputContainer>
                             <label className="label" htmlFor="descricao">Descrição detalhada:</label>
-                            <textarea required className="input-styles" id="descricao" onChange={handleDescricaoChange} value={descricao} />
+                            <textarea required className="input-styles" id="descricao" onChange={handleDescricaoChange} value={descricao} disabled={isEstoquista} />
                         </InputContainer>
 
                         <InputContainer>
@@ -169,6 +217,7 @@ export default function AlterarProduto() {
                                 precision={0.5}
                                 defaultValue={0.5}
                                 size="large"
+                                disabled={isEstoquista}
                             />
                         </InputContainer>
 
@@ -179,7 +228,7 @@ export default function AlterarProduto() {
                             >
                                 {({ open }) => {
                                     return (
-                                        <button type="button" onClick={() => open()}>
+                                        <button type="button" onClick={() => open()} disabled={isEstoquista}>
                                             Adicionar Imagens do Produto
                                         </button>
                                     );
@@ -196,7 +245,7 @@ export default function AlterarProduto() {
                         <div key={idx}>
                             <div>
                                 {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
-                                <button onClick={() => {
+                                <button disabled={isEstoquista} onClick={() => {
                                     setHostedUrl((prevHostedUrl) => {
                                         // Remove o item clicado
                                         const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
@@ -216,6 +265,7 @@ export default function AlterarProduto() {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
+                                            disabled={isEstoquista}
                                             checked={obj.principal}
                                             onChange={() => {
                                                 setHostedUrl((prevHostedUrl) =>
