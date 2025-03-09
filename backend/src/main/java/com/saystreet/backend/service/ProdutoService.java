@@ -94,8 +94,7 @@ public class ProdutoService {
             produtoExistente.setProdutoQtd(produtoDto.getProdutoQtd());
             produtoExistente.setProdutoDesc(produtoDto.getProdutoDesc());
             produtoExistente.setProdutoAvaliacao(produtoDto.getProdutoAvaliacao());
-            produtoExistente.setProdutoStatus(produtoDto.isStatus());
-
+            
             produtoExistente.getImagens().clear();
             boolean temPrincipal = false;
 
