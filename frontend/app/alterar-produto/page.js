@@ -1,5 +1,6 @@
 'use client'
 
+import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
 import Modal from "@/components/Modal";
 import { useAlterarProduto } from "@/hooks/useAlterarProduto";
 import { useCadastroProduto } from "@/hooks/useCadastroProduto";
@@ -130,6 +131,8 @@ export default function AlterarProduto() {
     const [setor, setSetor] = useState('');
     const [isEstoquista, setIsEstoquista] = useState('');
 
+    const [images, setImages] = useState([]);
+
     const [erro, setErro] = useState(null);
 
     const router = useRouter();
@@ -141,10 +144,16 @@ export default function AlterarProduto() {
         setIsEstoquista(setor === 'estoquista');
     }, [])
 
+
     useEffect(() => {
         console.log(hostedUrl);
-    }, [hostedUrl])
+        const imageArray = hostedUrl.map((item) => item.url); // Cria um array de URLs diretamente
+        setImages(imageArray); // Atualiza o estado com o array de URLs
+    }, [hostedUrl]);
 
+    useEffect(() => {
+        console.log('Imagens: ' + images);
+    }, [images])
 
     useEffect(() => {
         console.log(isEstoquista);
@@ -152,33 +161,38 @@ export default function AlterarProduto() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        const produto = {
-          produtoNome: nome,
-          produtoPreco: preco,
-          produtoQtd: qtd,
-          produtoDesc: descricao,
-          produtoAvaliacao: avaliacao,
-          produtoImagens: hostedUrl,
-        };
-    
-        try {
-              const response = await atualizarProduto(idProduto, produto);
-        
-              if (response !== null) {
-                alert(response);
-        
-                router.push(`./produtos?setor=${setor}`);
-              } else {
-                setErro(response);
-              }
-        
-        
+
+        if (hostedUrl.length > 0) {
+
+            const produto = {
+                produtoNome: nome,
+                produtoPreco: preco,
+                produtoQtd: qtd,
+                produtoDesc: descricao,
+                produtoAvaliacao: avaliacao,
+                produtoImagens: hostedUrl,
+            };
+
+            try {
+                const response = await atualizarProduto(idProduto, produto);
+
+                if (response !== null) {
+                    alert(response);
+
+                    router.push(`./produtos?setor=${setor}`);
+                } else {
+                    setErro(response);
+                }
+
+
             } catch (error) {
-              console.log(error);
-              setErro("Erro de comunicação com o servidor!");
+                console.log(error);
+                setErro("Erro de comunicação com o servidor!");
             }
-      };
+        } else {
+            alert('Adicione no mínimo uma imagem para o produto!');
+        }
+    };
 
     return (
         <div>
@@ -241,48 +255,51 @@ export default function AlterarProduto() {
                         </ButtonsContainer>
                     </form>
 
-                    {hostedUrl?.map((obj, idx) => (
-                        <div key={idx}>
-                            <div>
-                                {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
-                                <button disabled={isEstoquista} onClick={() => {
-                                    setHostedUrl((prevHostedUrl) => {
-                                        // Remove o item clicado
-                                        const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
+                    <div>
+                        {hostedUrl?.map((obj, idx) => (
+                            <div key={idx}>
+                                <div>
+                                    {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
+                                    <span>Item: {idx + 1}</span>
+                                    <button disabled={isEstoquista} onClick={() => {
+                                        setHostedUrl((prevHostedUrl) => {
+                                            // Remove o item clicado
+                                            const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
 
-                                        // Se o item removido era o principal, define o primeiro como principal (se existir)
-                                        if (obj.principal && updatedList.length > 0) {
-                                            updatedList[0] = { ...updatedList[0], principal: true };
+                                            // Se o item removido era o principal, define o primeiro como principal (se existir)
+                                            if (obj.principal && updatedList.length > 0) {
+                                                updatedList[0] = { ...updatedList[0], principal: true };
+                                            }
+
+                                            return updatedList;
+                                        });
+                                    }}
+                                    >
+                                        XXX
+                                    </button>
+
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                disabled={isEstoquista}
+                                                checked={obj.principal}
+                                                onChange={() => {
+                                                    setHostedUrl((prevHostedUrl) =>
+                                                        prevHostedUrl.map((item, i) => ({
+                                                            ...item,
+                                                            principal: i === idx, // Define `true` apenas para o item clicado
+                                                        }))
+                                                    );
+                                                }}
+                                            />
                                         }
-
-                                        return updatedList;
-                                    });
-                                }}
-                                >
-                                    XXX
-                                </button>
-
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            disabled={isEstoquista}
-                                            checked={obj.principal}
-                                            onChange={() => {
-                                                setHostedUrl((prevHostedUrl) =>
-                                                    prevHostedUrl.map((item, i) => ({
-                                                        ...item,
-                                                        principal: i === idx, // Define `true` apenas para o item clicado
-                                                    }))
-                                                );
-                                            }}
-                                        />
-                                    }
-                                    label="Produto Principal"
-                                />
-                                <Image src={obj.url} alt="Imagem do Produto" width={300} height={300} />
+                                        label="Produto Principal"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                        <CarouselWithIndicators images={images} />
+                    </div>
                 </ContainerContent>
             </Container>
         </div >

@@ -200,8 +200,6 @@ export default function CadastrarProduto() {
                     </form>
 
                     <div>
-
-
                         {hostedUrl?.map((obj, idx) => (
                             <div key={idx}>
                                 <div>

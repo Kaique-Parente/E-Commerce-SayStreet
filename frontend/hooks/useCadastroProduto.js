@@ -26,33 +26,36 @@ export function useCadastroProduto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const produto = {
-      produtoNome: nome,
-      produtoPreco: preco,
-      produtoQtd: estoque,
-      produtoDesc: descricao,
-      produtoAvaliacao: avaliacao,
-      produtoImagens: hostedUrl,
-    };
+    if (hostedUrl.length > 0) {
+      const produto = {
+        produtoNome: nome,
+        produtoPreco: preco,
+        produtoQtd: estoque,
+        produtoDesc: descricao,
+        produtoAvaliacao: avaliacao,
+        produtoImagens: hostedUrl,
+      };
 
-    try {
-      const response = await cadastrarProduto(produto);
+      try {
+        const response = await cadastrarProduto(produto);
 
-      if (response !== null) {
-        alert(response);
+        if (response !== null) {
+          alert(response);
 
-        //router.push('./users');
-      } else {
-        setErro(response);
+          //router.push('./users');
+        } else {
+          setErro(response);
+        }
+
+
+      } catch (error) {
+        console.log(error);
+        setErro("Erro de comunicação com o servidor!");
       }
 
-
-    } catch (error) {
-      console.log(error);
-      setErro("Erro de comunicação com o servidor!");
+    } else {
+      alert('Adicione no mínimo uma imagem para o produto!');
     }
-
-    console.log(produto);
   };
 
   return {
