@@ -1,5 +1,6 @@
 'use client'
 
+import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
 import Modal from "@/components/Modal";
 import { useCadastroProduto } from "@/hooks/useCadastroProduto";
 import { useCadastroUser } from "@/hooks/useCadastroUser"
@@ -227,7 +228,7 @@ export default function CadastrarProduto() {
                                     }
                                     label="Produto Principal"
                                 />
-                                <Image src={obj.url} alt="Imagem do Produto" width={300} height={300} />
+                                <CarouselWithIndicators images={[obj.url]} />
                             </div>
                         </div>
                     ))}
