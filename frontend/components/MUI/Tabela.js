@@ -36,17 +36,32 @@ const TableCellContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 70px;
+    gap: 5px;
+    
+    min-width: 70px;
     height: 30px;
+    padding: 2px;
+
     border: none;
     border-radius: 8px;
+
     background-color: yellow;
+
     font-size: 0.875rem;
     cursor: pointer;
-    gap: 5px;
 
     &:hover {
       background-color: #f5e74e; /* Adicionando um efeito de hover */
+    }
+  }
+
+  .btn-view{
+    padding: 4px;
+    background-color: green;
+    color: white;
+
+    &:hover {
+      background-color:rgb(84, 84, 9); /* Adicionando um efeito de hover */
     }
   }
 `;
@@ -83,7 +98,7 @@ function EnhancedTableHead(props) {
             align={'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{fontSize: `${fontHeader}px`}}
+            style={{ fontSize: `${fontHeader}px` }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -116,7 +131,7 @@ EnhancedTableHead.propTypes = {
 function EnhancedTableToolbar(props) {
   const { numSelected } = props;
   return (
-    <Toolbar style={{display: props.disableHead ? 'none' : 'flex'}}
+    <Toolbar style={{ display: props.disableHead ? 'none' : 'flex' }}
       sx={[
         {
           pl: { sm: 2 },
@@ -161,7 +176,7 @@ export default function Tabela(props) {
   const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(props.rowsPerPage || 5);
 
-  
+
   const router = useRouter();
 
   const handleRequestSort = (event, property) => {
@@ -199,25 +214,25 @@ export default function Tabela(props) {
   );
 
   let ids = props.tableHeader.map(element => element.id);
-  ids = ids.filter(element => element !== 'nomeS'); 
+  ids = ids.filter(element => element !== 'nomeS');
 
 
   React.useEffect(() => {
     console.log(visibleRows);
     console.log(props.rows);
-  },[visibleRows])
+  }, [visibleRows])
 
   return (
-    <Box sx={{ width: '100%'}}>
-      <Paper sx={{ width: '100%', mb: 2, background: props.activateBodyHamburguer ? '0' : '#ffffff'}}>
-        <EnhancedTableToolbar 
-          title={props.title} 
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2, background: props.activateBodyHamburguer ? '0' : '#ffffff' }}>
+        <EnhancedTableToolbar
+          title={props.title}
           disableHead={props.disableHead}
           disableDelete={props.disableDelete}
-          />
-        <TableContainer style={{height: props.height}}>
+        />
+        <TableContainer style={{ height: props.height }}>
           <Table
-            sx={{ minWidth: 750}}
+            sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size={'small'}
           >
@@ -241,28 +256,37 @@ export default function Tabela(props) {
                     key={row.id}
                   >
                     {Object.entries(row).map(([key, value], cellIndex) => {
-                       
-                         if (ids.includes(key)) {
-                          return (
-                            <TableCell key={cellIndex} align="left">
-                              {key === "status" ? (value === true ? "Ativo" : "Inativo") : value}
-                            </TableCell>
-                          );
-                        }
+
+                      if (ids.includes(key)) {
+                        return (
+                          <TableCell key={cellIndex} align="left">
+                            {key === "status" ? (value === true ? "Ativo" : "Inativo") : value}
+                          </TableCell>
+                        );
+                      }
                     })}
-                    
+
                     <TableCell>
-                        <TableCellContainer>
-                          <button onClick={() => props.handleAlterarRow(row.id)}>
-                              <Image width={14} height={14} alt='Um icone de lápis' src="/editar.png"/>
-                              Alterar
+                      <TableCellContainer>
+                        <button onClick={() => props.handleAlterarRow(row.id)}>
+                          <Image width={14} height={14} alt='Um icone de lápis' src="/editar.png" />
+                          Alterar
+                        </button>
+                        {props.viewButton ? (
+                          <button className='btn-view' onClick={() => props.handleAlterarRow(row.id)}>
+                            <Image width={14} height={14} alt='Um icone de lápis' src="/view.png" />
+                            Visualizar
                           </button>
-                          <RadiusButton 
-                            checked={row.status}
-                            handleChange={props.handleAlternarStatus}
-                            rowId={row.id}
-                          />
-                        </TableCellContainer>
+                        ) : (
+                          <>
+                          </>
+                        )}
+                        <RadiusButton
+                          checked={row.status}
+                          handleChange={props.handleAlternarStatus}
+                          rowId={row.id}
+                        />
+                      </TableCellContainer>
                     </TableCell>
                   </TableRow>
                 );

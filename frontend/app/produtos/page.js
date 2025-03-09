@@ -234,6 +234,7 @@ export default function Produtos() {
                         disableDelete={true}
                         height={580}
                         rowsPerPage={15}
+                        viewButton={true}
                         handleAlterarRow={handleAlterarProduto}
                         handleAlternarStatus={handleAlternarStatus}
                     />
