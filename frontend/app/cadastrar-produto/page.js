@@ -125,9 +125,17 @@ export default function CadastrarProduto() {
         handleSubmit,
     } = useCadastroProduto();
 
+    const [images, setImages] = useState([]);
+
     useEffect(() => {
         console.log(hostedUrl);
-    }, [hostedUrl])
+        const imageArray = hostedUrl.map((item) => item.url); // Cria um array de URLs diretamente
+        setImages(imageArray); // Atualiza o estado com o array de URLs
+    }, [hostedUrl]);
+
+    useEffect(() => {
+        console.log('Imagens: ' + images);
+    }, [images])
 
     const router = useRouter();
 
@@ -191,47 +199,53 @@ export default function CadastrarProduto() {
                         </ButtonsContainer>
                     </form>
 
-                    {hostedUrl?.map((obj, idx) => (
-                        <div key={idx}>
-                            <div>
-                                {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
-                                <button onClick={() => {
-                                    setHostedUrl((prevHostedUrl) => {
-                                        // Remove o item clicado
-                                        const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
+                    <div>
 
-                                        // Se o item removido era o principal, define o primeiro como principal (se existir)
-                                        if (obj.principal && updatedList.length > 0) {
-                                            updatedList[0] = { ...updatedList[0], principal: true };
+
+                        {hostedUrl?.map((obj, idx) => (
+                            <div key={idx}>
+                                <div>
+                                    {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
+                                    <span>Item: {idx+1}</span>
+                                    <button onClick={() => {
+                                        setHostedUrl((prevHostedUrl) => {
+                                            // Remove o item clicado
+                                            const updatedList = prevHostedUrl.filter((_, i) => i !== idx);
+
+                                            // Se o item removido era o principal, define o primeiro como principal (se existir)
+                                            if (obj.principal && updatedList.length > 0) {
+                                                updatedList[0] = { ...updatedList[0], principal: true };
+                                            }
+
+                                            return updatedList;
+                                        });
+                                    }}
+                                    >
+                                        XXX
+                                    </button>
+
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={obj.principal}
+                                                onChange={() => {
+                                                    setHostedUrl((prevHostedUrl) =>
+                                                        prevHostedUrl.map((item, i) => ({
+                                                            ...item,
+                                                            principal: i === idx, // Define `true` apenas para o item clicado
+                                                        }))
+                                                    );
+                                                }}
+                                            />
                                         }
-
-                                        return updatedList;
-                                    });
-                                }}
-                                >
-                                    XXX
-                                </button>
-
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={obj.principal}
-                                            onChange={() => {
-                                                setHostedUrl((prevHostedUrl) =>
-                                                    prevHostedUrl.map((item, i) => ({
-                                                        ...item,
-                                                        principal: i === idx, // Define `true` apenas para o item clicado
-                                                    }))
-                                                );
-                                            }}
-                                        />
-                                    }
-                                    label="Produto Principal"
-                                />
-                                <CarouselWithIndicators images={[obj.url]} />
+                                        label="Produto Principal"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+
+                        <CarouselWithIndicators images={images} />
+                    </div>
                 </ContainerContent>
             </Container>
         </div >
