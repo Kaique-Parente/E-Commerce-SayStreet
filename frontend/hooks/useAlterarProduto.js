@@ -12,7 +12,6 @@ export function useAlterarProduto() {
   const [qtd, setQtd] = useState(0);
   const [descricao, setDescricao] = useState("");
   const [avaliacao, setAvaliacao] = useState(0.5);
-  const [status, setStatus] = useState(false);
 
   const [erro, setErro] = useState(null);
   
@@ -38,7 +37,6 @@ export function useAlterarProduto() {
           setPreco(produto.produtoPreco || 0.0);
           setDescricao(produto.produtoDesc || '');
           setAvaliacao(produto.produtoAvaliacao || 0.5);
-          setStatus(produto.produtoStatus || false);
 
           setHostedUrl(produto.imagens)
         }else {
@@ -75,7 +73,6 @@ export function useAlterarProduto() {
       produtoDesc: descricao,
       produtoAvaliacao: avaliacao,
       produtoImagens: hostedUrl,
-      produtoStatus: status
     };
 
     try {
