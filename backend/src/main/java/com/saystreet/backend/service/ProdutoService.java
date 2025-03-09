@@ -96,7 +96,7 @@ public class ProdutoService {
             produtoExistente.setProdutoAvaliacao(produtoDto.getProdutoAvaliacao());
             produtoExistente.setProdutoStatus(produtoDto.isStatus());
 
-            List<ImageModel> imagens = new ArrayList<>();
+            produtoExistente.getImagens().clear();
             boolean temPrincipal = false;
 
             // Atualiza as imagens do produto
@@ -111,13 +111,15 @@ public class ProdutoService {
                         temPrincipal = true;
                     }
 
-                    imagens.add(ImageModel.builder()
+                    produtoExistente.getImagens().add(ImageModel.builder()
                             .url(imgDTO.getUrl())
                             .produto(produtoExistente)
                             .principal(isPrincipal)
                             .build());
                 }
             }
+
+        
             produtoRepository.save(produtoExistente);
 
             return "Produto atualizado com sucesso!";
