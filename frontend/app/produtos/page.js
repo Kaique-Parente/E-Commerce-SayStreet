@@ -234,7 +234,7 @@ export default function Produtos() {
                         disableDelete={true}
                         height={580}
                         rowsPerPage={15}
-                        handleAlterarUsuario={handleAlterarProduto}
+                        handleAlterarRow={handleAlterarProduto}
                         handleAlternarStatus={handleAlternarStatus}
                     />
                 </div>

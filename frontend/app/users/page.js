@@ -229,7 +229,7 @@ export default function Users() {
                         disableDelete={true}
                         height={580}
                         rowsPerPage={15}
-                        handleAlterarUsuario={handleAlterarUsuario}
+                        handleAlterarRow={handleAlterarUsuario}
                         handleAlternarStatus={handleAlternarStatus}
                     />
                 </div>

@@ -253,7 +253,7 @@ export default function Tabela(props) {
                     
                     <TableCell>
                         <TableCellContainer>
-                          <button onClick={() => props.handleAlterarUsuario(row.id)}>
+                          <button onClick={() => props.handleAlterarRow(row.id)}>
                               <Image width={14} height={14} alt='Um icone de lápis' src="/editar.png"/>
                               Alterar
                           </button>
