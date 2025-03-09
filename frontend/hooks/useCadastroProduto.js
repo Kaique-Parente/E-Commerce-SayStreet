@@ -1,12 +1,14 @@
+import { cadastrarProduto } from "@/services/ProdutoService";
 import { useState } from "react";
 
-export function useCadastroProduto(){
+export function useCadastroProduto() {
   const [hostedUrl, setHostedUrl] = useState([]);
   const [nome, setNome] = useState("");
   const [preco, setPreco] = useState(0.0);
   const [estoque, setEstoque] = useState(0);
   const [descricao, setDescricao] = useState("");
   const [avaliacao, setAvaliacao] = useState(0.5);
+  const [erro, setErro] = useState("");
 
   const handleNomeChange = (event) => setNome(event.target.value);
   const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
@@ -21,17 +23,34 @@ export function useCadastroProduto(){
     ]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const produto = {
       produtoNome: nome,
       produtoPreco: preco,
       produtoQtd: estoque,
-      produtoDescricao: descricao,
+      produtoDesc: descricao,
       produtoAvaliacao: avaliacao,
       produtoImagens: hostedUrl,
     };
+
+    try {
+      const response = await cadastrarProduto(produto);
+
+      if (response !== null) {
+        alert(response);
+
+        //router.push('./users');
+      } else {
+        setErro(response);
+      }
+
+
+    } catch (error) {
+      console.log(error);
+      setErro("Erro de comunicação com o servidor!");
+    }
 
     console.log(produto);
   };
