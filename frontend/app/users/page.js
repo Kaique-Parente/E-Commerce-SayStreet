@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { atualizarStatus, listarUsuario } from "@/services/UserService";
+import { atualizarStatusUser, listarUsuario } from "@/services/UserService";
 import { useAlterarUser } from "@/hooks/useAlterarUser";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
@@ -198,14 +198,14 @@ export default function Users() {
 
                     <SearchContainer>
                         <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/pesquisar.png" />
-                        <input type="text" id="nome" placeholder="Pesquisar por Nome:" 
-                            value={nomeFiltro} onChange={handleNomeFiltro} 
+                        <input type="text" id="nome" placeholder="Pesquisar por Nome:"
+                            value={nomeFiltro} onChange={handleNomeFiltro}
                         />
                     </SearchContainer>
                 </InputContainer>
 
                 <div>
-                    <Modal isOpen={!hiddenModel}>
+                    <Modal isOpen={!hiddenModel} onClose={() => setHiddenModel(true)}>
                         <TextModal>
                             <h3>Você tem certeza que deseja
                                 <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}

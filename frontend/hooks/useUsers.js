@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { listarUsuario, atualizarStatus } from "@/services/UserService";
+import { listarUsuario, atualizarStatusUser } from "@/services/UserService";
 import { useRouter } from "next/navigation";
 
 export default function useUsers() {
@@ -52,7 +52,7 @@ export default function useUsers() {
                     setlastStatus(usuario.status === false ? "Inativar" : "Ativar");
 
                     // Chame a função para alterar o status no backend (API)
-                    atualizarStatus(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
+                    atualizarStatusUser(usuario.cpf, novoStatus); // Certifique-se de que a função de API está correta
 
                     // Cria uma cópia do usuário com o novo status
                     const updatedUser = { ...usuario, status: novoStatus };

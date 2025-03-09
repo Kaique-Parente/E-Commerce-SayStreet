@@ -53,7 +53,7 @@ export async function listarUsuario(){
     }
 }
 
-export async function atualizarStatus(id, novoStatus){
+export async function atualizarStatusUser(id, novoStatus){
 
     const url = `http://localhost:8080/user/alterar-status/${id}?status=${novoStatus}`;
     console.log(id);
