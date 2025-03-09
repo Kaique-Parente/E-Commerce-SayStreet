@@ -53,6 +53,7 @@ const CloseButton = styled.button`
 //* { isOpen, onClose, children }
 
 const Modal = (props) => {
+
   if (!props.isOpen) return null; // Não renderiza nada se o modal não estiver aberto
 
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { listarProduto, atualizarStatusProduto } from "@/services/ProdutoService";
+import { listarProduto, atualizarStatusUserProduto } from "@/services/ProdutoService";
 import { useRouter } from "next/navigation";
 
 export default function useProdutos() {
@@ -43,7 +43,7 @@ export default function useProdutos() {
                     setLastProdutoChange(produto);
                     setLastStatus(produto.status ? "Ativar" : "Inativar");
 
-                    atualizarStatusProduto(produto.id, novoStatus);
+                    atualizarStatusUserProduto(produto.id, novoStatus);
 
                     const updatedProduto = { ...produto, status: novoStatus };
 

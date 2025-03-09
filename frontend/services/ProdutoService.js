@@ -53,9 +53,9 @@ export async function listarProduto(){
     }
 }
 
-export async function atualizarStatus(id, novoStatus){
+export async function atualizarStatusUserProduto(id, novoStatus){
 
-    const url = `http://localhost:8080/user/alterar-status/${id}?status=${novoStatus}`;
+    const url = `http://localhost:8080/produto/alterar-status/${id}?status=${novoStatus}`;
     console.log(id);
     console.log(novoStatus);
     try {

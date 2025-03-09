@@ -2,8 +2,6 @@
 
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { atualizarStatus, listarUsuario } from "@/services/UserService";
-import { useAlterarUser } from "@/hooks/useAlterarUser";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
@@ -212,12 +210,12 @@ export default function Produtos() {
                 </InputContainer>
 
                 <div>
-                    <Modal isOpen={!hiddenModel}>
+                    <Modal isOpen={!hiddenModel} onClose={() => setHiddenModel(true)}>
                         <TextModal>
                             <h3>Você tem certeza que deseja
                                 <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
                                 </span>
-                                <span> este usuário?</span></h3>
+                                <span> este produto?</span></h3>
 
                             <div className="botoes">
                                 <button onClick={handleCloseModel}>Cancelar</button>
