@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -62,6 +62,8 @@ export default function Home() {
     const searchParams = useSearchParams();
     const [setor, setSetor] = useState('');
 
+    const router = useRouter();
+
     useEffect(() => {
         const setor = searchParams.get('setor');
         setSetor(setor);
@@ -75,23 +77,23 @@ export default function Home() {
                 <LinksContainer>
                     {setor === 'admin' ? (
                         <>
-                            <Link href="./users" style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{cursor: "pointer"}}>
                                 <span>Listar Usuários</span>
-                            </Link>
+                            </a>
 
-                            <Link href="./" style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{cursor: "pointer"}}>
                                 <span>Listar Produto</span>
-                            </Link>
+                            </a>
                         </>
                     ) : (
                         <>
-                            <Link href="./" style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{cursor: "pointer"}}>
                                 <span>Listar Produto</span>
-                            </Link>
+                            </a>
 
-                            <Link href="./" style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{cursor: "pointer"}}>
                                 <span>Listar Pedido</span>
-                            </Link>
+                            </a>
                         </>
                     )}
                     

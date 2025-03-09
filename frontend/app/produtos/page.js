@@ -3,7 +3,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
 import useUsers from "@/hooks/useUsers";
 import Link from "next/link";
@@ -134,10 +134,6 @@ export default function Produtos() {
         handleAlternarStatus
     } = useProdutos();
 
-    useEffect(() => {
-        atualizarTabela();
-    }, [])
-
     const tableHeaderSetores = [
         {
             id: 'id',
@@ -177,6 +173,23 @@ export default function Produtos() {
         },
     ];
 
+    const searchParams = useSearchParams();
+    const [setor, setSetor] = useState('');
+    const [viewButtonVisible, setViewButtonVisible] = useState(false);
+
+    useEffect(() => {
+        atualizarTabela();
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+    }, [])
+
+    
+    useEffect(() => {
+        if(setor == 'admin'){
+            setViewButtonVisible(true);
+        }
+    }, [setor])
+
     return (
         <Container>
             <ContentContainer>
@@ -203,8 +216,8 @@ export default function Produtos() {
 
                     <SearchContainer>
                         <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/pesquisar.png" />
-                        <input type="text" id="nome" placeholder="Pesquisar por Nome:" 
-                            value={nomeFiltro} onChange={handleNomeFiltro} 
+                        <input type="text" id="nome" placeholder="Pesquisar por Nome:"
+                            value={nomeFiltro} onChange={handleNomeFiltro}
                         />
                     </SearchContainer>
                 </InputContainer>
@@ -234,7 +247,7 @@ export default function Produtos() {
                         disableDelete={true}
                         height={580}
                         rowsPerPage={15}
-                        viewButton={true}
+                        viewButton={viewButtonVisible}
                         handleAlterarRow={handleAlterarProduto}
                         handleAlternarStatus={handleAlternarStatus}
                     />
