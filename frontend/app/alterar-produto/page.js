@@ -112,13 +112,14 @@ export default function AlterarProduto() {
         hostedUrl,
         nome,
         preco,
-        estoque,
+        qtd,
         descricao,
         avaliacao,
+        erro,
         setHostedUrl,
         handleNomeChange,
         handlePrecoChange,
-        handleEstoqueChange,
+        handleQtdChange,
         handleDescricaoChange,
         handleAvaliacaoChange,
         handleSuccessFile,
@@ -149,8 +150,8 @@ export default function AlterarProduto() {
                         </InputContainer>
 
                         <InputContainer>
-                            <label className="label" htmlFor="estoque">Em estoque:</label>
-                            <input required type="number" id="estoque" onChange={handleEstoqueChange} value={estoque} />
+                            <label className="label" htmlFor="qtd">Em estoque:</label>
+                            <input required type="number" id="qtd" onChange={handleQtdChange} value={qtd} />
                         </InputContainer>
 
                         <InputContainer>

@@ -1,14 +1,14 @@
-export async function cadastrarProduto(dados){
+export async function cadastrarProduto(dadosProdutos){
 
     const url = "http://localhost:8080/produto/cadastrar";
-    console.log(dados);
+    console.log(dadosProdutos);
     try {
         const response = await fetch(url, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(dados)
+            body: JSON.stringify(dadosProdutos)
         });
 
         console.log(response);
@@ -108,11 +108,11 @@ export async function encontrarProdutoId(id){
     }
 }
 
-export async function atualizarUsuario(id, dadosUsuario){
+export async function atualizarProduto(id, dadosProdutos){
 
-    const url = `http://localhost:8080/user/editar/${id}`;
+    const url = `http://localhost:8080/produto/editar/${id}`;
     console.log(url);
-    console.log(dadosUsuario);
+    console.log(dadosProdutos);
 
     try {
         const response = await fetch(url, {
@@ -120,7 +120,7 @@ export async function atualizarUsuario(id, dadosUsuario){
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(dadosUsuario)
+            body: JSON.stringify(dadosProdutos)
         });
 
         console.log(response);

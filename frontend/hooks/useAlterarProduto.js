@@ -1,20 +1,24 @@
-import { encontrarProdutoId } from "@/services/ProdutoService";
-import { useSearchParams } from "next/navigation";
+import { atualizarProduto, encontrarProdutoId } from "@/services/ProdutoService";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function useAlterarProduto() {
 
   const [hostedUrl, setHostedUrl] = useState([]);
+
+  const [idProduto, setIdProduto] = useState(0);
   const [nome, setNome] = useState("");
   const [preco, setPreco] = useState(0.0);
-  const [estoque, setEstoque] = useState(0);
+  const [qtd, setQtd] = useState(0);
   const [descricao, setDescricao] = useState("");
   const [avaliacao, setAvaliacao] = useState(0.5);
+  const [status, setStatus] = useState(false);
 
-
-  const [produto, setProduto] = useState({});
-  const [idProduto, setIdProduto] = useState(0);
+  const [erro, setErro] = useState(null);
+  
+  const router = useRouter();
   const searchParams = useSearchParams();
+
   useEffect(() => {
     // Pega os parâmetros da URL
     const id = searchParams.get('id'); // Pega o valor de id
@@ -26,9 +30,20 @@ export function useAlterarProduto() {
     const carregarProduto = async () => {
       if (idProduto) {
         const produto = await encontrarProdutoId(idProduto); // Chama o serviço para pegar os dados do usuário
-      
-          setProduto(produto);
-          
+        console.log(produto);
+        if (produto) {
+          setIdProduto(produto.produtoId);
+          setNome(produto.produtoNome || '');
+          setQtd(produto.produtoQtd || 0);
+          setPreco(produto.produtoPreco || 0.0);
+          setDescricao(produto.produtoDesc || '');
+          setAvaliacao(produto.produtoAvaliacao || 0.5);
+          setStatus(produto.produtoStatus || false);
+
+          setHostedUrl(produto.imagens)
+        }else {
+          setErro('Produto não encontrado');
+        }
       }
     };
 
@@ -36,15 +51,10 @@ export function useAlterarProduto() {
 
   }, [idProduto]);
 
-  useEffect(() => {
-    // Pega os parâmetros da URL
-    console.log(produto);
-  }, [produto]);
-
 
   const handleNomeChange = (event) => setNome(event.target.value);
+  const handleQtdChange = (event) => setQtd(parseInt(event.target.value) || 0);
   const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
-  const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value) || 0);
   const handleDescricaoChange = (event) => setDescricao(event.target.value);
   const handleAvaliacaoChange = (event) => setAvaliacao(parseFloat(event.target.value) || 0);
 
@@ -55,37 +65,54 @@ export function useAlterarProduto() {
     ]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const produto = {
-      nome: nome,
-      preco: preco,
-      estoque: estoque,
-      descricao: descricao,
-      avaliacao: avaliacao,
-      imagens: hostedUrl,
+      produtoNome: nome,
+      produtoPreco: preco,
+      produtoQtd: qtd,
+      produtoDesc: descricao,
+      produtoAvaliacao: avaliacao,
+      produtoImagens: hostedUrl,
+      produtoStatus: status
     };
 
-    console.log(produto);
+    try {
+          const response = await atualizarProduto(idProduto, produto);
+    
+          if (response !== null) {
+            alert(response);
+    
+            router.push('./produtos');
+          } else {
+            setErro(response);
+          }
+    
+    
+        } catch (error) {
+          console.log(error);
+          setErro("Erro de comunicação com o servidor!");
+        }
   };
 
   return {
     hostedUrl,
     nome,
     preco,
-    estoque,
+    qtd,
     descricao,
     avaliacao,
+    erro,
     setHostedUrl,
     setNome,
     setPreco,
-    setEstoque,
+    setQtd,
     setDescricao,
     setAvaliacao,
     handleNomeChange,
     handlePrecoChange,
-    handleEstoqueChange,
+    handleQtdChange,
     handleDescricaoChange,
     handleAvaliacaoChange,
     handleSuccessFile,
