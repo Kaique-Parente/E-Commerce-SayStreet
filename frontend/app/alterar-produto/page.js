@@ -210,7 +210,7 @@ export default function AlterarProduto() {
                 if (response !== null) {
                     alert(response);
 
-                    router.back(`./produtos?setor=${setor}`);
+                    router.push(`./produtos?setor=${setor}`);
                 } else {
                     setErro(response);
                 }
@@ -282,7 +282,7 @@ export default function AlterarProduto() {
 
 
                             <button className="btn-confirmar" type="submit">Confirmar</button>
-                            <button className="btn-cancelar" onClick={() => router.back('./home')} type="button">Cancelar</button>
+                            <button className="btn-cancelar" onClick={() => router.push(`./produtos?setor=${setor}`)} type="button">Cancelar</button>
                         </ButtonsContainer>
                     </form>
 

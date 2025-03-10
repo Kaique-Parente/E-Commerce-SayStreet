@@ -8,7 +8,7 @@ import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -152,11 +152,19 @@ export default function CadastrarProduto() {
         handleEstoqueChange,
         handleDescricaoChange,
         handleAvaliacaoChange,
-        handleSuccessFile,
-        handleSubmit,
+        handleSuccessFile
     } = useCadastroProduto();
 
     const [images, setImages] = useState([]);
+    const [setor, setSetor] = useState('');
+
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    useEffect(() => {
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+    }, [])
 
     useEffect(() => {
         console.log(hostedUrl);
@@ -168,7 +176,28 @@ export default function CadastrarProduto() {
         console.log('Imagens: ' + images);
     }, [images])
 
-    const router = useRouter();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+       try{
+            if(password === passwordVerify){
+                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
+
+                if(response !== null){
+                    alert(response);
+
+                    router.push(`./users?setor=${setor}`);
+                } else{
+                    setErro(response);
+                }
+            }else {
+                setErro("As senhas não são iguais!");
+            }
+       }catch(error){
+            console.log(error);
+            setErro("Erro de comunicação com o servidor!");
+        }
+    }
 
     return (
         <div>
@@ -226,7 +255,7 @@ export default function CadastrarProduto() {
 
 
                             <button className="btn-confirmar" type="submit">Confirmar</button>
-                            <button className="btn-cancelar" onClick={() => router.back('./home')} type="button">Cancelar</button>
+                            <button className="btn-cancelar" onClick={() => router.push(`./produtos?setor=${setor}`)} type="button">Cancelar</button>
                         </ButtonsContainer>
                     </form>
 
