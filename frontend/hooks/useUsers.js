@@ -74,16 +74,6 @@ export default function useUsers() {
         setNomeFiltro(e.target.value);
     };
 
-    const handleAlterarUsuario = async (id) => {
-        // Encontre o usuário
-        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
-        console.log(usuarios);
-
-        if (usuarioEncontrado) {
-            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}`);
-        }
-    };
-
     const handleAlternarStatus = (id) => {
         setHiddenModel(false);
         setIdUpdateUser(id);
@@ -112,7 +102,6 @@ export default function useUsers() {
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlterarUsuario,
         handleAlternarStatus
     };
 }

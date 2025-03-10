@@ -1,7 +1,9 @@
 'use client'
 
 import { useCadastroUser } from "@/hooks/useCadastroUser"
-import { useEffect } from "react";
+import { cadastrarUsuario } from "@/services/UserService";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -73,7 +75,60 @@ const InputContainer = styled.div`
 `
 
 export default function CadastrarUser() {
-    const { nome, setNome, cpf, setCpf, email, setEmail, password, setPassword, passwordVerify, setPasswordVerify, grupo, setGrupo, erro, setErro, handleSubmit, handleNomeChange, handleCpfChange, handleEmailChange, handlePasswordChange, handlePasswordVerifyChange, handleGrupoChange } = useCadastroUser();
+    const { 
+        nome, 
+        setNome, 
+        cpf, 
+        setCpf, 
+        email, 
+        setEmail, 
+        password, 
+        setPassword, 
+        passwordVerify, 
+        setPasswordVerify, 
+        grupo, 
+        setGrupo, 
+        erro, 
+        setErro, 
+        handleNomeChange, 
+        handleCpfChange, 
+        handleEmailChange, 
+        handlePasswordChange, 
+        handlePasswordVerifyChange, 
+        handleGrupoChange 
+    } = useCadastroUser();
+
+    const [setor, setSetor] = useState('');
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+    }, [])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+       try{
+            if(password === passwordVerify){
+                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
+
+                if(response !== null){
+                    alert(response);
+
+                    router.push(`./users?setor=${setor}`);
+                } else{
+                    setErro(response);
+                }
+            }else {
+                setErro("As senhas não são iguais!");
+            }
+       }catch(error){
+            console.log(error);
+            setErro("Erro de comunicação com o servidor!");
+        }
+    }
 
     useEffect(() => {
         if (erro) {

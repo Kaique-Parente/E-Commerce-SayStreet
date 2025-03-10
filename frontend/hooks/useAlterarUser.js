@@ -49,28 +49,9 @@ export function useAlterarUser(){
         carregarUsuario();
     }, [cpfUrl])
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-       try{
-            if(password === passwordVerify){
-                const response = await atualizarUsuario(idBanco,{cpf, email, nome, password, grupo});
-                console.log(response);
-
-                if(response !== null){
-                    alert(response);
-                    router.push('./users');
-                } else{
-                    setErro(response);
-                }
-            }else {
-                setErro("As senhas não são iguais!");
-            }
-       }catch(error){
-            console.log(error);
-            setErro("Erro de comunicação com o servidor!");
-        }
-    }
+    useEffect(() => {
+        console.log('ID BANCO: ' + idBanco)
+    }, [idBanco]);
 
     const handleNomeChange = (event) => {
         setNome(event.target.value);
@@ -97,6 +78,8 @@ export function useAlterarUser(){
     }
 
     return{
+        idBanco,
+        setIdBanco,
         nome,
         setNome,
         cpf,
@@ -111,7 +94,6 @@ export function useAlterarUser(){
         setGrupo,
         erro,
         setErro,
-        handleSubmit,
         handleNomeChange,
         handleCpfChange,
         handleEmailChange,

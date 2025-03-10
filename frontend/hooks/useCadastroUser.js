@@ -15,31 +15,6 @@ export function useCadastroUser(){
 
     const [erro, setErro] = useState(null);
 
-    const router = useRouter();
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-       try{
-            if(password === passwordVerify){
-                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
-
-                if(response !== null){
-                    alert(response);
-
-                    router.push('./users');
-                } else{
-                    setErro(response);
-                }
-            }else {
-                setErro("As senhas não são iguais!");
-            }
-       }catch(error){
-            console.log(error);
-            setErro("Erro de comunicação com o servidor!");
-        }
-    }
-
     const handleNomeChange = (event) => {
         setNome(event.target.value);
     }
@@ -79,7 +54,6 @@ export function useCadastroUser(){
         setGrupo,
         erro,
         setErro,
-        handleSubmit,
         handleNomeChange,
         handleCpfChange,
         handleEmailChange,
