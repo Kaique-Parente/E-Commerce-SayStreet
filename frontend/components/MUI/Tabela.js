@@ -273,7 +273,7 @@ export default function Tabela(props) {
                           Alterar
                         </button>
                         {props.viewButton ? (
-                          <button className='btn-view' onClick={() => props.handleAlterarRow(row.id)}>
+                          <button className='btn-view' onClick={() => props.handleViewRow(row.id)}>
                             <Image width={14} height={14} alt='Um icone de lápis' src="/view.png" />
                             Visualizar
                           </button>

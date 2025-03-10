@@ -9,6 +9,9 @@ import useUsers from "@/hooks/useUsers";
 import Link from "next/link";
 import Image from "next/image";
 import useProdutos from "@/hooks/useProdutos";
+import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
+import { Rating } from "@mui/material";
+import ModalView from "@/components/ModalView";
 
 const Container = styled.div`
     width: 100%;
@@ -54,6 +57,11 @@ const CreateContainer = styled.div`
 
    a:hover {
         background-color: #2F7359; 
+    }
+
+    span{
+        text-decoration: underline;
+        color: white;
     }
 `
 
@@ -111,6 +119,26 @@ const TextModal = styled.div`
     }
 `
 
+const ViewContainerCarousel = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 300px;
+`
+
+const ViewContainerContent = styled.div`
+    button {
+        background-color: gray;
+        color: white;
+
+        border: none;
+        border-radius: 12px;
+
+        padding: 8px;
+    }
+`
+
+
 export default function Produtos() {
 
     const {
@@ -120,17 +148,24 @@ export default function Produtos() {
         lastProdutoChange,
         idUpdateProduto,
         nomeFiltro,
+        hiddenView,
+        viewImages,
+        produtoView,
         setProdutos,
         setHiddenModel,
         setLastStatus,
         setLastProdutoChange,
         setIdUpdateProduto,
         setNomeFiltro,
+        setHiddenView,
+        setViewImages,
+        setProdutoView,
         atualizarTabela,
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlternarStatus
+        handleAlternarStatus,
+        handleViewProduto
     } = useProdutos();
 
     const tableHeaderSetores = [
@@ -178,19 +213,6 @@ export default function Produtos() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    useEffect(() => {
-        atualizarTabela();
-        const setor = searchParams.get('setor');
-        setSetor(setor);
-    }, [])
-
-    
-    useEffect(() => {
-        if(setor == 'admin'){
-            setViewButtonVisible(true);
-        }
-    }, [setor])
-
     const handleAlterarProduto = async (id) => {
         const produtoEncontrado = produtos.find((produto) => produto.id === id);
         console.log(produtos);
@@ -199,6 +221,27 @@ export default function Produtos() {
             router.push(`./alterar-produto?id=${produtoEncontrado.id}&setor=${setor}`);
         }
     };
+
+    useEffect(() => {
+        atualizarTabela();
+        const setor = searchParams.get('setor');
+        setSetor(setor);
+    }, [])
+
+
+    useEffect(() => {
+        if (setor == 'admin') {
+            setViewButtonVisible(true);
+        }
+    }, [setor])
+
+    useEffect(() => {
+        if (produtoView !== null) {
+            const images = produtoView.imagens?.map(item => item.url) || [];
+            console.log('Produto View: ' + produtoView);
+            setViewImages(images);
+        }
+    }, [produtoView])
 
     return (
         <Container>
@@ -246,6 +289,31 @@ export default function Produtos() {
                             </div>
                         </TextModal>
                     </Modal>
+                    <ModalView isOpen={!hiddenView} onClose={() => setHiddenView(true)}>
+                        <ViewContainerCarousel>
+                            <h1>{produtoView ? produtoView.produtoNome : ""}</h1>
+                            <CarouselWithIndicators images={viewImages} />
+                        </ViewContainerCarousel>
+                        <ViewContainerContent>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <span>Avaliação: </span>
+                                <Rating
+                                    name="simple-uncontrolled"
+                                    className="input-styles"
+                                    disabled={true}
+                                    value={produtoView ? produtoView.produtoAvaliacao : 0.5}
+                                    precision={0.5}
+                                    defaultValue={0.5}
+                                    size="large"
+                                />
+                            </div>
+
+                            <p>Preço: {produtoView ? produtoView.produtoPreco : 0.0}</p>
+                            <p>Quantidade disponível: {produtoView ? produtoView.produtoQtd : 0}</p>
+                            <button disabled>Comprar</button>
+                        </ViewContainerContent>
+
+                    </ModalView>
                     <Tabela
                         title="Produtos"
                         tableHeader={tableHeaderSetores}
@@ -259,6 +327,7 @@ export default function Produtos() {
                         rowsPerPage={15}
                         viewButton={viewButtonVisible}
                         handleAlterarRow={handleAlterarProduto}
+                        handleViewRow={handleViewProduto}
                         handleAlternarStatus={handleAlternarStatus}
                     />
                 </div>

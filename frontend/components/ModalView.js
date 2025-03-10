@@ -24,7 +24,7 @@ const ModalOverlay = styled.div`
 // Styled component para o conteúdo do modal
 const ModalContent = styled.div`
   background-color: white;
-  padding: 20px;
+  padding: 120px 100px;
   border-radius: 8px;
   min-width: 500px; /* Tamanho fixo do modal */
   min-height: 300px;
@@ -52,7 +52,14 @@ const CloseButton = styled.button`
 `;
 //* { isOpen, onClose, children }
 
-const Modal = (props) => {
+const ContainerContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+`
+
+const ModalView = (props) => {
 
   if (!props.isOpen) return null; // Não renderiza nada se o modal não estiver aberto
 
@@ -60,10 +67,10 @@ const Modal = (props) => {
     <ModalOverlay className={props.isOpen ? 'open' : ''}>
       <ModalContent className={props.isOpen ? 'open' : ''}>
         <CloseButton onClick={props.onClose}>×</CloseButton>
-        <div>{props.children}</div>
+        <ContainerContent>{props.children}</ContainerContent>
       </ModalContent>
     </ModalOverlay>
   );
 };
 
-export default Modal;
+export default ModalView;

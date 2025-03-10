@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { listarProduto, atualizarStatusUserProduto } from "@/services/ProdutoService";
+import { listarProduto, atualizarStatusUserProduto, encontrarProdutoId } from "@/services/ProdutoService";
 import { useRouter } from "next/navigation";
 
 export default function useProdutos() {
@@ -11,8 +11,10 @@ export default function useProdutos() {
     const [lastProdutoChange, setLastProdutoChange] = useState(null);
     const [idUpdateProduto, setIdUpdateProduto] = useState(null);
     const [nomeFiltro, setNomeFiltro] = useState('');
+    const [hiddenView, setHiddenView] = useState(true);
 
-    
+    const [viewImages, setViewImages] = useState([]);
+    const [produtoView, setProdutoView] = useState(null);
     const router = useRouter();
 
     const atualizarTabela = async () => {
@@ -64,6 +66,26 @@ export default function useProdutos() {
         setNomeFiltro(e.target.value);
     };
 
+    const handleCloseView = () => {
+        setHiddenView(true);
+    }
+
+    const handleViewProduto = async (id) => {
+        setHiddenView(false);
+        
+        try{
+            const response = await encontrarProdutoId(id);
+
+            if(response !== null){
+                setProdutoView(response);
+            }
+
+        }catch(error){
+            console.log(error);
+            setErro("Erro de comunicação com o servidor!");
+        }
+    }
+
     const handleAlternarStatus = (id) => {
         setHiddenModel(false);
         setIdUpdateProduto(id);
@@ -82,16 +104,23 @@ export default function useProdutos() {
         lastProdutoChange,
         idUpdateProduto,
         nomeFiltro,
+        hiddenView,
+        viewImages,
+        produtoView,
         setProdutos,
         setHiddenModel,
         setLastStatus,
         setLastProdutoChange,
         setIdUpdateProduto,
         setNomeFiltro,
+        setHiddenView,
+        setViewImages,
+        setProdutoView,
         atualizarTabela,
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlternarStatus
+        handleAlternarStatus,
+        handleViewProduto
     };
 }
