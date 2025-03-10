@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -46,22 +47,48 @@ const ContainerContent = styled.div`
     }
 `
 
+const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+
+    position: absolute;
+    top: 30px;
+    left: 20px;
+
+    background-color:rgb(128, 227, 85);
+
+    border: none;
+    border-radius: 8px;
+    
+    cursor: pointer;
+
+    &:hover{
+        background-color:rgb(84, 149, 56);
+    }
+
+    span{
+        font-weight: bold;
+        font-size: 14px;
+    }
+`
+
 const LinksContainer = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 30px;
 
-    a{
+    span{
         font-size: 30px;
         text-decoration: underline;
     }
 `
 
 export default function Home() {
-    const searchParams = useSearchParams();
     const [setor, setSetor] = useState('');
-
+    const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
@@ -71,32 +98,36 @@ export default function Home() {
 
     return (
         <Container>
+            <BackButton onClick={() => router.push(`./`)}>
+                <Image width={24} height={24} src={'./porta-aberta.svg'} alt="Porta aberta" />
+                <span>Sair</span>
+            </BackButton>
             <ContainerContent>
                 <h1>Principal</h1>
 
                 <LinksContainer>
                     {setor === 'admin' ? (
                         <>
-                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{ cursor: "pointer" }}>
                                 <span>Listar Usuários</span>
                             </a>
 
-                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{ cursor: "pointer" }}>
                                 <span>Listar Produto</span>
                             </a>
                         </>
                     ) : (
                         <>
-                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./produtos?setor=${setor}`)} style={{ cursor: "pointer" }}>
                                 <span>Listar Produto</span>
                             </a>
 
-                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{cursor: "pointer"}}>
+                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{ cursor: "pointer" }}>
                                 <span>Listar Pedido</span>
                             </a>
                         </>
                     )}
-                    
+
                 </LinksContainer>
             </ContainerContent>
         </Container>

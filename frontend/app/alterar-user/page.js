@@ -189,7 +189,10 @@ export default function AlterarUser() {
                             </select>
                         </InputContainer>
 
-                        <button type="submit">Confirmar</button>
+                        <div style={{ display: "flex", gap: 10 }}>
+                            <button type="button" onClick={() => router.push(`./users?setor=${setor}`)}>Cancelar</button>
+                            <button style={{ width: "200px" }} type="submit">Confirmar</button>
+                        </div>
                     </form>
                 </ContainerContent>
             </Container>

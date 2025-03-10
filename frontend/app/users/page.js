@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { atualizarStatusUser, listarUsuario } from "@/services/UserService";
 import { useAlterarUser } from "@/hooks/useAlterarUser";
 import Modal from "@/components/Modal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
 import useUsers from "@/hooks/useUsers";
 import Link from "next/link";
@@ -55,6 +55,11 @@ const CreateContainer = styled.div`
 
    a:hover {
         background-color: #2F7359; 
+    }
+
+    span{
+        text-decoration: underline;
+        color: white;
     }
 `
 
@@ -112,6 +117,33 @@ const TextModal = styled.div`
     }
 `
 
+const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+
+    position: absolute;
+    top: 30px;
+    left: 20px;
+
+    background-color:rgb(128, 227, 85);
+
+    border: none;
+    border-radius: 8px;
+    
+    cursor: pointer;
+
+    &:hover{
+        background-color:rgb(84, 149, 56);
+    }
+
+    span{
+        font-weight: bold;
+        font-size: 14px;
+    }
+`
+
 export default function Users() {
 
     const {
@@ -131,12 +163,17 @@ export default function Users() {
         handleConfirmModel,
         handleCloseModel,
         handleNomeFiltro,
-        handleAlterarUsuario,
         handleAlternarStatus
     } = useUsers();
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [setor, setSetor] = useState('');
+
     useEffect(() => {
         atualizarTabela();
+        const setor = searchParams.get('setor');
+        setSetor(setor);
     }, [])
 
     const tableHeaderSetores = [
@@ -172,8 +209,21 @@ export default function Users() {
         },
     ];
 
+    const handleAlterarUsuario = async (id) => {
+        const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
+        console.log(usuarios);
+
+        if (usuarioEncontrado) {
+            router.push(`./alterar-user?cpfAlterar=${usuarioEncontrado.cpf}&setor=${setor}`);
+        }
+    };
+
     return (
         <Container>
+            <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
+                <Image width={24} height={24} src={'./voltar.svg'} alt="Seta para a esquerda"/>
+                <span>Voltar</span>
+            </BackButton>
             <ContentContainer>
                 <div>
                     <h1>Lista de Usuário</h1>
@@ -182,7 +232,7 @@ export default function Users() {
                 <InputContainer>
                     <CreateContainer>
                         <Link
-                            href={'./cadastrar-user'}
+                            href={`./cadastrar-user?setor=${setor}`}
                             style={{
                                 display: "flex",
                                 justifyContent: "center",

@@ -138,6 +138,33 @@ const ViewContainerContent = styled.div`
     }
 `
 
+const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+
+    position: absolute;
+    top: 30px;
+    left: 20px;
+
+    background-color:rgb(128, 227, 85);
+
+    border: none;
+    border-radius: 8px;
+    
+    cursor: pointer;
+
+    &:hover{
+        background-color:rgb(84, 149, 56);
+    }
+
+    span{
+        font-weight: bold;
+        font-size: 14px;
+    }
+`
+
 
 export default function Produtos() {
 
@@ -245,6 +272,10 @@ export default function Produtos() {
 
     return (
         <Container>
+            <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
+                <Image width={24} height={24} src={'./voltar.svg'} alt="Seta para a esquerda" />
+                <span>Voltar</span>
+            </BackButton>
             <ContentContainer>
                 <div>
                     <h1>Lista de Produtos</h1>
@@ -253,7 +284,7 @@ export default function Produtos() {
                 <InputContainer>
                     <CreateContainer>
                         <Link
-                            href={'./cadastrar-produto'}
+                            href={`./cadastrar-produto?setor=${setor}`}
                             style={{
                                 display: "flex",
                                 justifyContent: "center",
@@ -308,7 +339,7 @@ export default function Produtos() {
                                 />
                             </div>
 
-                            <p>Preço: {produtoView ? produtoView.produtoPreco : 0.0}</p>
+                            <p>Preço: R$ {produtoView ? produtoView.produtoPreco : 0.0}</p>
                             <p>Quantidade disponível: {produtoView ? produtoView.produtoQtd : 0}</p>
                             <button disabled>Comprar</button>
                         </ViewContainerContent>

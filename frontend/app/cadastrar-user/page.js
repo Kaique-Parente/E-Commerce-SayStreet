@@ -75,27 +75,27 @@ const InputContainer = styled.div`
 `
 
 export default function CadastrarUser() {
-    const { 
-        nome, 
-        setNome, 
-        cpf, 
-        setCpf, 
-        email, 
-        setEmail, 
-        password, 
-        setPassword, 
-        passwordVerify, 
-        setPasswordVerify, 
-        grupo, 
-        setGrupo, 
-        erro, 
-        setErro, 
-        handleNomeChange, 
-        handleCpfChange, 
-        handleEmailChange, 
-        handlePasswordChange, 
-        handlePasswordVerifyChange, 
-        handleGrupoChange 
+    const {
+        nome,
+        setNome,
+        cpf,
+        setCpf,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        passwordVerify,
+        setPasswordVerify,
+        grupo,
+        setGrupo,
+        erro,
+        setErro,
+        handleNomeChange,
+        handleCpfChange,
+        handleEmailChange,
+        handlePasswordChange,
+        handlePasswordVerifyChange,
+        handleGrupoChange
     } = useCadastroUser();
 
     const [setor, setSetor] = useState('');
@@ -110,21 +110,21 @@ export default function CadastrarUser() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-       try{
-            if(password === passwordVerify){
-                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
+        try {
+            if (password === passwordVerify) {
+                const response = await cadastrarUsuario({ cpf, email, nome, password, grupo });
 
-                if(response !== null){
+                if (response !== null) {
                     alert(response);
 
                     router.push(`./users?setor=${setor}`);
-                } else{
+                } else {
                     setErro(response);
                 }
-            }else {
+            } else {
                 setErro("As senhas não são iguais!");
             }
-       }catch(error){
+        } catch (error) {
             console.log(error);
             setErro("Erro de comunicação com o servidor!");
         }
@@ -182,7 +182,10 @@ export default function CadastrarUser() {
                             </select>
                         </InputContainer>
 
-                        <button type="submit">Confirmar</button>
+                        <div style={{display: "flex", gap: 10}}>
+                            <button type="button" onClick={() => router.push(`./users?setor=${setor}`)}>Cancelar</button>
+                            <button style={{ width: "200px" }} type="submit">Confirmar</button>
+                        </div>
                     </form>
                 </ContainerContent>
             </Container>
