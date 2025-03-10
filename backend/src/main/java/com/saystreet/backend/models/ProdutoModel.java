@@ -39,7 +39,7 @@ public class ProdutoModel {
     @Column(name = "produto_nome", nullable = false, length = 200)
     private String produtoNome;
     
-    @Column(name = "produto_desc", nullable = false)
+    @Column(name = "produto_desc", nullable = false, length = 2000)
     private String produtoDesc;
 
     @Column(name = "produto_avali", nullable = false)
