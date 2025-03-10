@@ -26,8 +26,8 @@ const ModalContent = styled.div`
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  min-width: 500px; /* Tamanho fixo do modal */
-  min-height: 300px;
+  width: 500px; /* Tamanho fixo do modal */
+  height: 300px;
   max-width: 90%; /* Largura máxima em telas pequenas */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(-50px);
