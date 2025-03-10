@@ -9,7 +9,7 @@ export const CarouselWithIndicators = ({ images, image }) => {
     }
 
     return (
-        <CCarousel controls indicators>
+        <CCarousel controls indicators dark>
         {images.map((img, key) => {
             return (
                 <CCarouselItem key={key}>
