@@ -179,7 +179,7 @@ export default function AlterarProduto() {
                 if (response !== null) {
                     alert(response);
 
-                    router.push(`./produtos?setor=${setor}`);
+                    router.back(`./produtos?setor=${setor}`);
                 } else {
                     setErro(response);
                 }

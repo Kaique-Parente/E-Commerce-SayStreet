@@ -1,4 +1,5 @@
 import { cadastrarProduto } from "@/services/ProdutoService";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function useCadastroProduto() {
@@ -9,6 +10,8 @@ export function useCadastroProduto() {
   const [descricao, setDescricao] = useState("");
   const [avaliacao, setAvaliacao] = useState(0.5);
   const [erro, setErro] = useState("");
+
+  const router = useRouter();
 
   const handleNomeChange = (event) => setNome(event.target.value);
   const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
@@ -42,7 +45,7 @@ export function useCadastroProduto() {
         if (response !== null) {
           alert(response);
 
-          //router.push('./users');
+          router.back('./produtos');
         } else {
           setErro(response);
         }
