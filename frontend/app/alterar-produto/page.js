@@ -325,7 +325,7 @@ export default function AlterarProduto() {
                                                 }}
                                             />
                                         }
-                                        label="Produto Principal"
+                                        label="Imagem Principal"
                                     />
                                 </ContainerImagesOptions>
                             </div>

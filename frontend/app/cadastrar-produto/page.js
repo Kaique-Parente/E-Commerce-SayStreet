@@ -268,7 +268,7 @@ export default function CadastrarProduto() {
                                                 }}
                                             />
                                         }
-                                        label="Produto Principal"
+                                        label="Imagem Principal"
                                     />
                                 </ContainerImagesOptions>
                             </div>
