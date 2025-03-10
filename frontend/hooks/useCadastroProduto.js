@@ -11,8 +11,6 @@ export function useCadastroProduto() {
   const [avaliacao, setAvaliacao] = useState(0.5);
   const [erro, setErro] = useState("");
 
-  const router = useRouter();
-
   const handleNomeChange = (event) => setNome(event.target.value);
   const handlePrecoChange = (event) => setPreco(parseFloat(event.target.value) || 0);
   const handleEstoqueChange = (event) => setEstoque(parseInt(event.target.value) || 0);
@@ -24,41 +22,6 @@ export function useCadastroProduto() {
       ...prevHostedUrl,
       { url: results?.info?.url, principal: prevHostedUrl.length === 0 },
     ]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (hostedUrl.length > 0) {
-      const produto = {
-        produtoNome: nome,
-        produtoPreco: preco,
-        produtoQtd: estoque,
-        produtoDesc: descricao,
-        produtoAvaliacao: avaliacao,
-        produtoImagens: hostedUrl,
-      };
-
-      try {
-        const response = await cadastrarProduto(produto);
-
-        if (response !== null) {
-          alert(response);
-
-          router.back('./produtos');
-        } else {
-          setErro(response);
-        }
-
-
-      } catch (error) {
-        console.log(error);
-        setErro("Erro de comunicação com o servidor!");
-      }
-
-    } else {
-      alert('Adicione no mínimo uma imagem para o produto!');
-    }
   };
 
   return {
@@ -79,8 +42,7 @@ export function useCadastroProduto() {
     handleEstoqueChange,
     handleDescricaoChange,
     handleAvaliacaoChange,
-    handleSuccessFile,
-    handleSubmit,
+    handleSuccessFile
   }
 }
 

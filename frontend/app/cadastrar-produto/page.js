@@ -4,6 +4,7 @@ import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicato
 import Modal from "@/components/Modal";
 import { useCadastroProduto } from "@/hooks/useCadastroProduto";
 import { useCadastroUser } from "@/hooks/useCadastroUser"
+import { cadastrarProduto } from "@/services/ProdutoService";
 import { CheckBox } from "@mui/icons-material";
 import { Checkbox, FormControlLabel, Rating } from "@mui/material";
 import { CldUploadWidget } from "next-cloudinary";
@@ -179,25 +180,37 @@ export default function CadastrarProduto() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-       try{
-            if(password === passwordVerify){
-                const response = await cadastrarUsuario({cpf, email, nome, password, grupo});
+        if (hostedUrl.length > 0) {
+            const produto = {
+                produtoNome: nome,
+                produtoPreco: preco,
+                produtoQtd: estoque,
+                produtoDesc: descricao,
+                produtoAvaliacao: avaliacao,
+                produtoImagens: hostedUrl,
+            };
 
-                if(response !== null){
+            try {
+                const response = await cadastrarProduto(produto);
+
+                if (response !== null) {
                     alert(response);
 
-                    router.push(`./users?setor=${setor}`);
-                } else{
+                    router.push(`./produtos?setor=${setor}`);
+                } else {
                     setErro(response);
                 }
-            }else {
-                setErro("As senhas não são iguais!");
+
+
+            } catch (error) {
+                console.log(error);
+                setErro("Erro de comunicação com o servidor!");
             }
-       }catch(error){
-            console.log(error);
-            setErro("Erro de comunicação com o servidor!");
+
+        } else {
+            alert('Adicione no mínimo uma imagem para o produto!');
         }
-    }
+    };
 
     return (
         <div>
