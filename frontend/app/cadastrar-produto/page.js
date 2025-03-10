@@ -106,6 +106,37 @@ const ButtonsContainer = styled.div`
     }
 `
 
+const ContainerImagesOptions = styled.div`
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    span:nth-child(1) {
+        font-size: 18px;
+    }
+
+    button{
+        border: none;
+        border-radius: 8px;
+
+        padding: 6px 8px;
+        background-color:rgba(255, 0, 0, 0.49);
+
+        &:hover {
+            background-color:rgba(255, 0, 0, 0.7);
+        }
+    }
+`
+
+const ViewContainerCarousel = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 400px;
+`
+
 export default function CadastrarProduto() {
 
     const {
@@ -202,9 +233,9 @@ export default function CadastrarProduto() {
                     <div>
                         {hostedUrl?.map((obj, idx) => (
                             <div key={idx}>
-                                <div>
+                                <ContainerImagesOptions>
                                     {/* Filtra a URL do hostedUrl removendo a URL que corresponde à imagem clicada */}
-                                    <span>Item: {idx+1}</span>
+                                    <span>Item: {idx + 1}</span>
                                     <button onClick={() => {
                                         setHostedUrl((prevHostedUrl) => {
                                             // Remove o item clicado
@@ -219,7 +250,8 @@ export default function CadastrarProduto() {
                                         });
                                     }}
                                     >
-                                        XXX
+                                        <Image width={18} height={18} src={'./lixo.svg'} alt="Icone de um lixo" />
+                                        Remover
                                     </button>
 
                                     <FormControlLabel
@@ -238,11 +270,12 @@ export default function CadastrarProduto() {
                                         }
                                         label="Produto Principal"
                                     />
-                                </div>
+                                </ContainerImagesOptions>
                             </div>
                         ))}
-
-                        <CarouselWithIndicators images={images} />
+                        <ViewContainerCarousel>
+                            <CarouselWithIndicators images={images} />
+                        </ViewContainerCarousel>
                     </div>
                 </ContainerContent>
             </Container>
