@@ -13,6 +13,9 @@ const NavBar = styled.div`
     align-items: center;
     gap: 45px;
 
+    position: fixed;
+    z-index: 1;
+
     padding: 5px 130px;
 
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -94,8 +97,39 @@ export default function LadingPage() {
                     <Image width={18} height={18} src={'sacola.svg'} alt="Ícone sacola" />
                 </ActionsNavBar>
             </NavBar>
-            <div>
-                <h1>dawdawdaw</h1>
+            <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        minHeight: '410px',
+                        objectFit: 'cover', // Faz o vídeo cobrir toda a tela
+                    }}
+                >
+                    <source src="/videos/video-fundo.mp4" type="video/mp4" />
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+
+            {/* Conteúdo de Destaques */}
+            <div id="destaques" style={{ padding: '50px 20px', backgroundColor: '#f0f0f0' }}>
+                <h2>Destaques</h2>
+                <div>
+                    <p>Aqui estão nossos produtos em destaque!</p>
+                </div>
+            </div>
+
+            {/* Conteúdo de Novidades */}
+            <div id="novidades" style={{ padding: '50px 20px' }}>
+                <h2>Novidades</h2>
+                <div>
+                    <p>Confira as últimas novidades da nossa coleção!</p>
+                </div>
             </div>
         </>
     );
