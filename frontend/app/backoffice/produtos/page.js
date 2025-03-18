@@ -273,7 +273,7 @@ export default function Produtos() {
     return (
         <Container>
             <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
-                <Image width={24} height={24} src={'./voltar.svg'} alt="Seta para a esquerda" />
+                <Image width={24} height={24} src={'../voltar.svg'} alt="Seta para a esquerda" />
                 <span>Voltar</span>
             </BackButton>
             <ContentContainer>

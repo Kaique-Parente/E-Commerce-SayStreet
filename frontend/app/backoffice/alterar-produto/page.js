@@ -306,7 +306,7 @@ export default function AlterarProduto() {
                                         });
                                     }}
                                     >
-                                        <Image width={18} height={18} src={'./lixo.svg'} alt="Icone de um lixo"/>
+                                        <Image width={18} height={18} src={'../lixo.svg'} alt="Icone de um lixo"/>
                                         Remover
                                     </button>
 

@@ -22,7 +22,7 @@ export default function UseLogin() {
                 const setor = await encontrarSetorUsuarioEmail(email);
 
                 if(setor !== null) {
-                    router.push(`./home?setor=${setor}`);
+                    router.push(`backoffice/home?setor=${setor}`);
                 }
                 
             } else {
