@@ -74,6 +74,31 @@ const SearchBar = styled.div`
     }
 `
 
+const Destaque = styled.div`
+    display: flex;
+    justify-content: center;
+
+    position: relative;
+    z-index: -1;
+
+    width: 100%;
+    height: 230px;
+    background-color: rgba(4, 41, 64, 95);
+
+    padding: 0px 130px;
+
+    h1 {
+        font-size: 24px;
+        color: #CFCFCF;
+
+        padding: 30px 0px;
+    }
+`
+
+const DestaqueImages = styled.div`
+
+`
+
 
 export default function LadingPage() {
     return (
@@ -108,7 +133,7 @@ export default function LadingPage() {
                         left: 0,
                         width: '100%',
                         minHeight: '410px',
-                        objectFit: 'cover', // Faz o vídeo cobrir toda a tela
+                        objectFit: 'cover',
                     }}
                 >
                     <source src="/videos/video-fundo.mp4" type="video/mp4" />
@@ -116,12 +141,14 @@ export default function LadingPage() {
                 </video>
             </div>
 
-            {/* Conteúdo de Destaques */}
-            <div id="destaques" style={{ padding: '50px 20px', backgroundColor: '#f0f0f0' }}>
-                <h2>Destaques</h2>
-                <div>
-                    <p>Aqui estão nossos produtos em destaque!</p>
-                </div>
+            <div style={{height: 380}}>
+                <Destaque>
+                    <div>
+                        <h1>DESTAQUES</h1>
+                        <Image width={372} height={290} src={'procurar.svg'} alt="Ícone Lupa" />
+                        <Image width={372} height={290} src={'procurar.svg'} alt="Ícone Lupa" />
+                    </div>
+                </Destaque>
             </div>
 
             {/* Conteúdo de Novidades */}
