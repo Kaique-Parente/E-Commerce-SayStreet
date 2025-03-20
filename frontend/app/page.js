@@ -139,6 +139,15 @@ const SpanCardDestaque = styled.div`
     }
 `
 
+const Novidade = styled.div`
+    margin: 70px 0px;
+    padding: 5px 130px;
+
+    h2{
+        margin-bottom: 30px;
+    }
+`
+
 
 export default function LadingPage() {
     return (
@@ -182,7 +191,7 @@ export default function LadingPage() {
             </div>
 
             <div style={{ height: 536 }}>
-                
+
                 <Destaque>
                     <h1>DESTAQUES</h1>
                     <div style={{ position: "absolute", display: "flex" }}>
@@ -226,12 +235,25 @@ export default function LadingPage() {
             </div>
 
             {/* Conteúdo de Novidades */}
-            <div id="novidades" style={{ padding: '50px 20px' }}>
+            <Novidade>
                 <h2>Novidades</h2>
                 <div>
-                    <p>Confira as últimas novidades da nossa coleção!</p>
+                    <Image
+                        style={{ objectFit: "contain" }}
+                        width={372}
+                        height={390}
+                        src={'/web/destaque2.png'}
+                        alt="Ícone Lupa"
+                    />
+                    <Image
+                        style={{ objectFit: "contain" }}
+                        width={372}
+                        height={390}
+                        src={'/web/destaque2.png'}
+                        alt="Ícone Lupa"
+                    />
                 </div>
-            </div>
+            </Novidade>
         </>
     );
 }
