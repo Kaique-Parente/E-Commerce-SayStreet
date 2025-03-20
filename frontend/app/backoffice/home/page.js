@@ -99,7 +99,7 @@ export default function Home() {
     return (
         <Container>
             <BackButton onClick={() => router.push(`./`)}>
-                <Image width={24} height={24} src={'../porta-aberta.svg'} alt="Porta aberta" />
+                <Image width={24} height={24} src={'/backoffice/porta-aberta.svg'} alt="Porta aberta" />
                 <span>Sair</span>
             </BackButton>
             <ContainerContent>

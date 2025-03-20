@@ -221,7 +221,7 @@ export default function Users() {
     return (
         <Container>
             <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
-                <Image width={24} height={24} src={'../voltar.svg'} alt="Seta para a esquerda"/>
+                <Image width={24} height={24} src={'/backoffice/voltar.svg'} alt="Seta para a esquerda"/>
                 <span>Voltar</span>
             </BackButton>
             <ContentContainer>
@@ -241,13 +241,13 @@ export default function Users() {
                                 cursor: "pointer"
                             }}
                         >
-                            <Image width={14} height={14} alt='Um icone de mais' src="/mais.png" />
+                            <Image width={14} height={14} alt='Um icone de mais' src="/backoffice/mais.png" />
                             <span>Novo usuário</span>
                         </Link>
                     </CreateContainer>
 
                     <SearchContainer>
-                        <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/pesquisar.png" />
+                        <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/backoffice/pesquisar.png" />
                         <input type="text" id="nome" placeholder="Pesquisar por Nome:"
                             value={nomeFiltro} onChange={handleNomeFiltro}
                         />

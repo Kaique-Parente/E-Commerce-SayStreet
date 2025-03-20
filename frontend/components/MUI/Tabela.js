@@ -269,12 +269,12 @@ export default function Tabela(props) {
                     <TableCell>
                       <TableCellContainer>
                         <button onClick={() => props.handleAlterarRow(row.id)}>
-                          <Image width={14} height={14} alt='Um icone de lápis' src="/editar.png" />
+                          <Image width={14} height={14} alt='Um icone de lápis' src="/backoffice/editar.png" />
                           Alterar
                         </button>
                         {props.viewButton ? (
                           <button className='btn-view' onClick={() => props.handleViewRow(row.id)}>
-                            <Image width={14} height={14} alt='Um icone de lápis' src="/view.png" />
+                            <Image width={14} height={14} alt='Um icone de lápis' src="/backoffice/view.png" />
                             Visualizar
                           </button>
                         ) : (

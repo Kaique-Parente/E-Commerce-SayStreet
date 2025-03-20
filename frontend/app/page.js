@@ -104,7 +104,7 @@ export default function LadingPage() {
     return (
         <>
             <NavBar>
-                <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'logo.svg'} alt="Logo Say Street" />
+                <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
                 <LinksNavBar>
                     <a>NOVIDADES</a>
                     <a>TÊNIS</a>
@@ -114,12 +114,12 @@ export default function LadingPage() {
                 <ActionsNavBar>
                     <SearchBar>
                         <label htmlFor="pesquisa">
-                            <Image width={14} height={14} src={'procurar.svg'} alt="Ícone Lupa" />
+                            <Image width={14} height={14} src={'/web/procurar.svg'} alt="Ícone Lupa" />
                         </label>
                         <input id="pesquisa" type="text" placeholder="Pesquisar" />
                     </SearchBar>
-                    <Image width={18} height={18} src={'pessoa.svg'} alt="Ícone pessoa" />
-                    <Image width={18} height={18} src={'sacola.svg'} alt="Ícone sacola" />
+                    <Image width={18} height={18} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
+                    <Image width={18} height={18} src={'/web/sacola.svg'} alt="Ícone sacola" />
                 </ActionsNavBar>
             </NavBar>
             <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -136,7 +136,7 @@ export default function LadingPage() {
                         objectFit: 'cover',
                     }}
                 >
-                    <source src="/videos/video-fundo.mp4" type="video/mp4" />
+                    <source src="/web/videos/video-fundo.mp4" type="video/mp4" />
                     Seu navegador não suporta a tag de vídeo.
                 </video>
             </div>
@@ -145,8 +145,8 @@ export default function LadingPage() {
                 <Destaque>
                     <div>
                         <h1>DESTAQUES</h1>
-                        <Image width={372} height={290} src={'procurar.svg'} alt="Ícone Lupa" />
-                        <Image width={372} height={290} src={'procurar.svg'} alt="Ícone Lupa" />
+                        <Image width={372} height={290} src={'/web/procurar.svg'} alt="Ícone Lupa" />
+                        <Image width={372} height={290} src={'/web/procurar.svg'} alt="Ícone Lupa" />
                     </div>
                 </Destaque>
             </div>
