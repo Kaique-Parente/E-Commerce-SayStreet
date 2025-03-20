@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from "@mui/material";
 import Image from "next/image";
 import styled from "styled-components";
 
@@ -79,10 +80,10 @@ const Destaque = styled.div`
     justify-content: center;
 
     position: relative;
-    z-index: -1;
+    z-index: 1;
 
     width: 100%;
-    height: 230px;
+    height: 360px;
     background-color: rgba(4, 41, 64, 95);
 
     padding: 0px 130px;
@@ -95,8 +96,47 @@ const Destaque = styled.div`
     }
 `
 
-const DestaqueImages = styled.div`
+const CardDestaque = styled.div`
+    margin-top: 100px;
+    padding: 20px 10px;
+    border: 1px solid black;
+    border-radius: 4px;
 
+    cursor: pointer;
+    transition: border 0.3s ease-in-out;
+    transition: transform 3.2 ease-in-out;
+    
+    &:hover {
+        border-color: rgba(255, 227, 23, 0.95);
+        transform: scale(1.02) translateY(-15px);
+
+        img {
+            transform: scale(1.1);
+            transition: transform 0.3s ease-in-out;
+        }
+    }
+
+    transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+    
+`
+
+const TextCardDestaque = styled.div`
+    position: absolute;
+    text-align: center;
+    bottom: 40px;
+    right: 0;
+    left: 0;
+`
+
+const SpanCardDestaque = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 10px;
+
+    span:nth-child(1){
+        font-weight: bold;
+    }
 `
 
 
@@ -141,13 +181,47 @@ export default function LadingPage() {
                 </video>
             </div>
 
-            <div style={{height: 380}}>
+            <div style={{ height: 536 }}>
+                
                 <Destaque>
-                    <div>
-                        <h1>DESTAQUES</h1>
-                        <Image width={372} height={290} src={'/web/procurar.svg'} alt="Ícone Lupa" />
-                        <Image width={372} height={290} src={'/web/procurar.svg'} alt="Ícone Lupa" />
+                    <h1>DESTAQUES</h1>
+                    <div style={{ position: "absolute", display: "flex" }}>
+                        <CardDestaque style={{ position: "relative" }}>
+                            <Image
+                                width={372}
+                                height={390}
+                                src={'/web/destaque1.png'}
+                                alt="Ícone Lupa"
+                                style={{ objectFit: "contain" }}
+                            />
+                            <TextCardDestaque>
+                                <h3>Tênis Puma MB.04 Masculino</h3>
+                                <SpanCardDestaque>
+                                    <span>R$ 1.799,99</span>
+                                    <span>10x R$ 179,99</span>
+                                </SpanCardDestaque>
+                            </TextCardDestaque>
+                        </CardDestaque>
+
+                        <CardDestaque style={{ position: "relative", marginLeft: "15px" }}>
+                            <Image
+                                style={{ objectFit: "contain" }}
+                                width={372}
+                                height={390}
+                                src={'/web/destaque2.png'}
+                                alt="Ícone Lupa"
+                            />
+                            <TextCardDestaque>
+                                <h3>Tênis Air Jordan 5 Retro Og Masculino</h3>
+                                <SpanCardDestaque>
+                                    <span>R$ 1.799,99</span>
+                                    <span>10x R$ 179,99</span>
+                                </SpanCardDestaque>
+                            </TextCardDestaque>
+                        </CardDestaque>
+
                     </div>
+
                 </Destaque>
             </div>
 
