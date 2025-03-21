@@ -140,11 +140,101 @@ const SpanCardDestaque = styled.div`
 `
 
 const Novidade = styled.div`
+
+    display: flex;
+    justify-content: center;
+
     margin: 70px 0px;
     padding: 5px 130px;
 
     h2{
         margin-bottom: 30px;
+    }
+`
+
+const ConhecaTambem = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: 0px 130px;
+
+    h2{
+        margin-bottom: 30px;
+    }
+`
+
+const CardConheca = styled.div`
+    position: relative;
+
+    width: 292px;
+    height: 450px;
+    margin-bottom: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+
+    /* Filtro escuro sobre a imagem */
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+        z-index: 1; /* Garante que fique sobre a imagem */
+        transition: background 0.3s ease-in-out;
+    }
+
+    &:hover::before {
+        background: rgba(0, 0, 0, 0.3); /* Clareia no hover */
+    }
+
+    /* Garante que a imagem fique no fundo */
+    img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0; /* Imagem no fundo */
+    }
+
+    /* Texto e botão sobre a imagem */
+    .content {
+        position: relative;
+        z-index: 2; /* Acima do filtro */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    button {
+        background-color: #ffcc00;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+            background-color: #e6b800;
+        }
     }
 `
 
@@ -228,7 +318,6 @@ export default function LadingPage() {
                                 </SpanCardDestaque>
                             </TextCardDestaque>
                         </CardDestaque>
-
                     </div>
 
                 </Destaque>
@@ -236,7 +325,7 @@ export default function LadingPage() {
 
             {/* Conteúdo de Novidades */}
             <Novidade>
-                <h2>Novidades</h2>
+                <h2>NOVIDADES</h2>
                 <div>
                     <Image
                         style={{ objectFit: "contain" }}
@@ -254,6 +343,34 @@ export default function LadingPage() {
                     />
                 </div>
             </Novidade>
+
+            {/* 
+            <div style={{display: "flex", justifyContent: "center"}}>
+            <ConhecaTambem>
+                <h2>CONHEÇA TAMBÉM</h2>
+
+                <div style={{ display: "flex", gap: 20 }}>
+                    <CardConheca>
+                        <Image
+                            width={240}
+                            height={380}
+                            src={'/web/conhecaTambem.avif'}
+                            alt="Ícone Lupa"
+                        />
+                        <div className="content">
+                            <p>Conheça também</p>
+                            <button>Saiba mais</button>
+                        </div>
+                    </CardConheca>
+                    <CardConheca>
+
+                    </CardConheca>
+                </div>
+                
+
+            </ConhecaTambem>
+            </div>
+            */}
         </>
     );
 }
