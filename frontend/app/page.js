@@ -271,7 +271,7 @@ export default function LadingPage() {
                         top: 0,
                         left: 0,
                         width: '100%',
-                        minHeight: '410px',
+                        height: '100vh',
                         objectFit: 'cover',
                     }}
                 >
