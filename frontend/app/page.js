@@ -297,7 +297,7 @@ const produtosExm =
                 }
             ]
         }
-    ]
+]
 
 const produtoUpdate = produtosExm.map(produto => ({
     produtoId: produto.produtoId,
@@ -397,7 +397,7 @@ export default function LadingPage() {
 
                         return (
                             <CardDestaque
-                                onClick={() => router.push(`/client/${slug}`)}
+                                onClick={() => router.push(`${slug}`)}
                                 key={produto.produtoId}
                                 style={{ position: "relative", marginLeft: "15px" }}
                             >
