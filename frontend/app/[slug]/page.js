@@ -18,20 +18,20 @@ const Container = styled.div`
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-
-    padding-top: 380px;
+    padding-top: 80px;
 `
 
 const ProductContainer = styled.div`
-    
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 1200px;
     margin: 0 auto;
 
+    padding: 100px 0px;
     gap: 50px;
+
+    flex-grow: 1;
 `
 
 const DescribeContainer = styled.div`
@@ -63,7 +63,7 @@ const DetailsContainer = styled.div`
     max-width: 1200px;
 
     margin: 0px auto;
-    margin-top: 120px;
+    margin-top: 20px;
 
     display: flex;
     flex-direction: column;
@@ -133,7 +133,7 @@ export default function ProdutoDetalhes({ params }) {
             <Container>
 
                 <ProductContainer>
-                    <div style={{ width: 570, height: 510 }}>
+                    <div style={{ maxWidth: 570}}>
                         <CarouselWithIndicators images={images} />
                     </div>
                     <DescribeContainer>
@@ -172,12 +172,11 @@ export default function ProdutoDetalhes({ params }) {
                         </ButtonContainer>
                     </DescribeContainer>
 
-
                 </ProductContainer>
 
                 <DetailsContainer>
-                    <h2>Detalhes do Produto</h2>
-                    <p>dwadawdaw</p>
+                    <h3>Detalhes do Produto</h3>
+                    <p>{produto?.produtoDesc || "Carregando..."}</p>
                 </DetailsContainer>
 
             </Container>

@@ -9,11 +9,11 @@ export const CarouselWithIndicators = ({ images, image }) => {
     }
 
     return (
-        <CCarousel controls indicators dark>
+        <CCarousel style={{width: '570px', height: '510px'}} controls indicators dark>
         {images.map((img, key) => {
             return (
                 <CCarouselItem key={key}>
-                    <CImage className="d-block w-100" src={img} alt={`Slide ${key}`} />
+                    <CImage style={{objectFit: 'contain',height: '580px'}} className="d-block w-100" src={img} alt={`Slide ${key}`} />
                 </CCarouselItem>
             );
         })}
