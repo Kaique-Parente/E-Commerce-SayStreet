@@ -2,13 +2,14 @@
 
 import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado";
 import EscolherTamanho from "@/components/ClientComponents/EscolherTamanho";
+import Footer from "@/components/ClientComponents/Footer";
 import NavBar from "@/components/ClientComponents/NavBar";
 import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
 import { encontrarProdutoId } from "@/services/ProdutoService";
 import { assignRef } from "@coreui/react/dist/esm/hooks/useForkedRef";
 import { Rating } from "@mui/material";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { use, useEffect, useState } from 'react';
 import styled from "styled-components";
 
@@ -101,6 +102,7 @@ export default function ProdutoDetalhes({ params }) {
         }
     }
 
+    const router = useRouter();
     const resolvedParams = use(params);
     const slug = resolvedParams?.slug;
 
@@ -127,13 +129,14 @@ export default function ProdutoDetalhes({ params }) {
     }, [produto])
 
 
+
     return (
         <>
             <NavBar />
             <Container>
 
                 <ProductContainer>
-                    <div style={{ maxWidth: 570}}>
+                    <div style={{ maxWidth: 570 }}>
                         <CarouselWithIndicators images={images} />
                     </div>
                     <DescribeContainer>
@@ -179,8 +182,10 @@ export default function ProdutoDetalhes({ params }) {
                     <p>{produto?.produtoDesc || "Carregando..."}</p>
                 </DetailsContainer>
 
-            </Container>
+                <button onClick={() => router.back("")}>VOLTAR</button>
 
+                <Footer />
+            </Container>
         </>
     );
 }

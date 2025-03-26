@@ -1,8 +1,11 @@
 'use client'
 
+import Footer from "@/components/ClientComponents/Footer";
 import NavBar from "@/components/ClientComponents/NavBar";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const Destaque = styled.div`
@@ -167,6 +170,7 @@ const CardConheca = styled.div`
         }
     }
 `
+
 const produtosExm =
     [
         {
@@ -297,7 +301,7 @@ const produtosExm =
                 }
             ]
         }
-]
+    ]
 
 const produtoUpdate = produtosExm.map(produto => ({
     produtoId: produto.produtoId,
@@ -308,15 +312,15 @@ const produtoUpdate = produtosExm.map(produto => ({
 
 const normalizeSlug = (str) => {
     return str
-      .toString()
-      .normalize("NFD") // Decompõe os caracteres acentuados
-      .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
-      .toLowerCase()
-      .replace(/[^a-z0-9-]+/g, "-") // Substitui espaços e caracteres especiais por "-"
-      .replace(/-+/g, "-") // Remove hífens duplicados
-      .replace(/^-|-$/g, ""); // Remove hífens no início e no fim
-  };
-  
+        .toString()
+        .normalize("NFD") // Decompõe os caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-") // Substitui espaços e caracteres especiais por "-"
+        .replace(/-+/g, "-") // Remove hífens duplicados
+        .replace(/^-|-$/g, ""); // Remove hífens no início e no fim
+};
+
 
 
 export default function LadingPage() {
@@ -448,6 +452,9 @@ export default function LadingPage() {
             </ConhecaTambem>
             </div>
             */}
+
+            <Footer/>
+           
         </>
     );
 }
