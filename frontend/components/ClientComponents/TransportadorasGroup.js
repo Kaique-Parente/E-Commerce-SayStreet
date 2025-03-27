@@ -34,7 +34,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
 
     const handleChange = (event) => {
         // Atualiza o estado da transportadora com o valor selecionado
-        setTransportadora(event.target.value);
+        setTransportadora(Number(event.target.value));
     };
 
     return (
@@ -47,7 +47,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
             >
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <FormControlLabel
-                        value="transportadora1"
+                        value="20"
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -63,7 +63,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                     />
                     <p style={{marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 5)).toLocaleDateString()}</p>
                     <FormControlLabel
-                        value="transportadora2"
+                        value="25"
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>
@@ -79,7 +79,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                     />
                     <p style={{marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString()}</p>
                     <FormControlLabel
-                        value="transportadora3"
+                        value="30"
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>

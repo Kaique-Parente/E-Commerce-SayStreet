@@ -7,7 +7,7 @@ import TransportadorasGroup from "@/components/ClientComponents/TransportadorasG
 import { useCarrinho } from "@/context/CarrinhoContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -308,7 +308,36 @@ const DetailsContainer = styled.div`
 
 export default function Carrinho() {
     const { carrinho, incrementarQuantidade, decrementarQuantidade, removerProduto } = useCarrinho();
-    const [transportadora, setTransportadora] = useState("");
+    const [frete, setFrete] = useState(0.0);
+    const [cep, setCep] = useState("");
+
+    const [valorTotalProdutos, setValorTotalProdutos] = useState(0.0);
+    const [valorTotalComFrete, setValorTotalComFrete] = useState(0.0);
+
+    useEffect(() => {
+        const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
+        setValorTotalProdutos(totalProdutos);
+    }, [carrinho]);
+
+    useEffect(() => {
+        setValorTotalComFrete(valorTotalProdutos + frete);
+
+        console.log(valorTotalProdutos);
+        console.log(frete);
+        console.log(valorTotalProdutos + frete);
+    }, [valorTotalProdutos, frete]);
+
+    const handleCepChange = (e) => {
+        const cepValue = e.target.value;
+    
+        const onlyNumbers = cepValue.replace(/\D/g, "");
+
+        if (onlyNumbers.length <= 5) {
+            setCep(onlyNumbers); 
+        } else if (onlyNumbers.length <= 8) {
+            setCep(onlyNumbers.replace(/(\d{5})(\d{3})/, "$1-$2"))
+        }
+    };
 
     return (
         <>
@@ -420,29 +449,30 @@ export default function Carrinho() {
                         <DetailsContainer>
                             <div className="resumo-pedido">
                                 <h2>Resumo do Pedido</h2>
-                                <p>Valor dos produtos: <span>R$ {0.00}</span></p>
-                                <p>Frete: <span>R$ {0.00}</span></p>
+                                <p>Valor dos produtos: <span>R$ {parseFloat(valorTotalProdutos).toFixed(2)}</span></p>
+                                <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
                                 <div className="total-pedido">
-                                    <h3>Valor Total: <span>R$ {0.00}</span></h3>
-                                    <p>(em até <span>10x</span> de <span>R$ 585,88</span> sem juros)</p>
+                                    <h3>Valor Total: <span>R$ {parseFloat(valorTotalComFrete).toFixed(2)}</span></h3>
+                                    <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorTotalComFrete / 10).toFixed(2)}</span> sem juros)</p>
                                 </div>
                             </div>
 
                             <div className="frete">
                                 <h2>Calcular Frete</h2>
                                 <div className="input-container">
-                                    <input type="number" placeholder="CEP:" />
+                                    <input
+                                        type="text"
+                                        placeholder="CEP:"
+                                        value={cep}
+                                        onChange={handleCepChange}
+                                    />
                                     <button>OK</button>
                                 </div>
-                                <TransportadorasGroup transportadora={transportadora} setTransportadora={setTransportadora} />
+                                <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
                             </div>
 
                             <div style={{ marginTop: "5px" }}>
-                                <BotaoPersonalizado
-                                    width={"100%"}
-                                    height={"50px"}
-                                    color={"amarelo"}
-                                >
+                                <BotaoPersonalizado width={"100%"} height={"50px"} color={"amarelo"}>
                                     Finalizar a Compra
                                 </BotaoPersonalizado>
                             </div>
