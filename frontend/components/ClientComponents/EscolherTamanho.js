@@ -27,8 +27,7 @@ const BotaoTamanho = styled.button`
   }
 `;
 
-export default function EscolherTamanho() {
-  const [tamanhoSelecionado, setTamanhoSelecionado] = useState(null);
+export default function EscolherTamanho({tamanhoSelecionado, handleAlterarTamanho}) {
 
   const tamanhos = [38, 39, 40, 41, 42, 43, 44];
 
@@ -37,8 +36,8 @@ export default function EscolherTamanho() {
       {tamanhos.map((tamanho) => (
         <BotaoTamanho
           key={tamanho}
-          $selecionado={tamanho === tamanhoSelecionado} // ⚠️ Agora usa "$selecionado"
-          onClick={() => setTamanhoSelecionado(tamanho)}
+          $selecionado={tamanho === tamanhoSelecionado}
+          onClick={() => handleAlterarTamanho(tamanho)}
         >
           {tamanho}
         </BotaoTamanho>
