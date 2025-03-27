@@ -1,8 +1,9 @@
 import { Rubik } from "next/font/google";
 import "./styles/globals.css";
+import { CarrinhoProvider } from "@/context/CarrinhoContext";
 
 const rubik = Rubik({
-  subsets: ["latin"], 
+  subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   style: ["normal"],
   display: "swap",
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
       <body className={rubik.className}>
-        {children}
+        <CarrinhoProvider>
+          {children}
+        </CarrinhoProvider>
       </body>
     </html>
   );
