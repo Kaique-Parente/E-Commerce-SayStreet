@@ -93,8 +93,11 @@ export default function NavBar() {
                     </label>
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
-                <Image width={18} height={18} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
-                <Image width={18} height={18} src={'/web/sacola.svg'} alt="Ícone sacola" />
+                <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
+                <div style={{position: "relative"}}>
+                    <div style={{position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white"}}>1</div>
+                    <Image width={20} height={20} src={'/web/sacola.svg'} alt="Ícone sacola" />
+                </div>
             </ActionsNavBar>
         </Container>
     );
