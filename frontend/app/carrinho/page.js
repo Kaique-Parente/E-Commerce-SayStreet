@@ -31,6 +31,12 @@ const ContainerCards = styled.div`
     margin-bottom: 60px;
 `
 
+const EmptyCartMessage = styled.div`
+  text-align: center;
+  font-size: 1.5rem;
+  color: #777;
+`;
+
 const CardProduct = styled.div`
     background-color: #D9D9D9;
 
@@ -121,12 +127,90 @@ const CardProduct = styled.div`
     }
 `
 
+const DetailsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
 
-const EmptyCartMessage = styled.div`
-  text-align: center;
-  font-size: 1.5rem;
-  color: #777;
-`;
+    .resumo-pedido, .frete{   
+        background-color: #CFCFCF;
+        border-radius: 6px;
+        padding: 20px 25px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        h2{
+            font-size: 20px;
+        }
+    }
+
+    .resumo-pedido{
+        p, h3{
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+
+        h3{
+            margin-bottom: 10px;
+        }
+
+        span{
+            font-weight: bold;
+        }
+    }
+
+    .total-pedido{
+        color: #CFCFCF;
+        background-color: #005C53;
+        border-radius: 6px;
+        padding: 10px 15px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        margin-top: 10px;
+    }
+
+    .frete{
+
+        .input-container{
+            display: flex;
+            gap: 10px;
+
+            input, button{
+                padding: 14px;
+                border-radius: 4px;
+            }
+
+            input{
+                width: 75%;
+                background-color: #E9E9E9;
+                border: none;
+
+                font-size: 14px;
+            }
+            
+            button{
+                width: 25%;
+                background-color: rgb(8, 61, 94);
+                color: #CFCFCF;
+                border: none;
+
+                cursor: pointer;
+            }
+
+            button:hover{
+                background-color: #042940;
+            }
+        }
+
+    }
+`
 
 export default function Carrinho() {
     const { carrinho, incrementarQuantidade, decrementarQuantidade, removerProduto } = useCarrinho();
@@ -151,7 +235,7 @@ export default function Carrinho() {
                     </div>
                 </div>
 
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", gap: "30px" }}>
                     <ContainerCards>
                         {carrinho.length === 0 ? (
                             <EmptyCartMessage>
@@ -234,30 +318,36 @@ export default function Carrinho() {
                         )}
                     </ContainerCards>
 
-                    <div>
-                        <div>
+                    <DetailsContainer>
+                        <div className="resumo-pedido">
                             <h2>Resumo do Pedido</h2>
                             <p>Valor dos produtos: <span>R$ {0.00}</span></p>
                             <p>Frete: <span>R$ {0.00}</span></p>
-                            <div>
+                            <div className="total-pedido">
                                 <h3>Valor Total: <span>R$ {0.00}</span></h3>
                                 <p>(em até <span>10x</span> de <span>R$ 585,88</span> sem juros)</p>
                             </div>
                         </div>
 
-                        <div>
-                            <div style={{ width: "500px" }}>
-                                <h2>Calcular Frete</h2>
-                                <div>
-                                    <input type="number" placeholder="CEP:" />
-                                    <button>OK</button>
-                                </div>
-                                <TransportadorasGroup transportadora={transportadora} setTransportadora={setTransportadora} />
+                        <div className="frete">
+                            <h2>Calcular Frete</h2>
+                            <div className="input-container">
+                                <input type="number" placeholder="CEP:" />
+                                <button>OK</button>
                             </div>
+                            <TransportadorasGroup transportadora={transportadora} setTransportadora={setTransportadora} />
                         </div>
 
-                        <BotaoPersonalizado width={300} height={100}>Finalizar a Compra</BotaoPersonalizado>
-                    </div>
+                        <div style={{ marginTop: "5px" }}>
+                            <BotaoPersonalizado
+                                width={"100%"}
+                                height={"50px"}
+                                color={"amarelo"}
+                            >
+                                Finalizar a Compra
+                            </BotaoPersonalizado>
+                        </div>
+                    </DetailsContainer>
                 </div>
 
                 <Footer />

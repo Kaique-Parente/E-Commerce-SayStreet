@@ -52,7 +52,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <span>Transportadora 1</span>
-                                <span>R$ 20,00</span>
+                                <span style={{fontWeight: "bold"}}>R$ 20,00</span>
                             </div>
                         }
                         sx={{
@@ -68,7 +68,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>
                                 <span>Transportadora 2</span>
-                                <span>R$ 25,00</span>
+                                <span style={{fontWeight: "bold"}}>R$ 25,00</span>
                             </div>
                         }
                         sx={{
@@ -84,7 +84,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>
                                 <span>Transportadora 3</span>
-                                <span>R$ 30,00</span>
+                                <span style={{fontWeight: "bold"}}>R$ 30,00</span>
                             </div>
                         }
                         sx={{

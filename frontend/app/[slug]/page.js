@@ -187,8 +187,8 @@ export default function ProdutoDetalhes({ params }) {
 
                         <ButtonContainer>
                             <BotaoPersonalizado
-                                width={250}
-                                height={45}
+                                width={"250px"}
+                                height={"45px"}
                                 color="amarelo"
                             >
                                 Comprar Agora
