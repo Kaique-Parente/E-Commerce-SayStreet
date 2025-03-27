@@ -343,7 +343,7 @@ export default function Carrinho() {
         <>
             <NavBar />
             <Container>
-                <div>
+                <div style={{marginBottom: "30px"}}>
                     <IdentificadorContainer>
                         <Etapa className="ativo">
                             <div className="identificador">1</div>

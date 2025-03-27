@@ -87,11 +87,13 @@ export default function NavBar() {
         // Sempre que o carrinho mudar, recalcula a quantidade total
         const total = carrinho.reduce((total, item) => total + item.quantidade, 0);
         setQuantidadeTotal(total);
-    }, [carrinho]); 
+    }, [carrinho]);
 
     return (
         <Container>
-            <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
+            <Link href={"./"}>
+                <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
+            </Link>
             <LinksNavBar>
                 <a>NOVIDADES</a>
                 <a>TÊNIS</a>
@@ -106,8 +108,8 @@ export default function NavBar() {
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
                 <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
-                <Link href={"./carrinho"} style={{position: "relative"}}>
-                    <div style={{position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white"}}>{quantidadeTotal}</div>
+                <Link href={"./carrinho"} style={{ position: "relative" }}>
+                    <div style={{ position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white" }}>{quantidadeTotal}</div>
                     <Image width={20} height={20} src={'/web/sacola.svg'} alt="Ícone sacola" />
                 </Link>
             </ActionsNavBar>
