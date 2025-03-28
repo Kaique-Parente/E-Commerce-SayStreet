@@ -119,7 +119,6 @@ const Etapa = styled.div`
     }
 `;
 
-
 const ContainerCards = styled.div`
     display: flex;
     flex-direction: column;
@@ -317,8 +316,8 @@ const DetailsContainer = styled.div`
 export default function Carrinho() {
     const { carrinho, incrementarQuantidade, decrementarQuantidade, removerProduto } = useCarrinho();
     const [frete, setFrete] = useState(0.0);
+    const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
     const [cep, setCep] = useState("");
-
     const [valorTotalProdutos, setValorTotalProdutos] = useState(0.0);
     const [valorTotalComFrete, setValorTotalComFrete] = useState(0.0);
 
@@ -339,11 +338,11 @@ export default function Carrinho() {
 
     const handleCepChange = (e) => {
         const cepValue = e.target.value;
-    
+
         const onlyNumbers = cepValue.replace(/\D/g, "");
 
         if (onlyNumbers.length <= 5) {
-            setCep(onlyNumbers); 
+            setCep(onlyNumbers);
         } else if (onlyNumbers.length <= 8) {
             setCep(onlyNumbers.replace(/(\d{5})(\d{3})/, "$1-$2"))
         }
@@ -354,22 +353,33 @@ export default function Carrinho() {
         router.push(slug);
     }
 
+    const handleMostrarOpcoes = () => {
+        const cepSemHifen = cep.replace("-", "");
+       
+        if(cepSemHifen.length === 8){
+            setMostrarOpcoes(true);
+        }else {
+            setMostrarOpcoes(false);
+            setFrete(0.0);
+        }
+    }
+
     return (
         <>
             <NavBar />
             <Container>
-                <div style={{marginBottom: "30px"}}>
+                <div style={{ marginBottom: "30px" }}>
                     <IdentificadorContainer>
                         <Etapa className="ativo">
                             <div className="identificador">1</div>
                             <span>Carrinho</span>
-                            <Image className="seta-identificador1" width={90} height={90} src={'/web/seta-identificador.svg'} alt="Imagem de uma seta"/>
+                            <Image className="seta-identificador1" width={90} height={90} src={'/web/seta-identificador.svg'} alt="Imagem de uma seta" />
                         </Etapa>
 
                         <Etapa className="">
                             <div className="identificador">2</div>
                             <span>Identificação</span>
-                            <Image className="seta-identificador2" width={90} height={90} src={'/web/seta-identificador.svg'} alt="Imagem de uma seta"/>
+                            <Image className="seta-identificador2" width={90} height={90} src={'/web/seta-identificador.svg'} alt="Imagem de uma seta" />
                         </Etapa>
 
                         <Etapa className="">
@@ -482,9 +492,11 @@ export default function Carrinho() {
                                         value={cep}
                                         onChange={handleCepChange}
                                     />
-                                    <button>OK</button>
+                                    <button onClick={handleMostrarOpcoes}>OK</button>
                                 </div>
-                                <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
+                                {mostrarOpcoes && (
+                                    <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
+                                )}
                             </div>
 
                             <div style={{ marginTop: "5px" }}>
