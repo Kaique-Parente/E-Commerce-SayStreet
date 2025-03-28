@@ -1,6 +1,6 @@
 'use client'
 
-import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
+import { CarouselWithIndicatorsBack } from "@/components/CoreUI/CarouselWithIndicatorsBack";
 import Modal from "@/components/Modal";
 import { useAlterarProduto } from "@/hooks/useAlterarProduto";
 import { useCadastroProduto } from "@/hooks/useCadastroProduto";
@@ -331,7 +331,7 @@ export default function AlterarProduto() {
                             </div>
                         ))}
                         <ViewContainerCarousel>
-                            <CarouselWithIndicators images={images} />
+                            <CarouselWithIndicatorsBack images={images} />
                         </ViewContainerCarousel>
                     </div>
                 </ContainerContent>

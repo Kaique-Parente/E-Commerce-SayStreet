@@ -9,9 +9,9 @@ import useUsers from "@/hooks/useUsers";
 import Link from "next/link";
 import Image from "next/image";
 import useProdutos from "@/hooks/useProdutos";
-import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
 import { Rating } from "@mui/material";
 import ModalView from "@/components/ModalView";
+import { CarouselWithIndicatorsBack } from "@/components/CoreUI/CarouselWithIndicatorsBack";
 
 const Container = styled.div`
     width: 100%;
@@ -323,7 +323,7 @@ export default function Produtos() {
                     <ModalView isOpen={!hiddenView} onClose={() => setHiddenView(true)}>
                         <ViewContainerCarousel>
                             <h1>{produtoView ? produtoView.produtoNome : ""}</h1>
-                            <CarouselWithIndicators images={viewImages} />
+                            <CarouselWithIndicatorsBack images={viewImages} />
                         </ViewContainerCarousel>
                         <ViewContainerContent>
                             <div style={{ display: "flex", alignItems: "center" }}>
