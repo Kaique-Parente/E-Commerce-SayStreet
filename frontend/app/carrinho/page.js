@@ -7,8 +7,11 @@ import TransportadorasGroup from "@/components/ClientComponents/TransportadorasG
 import { useCarrinho } from "@/context/CarrinhoContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+
+import normalizeSlug from "@/utils/normalizeSlug";
 
 const Container = styled.div`
     width: 100%;
@@ -144,8 +147,13 @@ const CardProduct = styled.div`
     .nome-produto{
         width: 200px;
 
-        a{
+        button{
+            background: none;
+            border: none;
+
+            text-align: start;
             font-size: 20px;
+            cursor: pointer;
         }
 
         p{
@@ -314,6 +322,8 @@ export default function Carrinho() {
     const [valorTotalProdutos, setValorTotalProdutos] = useState(0.0);
     const [valorTotalComFrete, setValorTotalComFrete] = useState(0.0);
 
+    const router = useRouter();
+
     useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
         setValorTotalProdutos(totalProdutos);
@@ -338,6 +348,11 @@ export default function Carrinho() {
             setCep(onlyNumbers.replace(/(\d{5})(\d{3})/, "$1-$2"))
         }
     };
+
+    const handleSlugClick = (nome, id) => {
+        const slug = `${normalizeSlug(nome)}-${id}`;
+        router.push(slug);
+    }
 
     return (
         <>
@@ -381,7 +396,8 @@ export default function Carrinho() {
                                                             height={150}
                                                             src={item.imagem.url}
                                                             alt={item.produtoNome}
-                                                            style={{ objectFit: "contain", background: "white" }}
+                                                            style={{ objectFit: "contain", background: "white", cursor: "pointer" }}
+                                                            onClick={() => handleSlugClick(item.produtoNome, item.produtoId)}
                                                         />
                                                     ) : (
                                                         <p>Imagem não disponível</p>
@@ -389,7 +405,7 @@ export default function Carrinho() {
                                                 </div>
 
                                                 <div className="nome-produto">
-                                                    <Link href={""}>{item.produtoNome}</Link>
+                                                    <button onClick={() => handleSlugClick(item.produtoNome, item.produtoId)}>{item.produtoNome}</button>
                                                     <p>Tamanho: {item.produtoTamanho}</p>
                                                 </div>
 
