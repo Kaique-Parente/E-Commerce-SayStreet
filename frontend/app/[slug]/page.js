@@ -7,6 +7,7 @@ import NavBar from "@/components/ClientComponents/NavBar";
 import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
 import { useCarrinho } from "@/context/CarrinhoContext";
 import { encontrarProdutoId } from "@/services/ProdutoService";
+import normalizeSlug from "@/utils/normalizeSlug";
 import { assignRef } from "@coreui/react/dist/esm/hooks/useForkedRef";
 import { Rating } from "@mui/material";
 import Image from "next/image";
@@ -142,14 +143,35 @@ export default function ProdutoDetalhes({ params }) {
 
 
     const handleAdicionarCarrinho = () => {
-        adicionarItem({
-            produtoId: produto.produtoId, 
-            produtoNome: produto.produtoNome, 
-            produtoPreco: produto.produtoPreco, 
-            produtoTamanho: tamanho,
-            imagem: (produto.imagens.filter(img => img.principal))[0],
-            quantidade: 1
-        })
+
+        if (tamanho === 0) {
+            alert("Selecione um tamanho!")
+        } else {
+            adicionarItem({
+                produtoId: produto.produtoId,
+                produtoNome: produto.produtoNome,
+                produtoPreco: produto.produtoPreco,
+                produtoTamanho: tamanho,
+                imagem: (produto.imagens.filter(img => img.principal))[0],
+                quantidade: 1
+            })
+        }
+    }
+
+    const handleComprarProduto = () => {
+        if (tamanho === 0) {
+            alert("Selecione um tamanho!")
+        } else {
+            adicionarItem({
+                produtoId: produto.produtoId,
+                produtoNome: produto.produtoNome,
+                produtoPreco: produto.produtoPreco,
+                produtoTamanho: tamanho,
+                imagem: (produto.imagens.filter(img => img.principal))[0],
+                quantidade: 1
+            })
+            router.push("./carrinho");
+        }  
     }
 
     return (
@@ -179,9 +201,9 @@ export default function ProdutoDetalhes({ params }) {
 
                         <div>
                             <h4>Escolher Tamanho:</h4>
-                            <EscolherTamanho 
-                                tamanhoSelecionado={tamanho} 
-                                handleAlterarTamanho={handleAlterarTamanho} 
+                            <EscolherTamanho
+                                tamanhoSelecionado={tamanho}
+                                handleAlterarTamanho={handleAlterarTamanho}
                             />
                         </div>
 
@@ -190,6 +212,7 @@ export default function ProdutoDetalhes({ params }) {
                                 width={"250px"}
                                 height={"45px"}
                                 color="amarelo"
+                                onClick={handleComprarProduto}
                             >
                                 Comprar Agora
                             </BotaoPersonalizado>
