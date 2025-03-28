@@ -326,6 +326,12 @@ export default function Carrinho() {
     useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
         setValorTotalProdutos(totalProdutos);
+
+        if(carrinho.length === 0){
+            setCep("");
+            setFrete(0.0);
+            setMostrarOpcoes(false);
+        }
     }, [carrinho]);
 
     useEffect(() => {
