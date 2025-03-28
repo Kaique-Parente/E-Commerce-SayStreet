@@ -1,6 +1,9 @@
 'use client'
 
+import { useCarrinho } from "@/context/CarrinhoContext";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -77,9 +80,20 @@ const SearchBar = styled.div`
 
 
 export default function NavBar() {
+    const { carrinho } = useCarrinho();  // Pegando o carrinho do contexto
+    const [quantidadeTotal, setQuantidadeTotal] = useState(0);
+
+    useEffect(() => {
+        // Sempre que o carrinho mudar, recalcula a quantidade total
+        const total = carrinho.reduce((total, item) => total + item.quantidade, 0);
+        setQuantidadeTotal(total);
+    }, [carrinho]);
+
     return (
         <Container>
-            <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
+            <Link href={"./"}>
+                <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
+            </Link>
             <LinksNavBar>
                 <a>NOVIDADES</a>
                 <a>TÊNIS</a>
@@ -94,10 +108,10 @@ export default function NavBar() {
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
                 <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
-                <div style={{position: "relative"}}>
-                    <div style={{position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white"}}>1</div>
+                <Link href={"./carrinho"} style={{ position: "relative" }}>
+                    <div style={{ position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white" }}>{quantidadeTotal}</div>
                     <Image width={20} height={20} src={'/web/sacola.svg'} alt="Ícone sacola" />
-                </div>
+                </Link>
             </ActionsNavBar>
         </Container>
     );

@@ -5,7 +5,9 @@ import EscolherTamanho from "@/components/ClientComponents/EscolherTamanho";
 import Footer from "@/components/ClientComponents/Footer";
 import NavBar from "@/components/ClientComponents/NavBar";
 import { CarouselWithIndicators } from "@/components/CoreUI/CarouselWithIndicators";
+import { useCarrinho } from "@/context/CarrinhoContext";
 import { encontrarProdutoId } from "@/services/ProdutoService";
+import normalizeSlug from "@/utils/normalizeSlug";
 import { assignRef } from "@coreui/react/dist/esm/hooks/useForkedRef";
 import { Rating } from "@mui/material";
 import Image from "next/image";
@@ -82,10 +84,17 @@ const DetailsContainer = styled.div`
 
 export default function ProdutoDetalhes({ params }) {
 
+    const { adicionarItem } = useCarrinho();
+
     const [id, setId] = useState(null);
     const [produto, setProduto] = useState(null);
+    const [tamanho, setTamanho] = useState(0);
     const [images, setImages] = useState([]);
     const [erro, setErro] = useState([]);
+
+    const handleAlterarTamanho = (value) => {
+        setTamanho(value);
+    }
 
     const handleProcurarProduto = async (e) => {
         console.log(id);
@@ -128,7 +137,42 @@ export default function ProdutoDetalhes({ params }) {
         }
     }, [produto])
 
+    useEffect(() => {
+        console.log('TAMANHO: ' + tamanho);
+    }, [tamanho])
 
+
+    const handleAdicionarCarrinho = () => {
+
+        if (tamanho === 0) {
+            alert("Selecione um tamanho!")
+        } else {
+            adicionarItem({
+                produtoId: produto.produtoId,
+                produtoNome: produto.produtoNome,
+                produtoPreco: produto.produtoPreco,
+                produtoTamanho: tamanho,
+                imagem: (produto.imagens.filter(img => img.principal))[0],
+                quantidade: 1
+            })
+        }
+    }
+
+    const handleComprarProduto = () => {
+        if (tamanho === 0) {
+            alert("Selecione um tamanho!")
+        } else {
+            adicionarItem({
+                produtoId: produto.produtoId,
+                produtoNome: produto.produtoNome,
+                produtoPreco: produto.produtoPreco,
+                produtoTamanho: tamanho,
+                imagem: (produto.imagens.filter(img => img.principal))[0],
+                quantidade: 1
+            })
+            router.push("./carrinho");
+        }  
+    }
 
     return (
         <>
@@ -157,18 +201,22 @@ export default function ProdutoDetalhes({ params }) {
 
                         <div>
                             <h4>Escolher Tamanho:</h4>
-                            <EscolherTamanho />
+                            <EscolherTamanho
+                                tamanhoSelecionado={tamanho}
+                                handleAlterarTamanho={handleAlterarTamanho}
+                            />
                         </div>
 
                         <ButtonContainer>
                             <BotaoPersonalizado
-                                width={250}
-                                height={45}
+                                width={"250px"}
+                                height={"45px"}
                                 color="amarelo"
+                                onClick={handleComprarProduto}
                             >
                                 Comprar Agora
                             </BotaoPersonalizado>
-                            <button>
+                            <button onClick={handleAdicionarCarrinho}>
                                 <Image width={18} height={18} src={'./web/sacola.svg'} alt="Icone de uma sacola" />
                                 <span>+</span>
                             </button>

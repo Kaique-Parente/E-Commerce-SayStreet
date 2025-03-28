@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import styled from "styled-components";
 
+import normalizeSlug from "@/utils/normalizeSlug";
+
 const Destaque = styled.div`
     display: flex;
     justify-content: center;
@@ -309,19 +311,6 @@ const produtoUpdate = produtosExm.map(produto => ({
     produtoPreco: produto.produtoPreco,
     imagens: produto.imagens.filter(img => img.principal)
 }));
-
-const normalizeSlug = (str) => {
-    return str
-        .toString()
-        .normalize("NFD") // Decompõe os caracteres acentuados
-        .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, "-") // Substitui espaços e caracteres especiais por "-"
-        .replace(/-+/g, "-") // Remove hífens duplicados
-        .replace(/^-|-$/g, ""); // Remove hífens no início e no fim
-};
-
-
 
 export default function LadingPage() {
     const router = useRouter();
