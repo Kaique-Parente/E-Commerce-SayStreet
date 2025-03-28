@@ -1,5 +1,6 @@
 import React from 'react'
-import '@coreui/coreui/dist/css/coreui.min.css'
+//import '@coreui/coreui/dist/css/coreui.min.css'
+import '@/app/styles/coreUI.css'
 import { CCarousel, CCarouselItem, CImage } from '@coreui/react'
 
 //.next/static/css/[slug] && /node_modules/@coreui/coreui/dist/css/coreui.min.css
