@@ -1,123 +1,170 @@
-'use client'
+"use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Importação correta do router
 import styled from "styled-components";
-import Link from "next/link";
+import Image from "next/image";
 
-const CarouselContainer = styled.div`
-    width: 100%;
-    overflow: hidden;
-    position: relative;
+// Função para normalizar o slug
+const normalizarSlug = (string) => {
+  return string
+    .toLowerCase()
+    .replace(/\s+/g, "-") // Substitui espaços por hífens
+    .replace(/[^\w\-]+/g, "") // Remove caracteres especiais
+    .replace(/\-\-+/g, "-") // Remove hífens duplicados
+    .replace(/^-+/, "") // Remove hífens no início
+    .replace(/-+$/, ""); // Remove hífens no final  
+};
+
+// Defina o seu Carrossel normalmente
+const ContainerCarrossel = styled.div`
+  width: 80%;
+  max-width: 1300px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  alin-items = center;
+  justifyContent: center;
 `;
 
-const CarouselWrapper = styled.div`
-    display: flex;
-    transition: transform 0.5s ease-in-out;
+const MovCarrossel = styled.div`
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
 `;
 
-const CarouselImage = styled.div`
-    min-width: 33.33%;  /* Exibir 3 imagens lado a lado */
-    height: 100%;
-    padding: 0 10px;  /* Espaçamento entre as imagens */
-    position: relative;
-    cursor: pointer;
+const ItemCarrossel = styled.div`
+  flex: 0 0 33.33%;
+  padding: 0 10px; /* Espaçamento entre os itens */
+  position: relative;
+  cursor: pointer;
+`;
 
-    &:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease-in-out;
+const Setinha = styled.div`
+  position: absolute;
+  top: 50%;
+  ${({ direction }) => (direction === "left" ? "left: 10px;" : "right: 10px;")}
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+  z-index: 1;
+`;
+
+const CartaoDestaque = styled.div`
+  margin-top: 100px;
+  padding: 20px 10px;
+  border: 1px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border 0.3s ease-in-out;
+  transition: transform 3.2 ease-in-out;
+
+  &:hover {
+    border-color: rgba(255, 227, 23, 0.95);
+    transform: scale(1.02) translateY(-15px);
+
+    img {
+      transform: scale(1.1);
+      transition: transform 0.3s ease-in-out;
     }
+  }
+
+  transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
 `;
 
-const Arrow = styled.div`
-    position: absolute;
-    top: 50%;
-    ${({ direction }) => (direction === "left" ? "left: 10px;" : "right: 10px;")}
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    cursor: pointer;
-    color: white;
-    font-size: 24px;
-    z-index: 1;
+const TextoCartaoDestaque = styled.div`
+  position: absolute;
+  text-align: center;
+  bottom: 40px;
+  right: 0;
+  left: 0;
 `;
 
-const ImageOverlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+const SpanCartaoDestaque = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 10px;
 
-    &:hover {
-        opacity: 0.6;
-    }
-`;
-
-const ImageText = styled.div`
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    font-size: 18px;
+  span:nth-child(1) {
     font-weight: bold;
-    z-index: 2;
+  }
 `;
 
-export default function Carousel() {
-    const [currentIndex, setCurrentIndex] = useState(0);
+export default function Carrossel({ produtoUpdate }) {
+  const [indiceAtual, setIndiceAtual] = useState(0);
+  const [eCliente, setECliente] = useState(false); // Para garantir que o useRouter funcione no cliente
 
-    const images = [
-        { src: "/web/destaque1.png", alt: "Tênis Puma MB.04 Masculino", link: "/detalhes/1" },
-        { src: "/web/destaque2.png", alt: "Tênis Air Jordan 5 Retro Og Masculino", link: "/detalhes/2" },
-        { src: "/web/destaque1.png", alt: "Tênis Nike Air Max", link: "/detalhes/3" },
-        { src: "/web/destaque2.png", alt: "Tênis Adidas UltraBoost", link: "/detalhes/4" },
-        { src: "/web/destaque1.png", alt: "Tênis New Balance 990", link: "/detalhes/5" },
-        { src: "/web/destaque2.png", alt: "Tênis Converse All Star", link: "/detalhes/6" },
-    ];
+  const router = useRouter();
 
-    const imagesPerPage = 3;  // Exibir 3 imagens por vez
+  useEffect(() => {
+    setECliente(true); // Apenas no cliente
+  }, []);
 
-    const handleNext = () => {
-        if (currentIndex + imagesPerPage < images.length) {
-            setCurrentIndex(prevIndex => prevIndex + imagesPerPage);
-        } else {
-            setCurrentIndex(0);  // Voltar para o início do carousel
-        }
-    };
+  if (!eCliente) {
+    return null; // Não renderiza nada até que o componente seja montado no cliente
+  }
 
-    const handlePrev = () => {
-        if (currentIndex - imagesPerPage >= 0) {
-            setCurrentIndex(prevIndex => prevIndex - imagesPerPage);
-        } else {
-            setCurrentIndex(Math.floor((images.length - 1) / imagesPerPage) * imagesPerPage);  // Voltar para o final do carousel
-        }
-    };
+  const itensPorPagina = 3; // Exibir exatamente 3 itens por vez
 
-    return (
-        <CarouselContainer>
-            <Arrow direction="left" onClick={handlePrev}>{"<"}</Arrow>
-            <CarouselWrapper style={{ transform: `translateX(-${(currentIndex * 100) / imagesPerPage}%)` }}>
-                {images.map((image, index) => (
-                    <CarouselImage key={index}>
-                        <Link href={image.link}>
-                            <Image
-                                src={image.src}
-                                alt={image.alt}
-                                width={200}
-                                height={400}
-                                style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                            />
-                            <ImageOverlay />
-                            <ImageText>{image.alt}</ImageText>
-                        </Link>
-                    </CarouselImage>
-                ))}
-            </CarouselWrapper>
-            <Arrow direction="right" onClick={handleNext}>{">"}</Arrow>
-        </CarouselContainer>
-    );
+  const handleProximo = () => {
+    if (indiceAtual + itensPorPagina < produtoUpdate.length) {
+      setIndiceAtual((prevIndex) => prevIndex + itensPorPagina);
+    }
+  };
+
+  const handleAnterior = () => {
+    if (indiceAtual - itensPorPagina >= 0) {
+      setIndiceAtual((prevIndex) => prevIndex - itensPorPagina);
+    }
+  };
+
+  return (
+    <ContainerCarrossel>
+      <Setinha direction="left" onClick={handleAnterior}>
+        {"<"}
+      </Setinha>
+      <MovCarrossel
+        style={{
+          transform: `translateX(-${(indiceAtual * 100) / itensPorPagina}%)`,
+        }}
+      >
+        {produtoUpdate.map((produto, index) => {
+          const id = produto.produtoId || "000000";
+          const slug = `${normalizarSlug(produto.produtoNome)}-${id}`;
+
+          return (
+            <ItemCarrossel key={index}>
+              <CartaoDestaque onClick={() => router.push(`${slug}`)}>
+                <Image
+                  style={{ objectFit: "contain" }}
+                  width={372}
+                  height={390}
+                  src={
+                    produto.imagens.length > 0
+                      ? produto.imagens[0].url
+                      : "/web/default.png"
+                  }
+                  alt={produto.produtoNome}
+                />
+                <TextoCartaoDestaque>
+                  <h3>{produto.produtoNome}</h3>
+                  <SpanCartaoDestaque>
+                    <span>R$ {produto.produtoPreco.toFixed(2)}</span>
+                    <span>10x R$ {(produto.produtoPreco / 10).toFixed(2)}</span>
+                  </SpanCartaoDestaque>
+                </TextoCartaoDestaque>
+              </CartaoDestaque>
+            </ItemCarrossel>
+          );
+        })}
+      </MovCarrossel>
+      <Setinha direction="right" onClick={handleProximo}>
+        {">"}
+      </Setinha>
+    </ContainerCarrossel>
+  );
 }
