@@ -337,6 +337,11 @@ export default function LadingPage() {
                 </video>
             </div>
 
+            {/* NOVO DESTAQUE}
+            <div style={{ width: "100%" }}>
+                <Image style={{ width: "100%", objectFit: "cover" }} width={1920} height={1000} src={'/web/226.jpg'} alt="background" />
+            </div>
+            */}
             <div style={{ height: 536 }}>
 
                 <Destaque>
@@ -442,8 +447,8 @@ export default function LadingPage() {
             </div>
             */}
 
-            <Footer/>
-           
+            <Footer />
+
         </>
     );
 }
