@@ -2,29 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Importação correta do router
+import normalizeSlug from "@/utils/normalizeSlug";
 import styled from "styled-components";
 import Image from "next/image";
 
-// Função para normalizar o slug
-const normalizarSlug = (string) => {
-  return string
-    .toLowerCase()
-    .replace(/\s+/g, "-") // Substitui espaços por hífens
-    .replace(/[^\w\-]+/g, "") // Remove caracteres especiais
-    .replace(/\-\-+/g, "-") // Remove hífens duplicados
-    .replace(/^-+/, "") // Remove hífens no início
-    .replace(/-+$/, ""); // Remove hífens no final  
-};
-
-// Defina o seu Carrossel normalmente
 const ContainerCarrossel = styled.div`
-  width: 80%;
+  width: 100%;
   max-width: 1300px;
   overflow: hidden;
   position: relative;
   display: flex;
-  alin-items = center;
-  justifyContent: center;
+  align-items: center;
+  justify-content: center;
 `;
 
 const MovCarrossel = styled.div`
@@ -42,7 +31,7 @@ const ItemCarrossel = styled.div`
 
 const Setinha = styled.div`
   position: absolute;
-  top: 50%;
+  top: 55%;
   ${({ direction }) => (direction === "left" ? "left: 10px;" : "right: 10px;")}
   transform: translateY(-50%);
   background-color: rgba(0, 0, 0, 0.5);
@@ -94,19 +83,10 @@ const SpanCartaoDestaque = styled.div`
   }
 `;
 
-export default function Carrossel({ produtoUpdate }) {
+export default function CarrosselItens({ produtoUpdate, title }) {
   const [indiceAtual, setIndiceAtual] = useState(0);
-  const [eCliente, setECliente] = useState(false); // Para garantir que o useRouter funcione no cliente
 
   const router = useRouter();
-
-  useEffect(() => {
-    setECliente(true); // Apenas no cliente
-  }, []);
-
-  if (!eCliente) {
-    return null; // Não renderiza nada até que o componente seja montado no cliente
-  }
 
   const itensPorPagina = 3; // Exibir exatamente 3 itens por vez
 
@@ -134,7 +114,7 @@ export default function Carrossel({ produtoUpdate }) {
       >
         {produtoUpdate.map((produto, index) => {
           const id = produto.produtoId || "000000";
-          const slug = `${normalizarSlug(produto.produtoNome)}-${id}`;
+          const slug = `${normalizeSlug(produto.produtoNome)}-${id}`;
 
           return (
             <ItemCarrossel key={index}>
