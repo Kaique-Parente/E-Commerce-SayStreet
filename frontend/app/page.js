@@ -4,11 +4,10 @@ import Footer from "@/components/ClientComponents/Footer";
 import NavBar from "@/components/ClientComponents/NavBar";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-
-import normalizeSlug from "@/utils/normalizeSlug";
+import CarrosselItens from "@/components/ClientComponents/CarrosselItens";
+import { listarProduto } from "@/services/ProdutoService";
 
 const Destaque = styled.div`
     display: flex;
@@ -77,13 +76,17 @@ const SpanCardDestaque = styled.div`
 const Novidade = styled.div`
 
     display: flex;
+    align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     margin: 70px 0px;
     padding: 5px 130px;
 
+    position: relative;
+
     h2{
-        margin-bottom: 30px;
+        text-align: start;
     }
 `
 
@@ -173,147 +176,29 @@ const CardConheca = styled.div`
     }
 `
 
-const produtosExm =
-    [
-        {
-            "produtoId": 1,
-            "produtoNome": "Tênis Nike Air Force 12 '07 Feminino",
-            "produtoDesc": "Confortável, durável e atemporal - o AF1 é um favorito dos fãs por um motivo. A construção clássica dos anos 80 é combinada com detalhes ousados para para um estilo que acompanha se você está na quadra ou em movimento. E como não resistimos a um mimo tentador, uma cor especial para o Dia dos Namorados adoça o look.\n\n\nBenefícios\n\nAs camadas costuradas na parte de cima trazem estilo, durabilidade e sustentação clássicos.\nProjetado originalmente para jogos de basquete de alto desempenho, o amortecimento Nike Air adiciona leveza para conforto o dia todo.\nA silhueta de corte baixo proporciona um look limpo e simplificado.\nA boca acolchoada é macia e confortável.\n\nDetalhes do Produto\n\nEntressola de espuma\nPerfurações na região dos dedos\nSolado de borracha",
-            "produtoAvaliacao": "4.0",
-            "produtoQtd": 100,
-            "produtoStatus": true,
-            "produtoPreco": 645.99,
-            "imagens": [
-                {
-                    "id": 77,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625502/02798651A5_ncazrq.avif",
-                    "principal": true
-                },
-                {
-                    "id": 78,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625505/02798651A2_a1dcjf.avif",
-                    "principal": false
-                },
-                {
-                    "id": 79,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625508/02798651A4_ztyess.avif",
-                    "principal": false
-                },
-                {
-                    "id": 80,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625513/02798651A10_ze7sjo.avif",
-                    "principal": false
-                },
-                {
-                    "id": 81,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625515/02798651A7_dv5gxq.avif",
-                    "principal": false
-                },
-                {
-                    "id": 82,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625518/02798651A9_b7anzq.avif",
-                    "principal": false
-                },
-                {
-                    "id": 83,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625522/02798651A1_w7bdog.avif",
-                    "principal": false
-                }
-            ]
-        },
-        {
-            "produtoId": 2,
-            "produtoNome": "Tênis Nike Air Force 1 ´07 LV8 Masculino",
-            "produtoDesc": "Características\nO Tênis Nike Air Force 1 ´07 LV8 Masculino na cor Cinza é a combinação perfeita de estilo e conforto. Seu material de alta qualidade proporciona durabilidade e um ajuste confortável, ideal para o dia a dia. Além disso, o design moderno e versátil do tênis adiciona um toque de sofisticação ao seu visual. A cor Cinza é uma escolha versátil que combina facilmente com diferentes estilos, desde um look mais casual até produções mais estilosas, garantindo um visual contemporâneo em todas as ocasiões.\n\nVersatilidade\nCom o Tênis Nike Air Force 1 ´07 LV8 Masculino Cinza, você tem em mãos um calçado versátil que pode ser usado em diversas ocasiões. Seja para um passeio no parque, um dia de trabalho mais descontraído ou até mesmo para um happy hour com os amigos, esse tênis se adapta perfeitamente a diferentes momentos. Sua versatilidade no estilo Athleisure permite que você esteja sempre confortável sem abrir mão do estilo, garantindo um visual moderno e despojado em todas as situações.",
-            "produtoAvaliacao": "4.5",
-            "produtoQtd": 5,
-            "produtoStatus": true,
-            "produtoPreco": 899.99,
-            "imagens": [
-                {
-                    "id": 23,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741625996/FQ871-4-004-2_l2qbhf.webp",
-                    "principal": true
-                },
-                {
-                    "id": 24,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-6_v1d2vc.webp",
-                    "principal": false
-                },
-                {
-                    "id": 25,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-7_leio2x.jpg",
-                    "principal": false
-                },
-                {
-                    "id": 26,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-4_zpfofs.webp",
-                    "principal": false
-                },
-                {
-                    "id": 27,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-5_w8sjqd.webp",
-                    "principal": false
-                },
-                {
-                    "id": 28,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-8_dq2v9e.jpg",
-                    "principal": false
-                },
-                {
-                    "id": 29,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626007/FQ871-4-004-1_pplwtm.webp",
-                    "principal": false
-                },
-                {
-                    "id": 30,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741626006/FQ871-4-004-3_lerb2f.webp",
-                    "principal": false
-                }
-            ]
-        },
-        {
-            "produtoId": 3,
-            "produtoNome": "Tênis Nike Dunk Low Retro Masculino",
-            "produtoDesc": "wadhawhdlakwhdawkldalwkhd awlh dluawh dluaw duhawudhawuih dlaihdwliu hawliuhdlauwhdlawdhalwhdlawihdlauwh dlauwh dlawh udahwliudhawliudhawu dauwh duawh dahw",
-            "produtoAvaliacao": "5.0",
-            "produtoQtd": 10,
-            "produtoStatus": true,
-            "produtoPreco": 899.99,
-            "imagens": [
-                {
-                    "id": 84,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741651016/518094-800-auto_mjyyx4.webp",
-                    "principal": false
-                },
-                {
-                    "id": 85,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741651016/518211-800-auto_ks9xa3.webp",
-                    "principal": false
-                },
-                {
-                    "id": 86,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741651016/517977-800-auto_ab0are.webp",
-                    "principal": true
-                },
-                {
-                    "id": 87,
-                    "url": "http://res.cloudinary.com/dmhmsnuxz/image/upload/v1741651016/518328-800-auto_wsktfa.webp",
-                    "principal": false
-                }
-            ]
-        }
-    ]
-
-const produtoUpdate = produtosExm.map(produto => ({
-    produtoId: produto.produtoId,
-    produtoNome: produto.produtoNome,
-    produtoPreco: produto.produtoPreco,
-    imagens: produto.imagens.filter(img => img.principal)
-}));
-
 export default function LadingPage() {
-    const router = useRouter();
+
+    const[produtos, setProdutos] = useState([]);
+
+    const atualizarProdutos =  async() => {
+        try{
+            const response = await listarProduto();
+
+            setProdutos(response.map(produto => ({
+                produtoId: produto.produtoId,
+                produtoNome: produto.produtoNome,
+                produtoPreco: produto.produtoPreco,
+                imagens: produto.imagens.filter(img => img.principal)
+            })));
+
+        }catch(error){
+            alert("Erro ao buscar dados" + error);
+        }
+    }
+
+    useEffect(() => {
+        atualizarProdutos();
+    }, [])
 
     return (
         <>
@@ -337,6 +222,11 @@ export default function LadingPage() {
                 </video>
             </div>
 
+            {/* NOVO DESTAQUE}
+            <div style={{ width: "100%" }}>
+                <Image style={{ width: "100%", objectFit: "cover" }} width={1920} height={1000} src={'/web/226.jpg'} alt="background" />
+            </div>
+            */}
             <div style={{ height: 536 }}>
 
                 <Destaque>
@@ -383,35 +273,7 @@ export default function LadingPage() {
             {/* Conteúdo de Novidades */}
             <Novidade>
                 <h2>NOVIDADES</h2>
-                <div style={{ display: "flex", }}>
-                    {produtoUpdate.map((produto) => {
-                        const id = produto.produtoId || "000000";
-                        const slug = `${normalizeSlug(produto.produtoNome)}-${id}`;
-
-                        return (
-                            <CardDestaque
-                                onClick={() => router.push(`${slug}`)}
-                                key={produto.produtoId}
-                                style={{ position: "relative", marginLeft: "15px" }}
-                            >
-                                <Image
-                                    style={{ objectFit: "contain" }}
-                                    width={372}
-                                    height={390}
-                                    src={produto.imagens.length > 0 ? produto.imagens[0].url : "/web/default.png"}
-                                    alt={produto.produtoNome}
-                                />
-                                <TextCardDestaque>
-                                    <h3>{produto.produtoNome}</h3>
-                                    <SpanCardDestaque>
-                                        <span>R$ {produto.produtoPreco.toFixed(2)}</span>
-                                        <span>10x R$ {(produto.produtoPreco / 10).toFixed(2)}</span>
-                                    </SpanCardDestaque>
-                                </TextCardDestaque>
-                            </CardDestaque>
-                        );
-                    })}
-                </div>
+                <CarrosselItens title={"NOVIDADES"} produtoUpdate={produtos}/>
             </Novidade>
 
             {/* 
@@ -442,8 +304,8 @@ export default function LadingPage() {
             </div>
             */}
 
-            <Footer/>
-           
+            <Footer />
+
         </>
     );
 }
