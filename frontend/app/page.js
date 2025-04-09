@@ -180,6 +180,11 @@ export default function LadingPage() {
 
     const[produtos, setProdutos] = useState([]);
 
+    useEffect(() => {
+        console.log("PRODUTOS");
+        console.log(produtos);
+    }, [produtos])
+
     const atualizarProdutos =  async() => {
         try{
             const response = await listarProduto();
