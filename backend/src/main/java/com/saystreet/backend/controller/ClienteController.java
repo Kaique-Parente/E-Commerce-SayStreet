@@ -26,7 +26,6 @@ public class ClienteController {
     tags = "cliente")
     @PostMapping("/cadastrar")
     public ResponseEntity<String> cadastrar (@RequestBody ClienteDto clienteDto) throws Exception{
-
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.create(clienteDto));
     }
 }

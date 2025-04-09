@@ -18,6 +18,7 @@ public class EnderecoController {
 
     @GetMapping("{cep}")
     public CepDTO consultaCep(@PathVariable("cep") String cep) {
+        //RestTemplate é utilizada para realizar requisições externas
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://viacep.com.br/ws/" + cep + "/json/"; // Construção da URL correta
         ResponseEntity<CepDTO> resp = restTemplate.getForEntity(url, CepDTO.class);

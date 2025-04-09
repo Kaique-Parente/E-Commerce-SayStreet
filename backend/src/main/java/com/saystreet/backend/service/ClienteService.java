@@ -12,10 +12,12 @@ import com.saystreet.backend.dto.EnderecosDto;
 import com.saystreet.backend.exceptions.CpfAlreadyExistsException;
 import com.saystreet.backend.exceptions.EmailAlreadyExistsException;
 import com.saystreet.backend.exceptions.InvalidCpfException;
+import com.saystreet.backend.exceptions.InvalidNameException;
 import com.saystreet.backend.models.ClienteModel;
 import com.saystreet.backend.models.EnderecoModel;
 import com.saystreet.backend.repository.ClienteRepository;
 import com.saystreet.backend.security.CpfValidator;
+import com.saystreet.backend.security.NameValidator;
 import com.saystreet.backend.security.PasswordEncryptionUtil;
 
 @Service
@@ -38,6 +40,10 @@ public class ClienteService {
 
         if (!CpfValidator.isValidCPF(clienteDto.getCpf())) {
             throw new InvalidCpfException("Este CPF não é válido. Por favor, digite um CPF válido.");
+        }
+
+        if(!NameValidator.validaNome(clienteDto.getNome())){
+            throw new InvalidNameException("Este nome não é válido. Por favor, digite um nome válido.");
         }
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(clienteDto.getSenha());
