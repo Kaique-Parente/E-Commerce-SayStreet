@@ -64,7 +64,7 @@ const InputsContainer = styled.div`
     }
 
     input:focus{
-        border: 2px solidrgb(43, 34, 29);
+        border: 2px solid rgb(43, 34, 29);
     }
 `
 

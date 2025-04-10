@@ -1,6 +1,7 @@
 'use client'
 
 import { useCarrinho } from "@/context/CarrinhoContext";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -80,6 +81,9 @@ const SearchBar = styled.div`
 
 
 export default function NavBar() {
+    const { data: session, status } = useSession();
+    const cliente = session?.user;
+
     const { carrinho } = useCarrinho();  // Pegando o carrinho do contexto
     const [quantidadeTotal, setQuantidadeTotal] = useState(0);
 
@@ -107,7 +111,7 @@ export default function NavBar() {
                     </label>
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
-                <Link href={"./login"}>
+                <Link href={cliente !== null ? "./perfil" : "./login"}>
                     <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
                 </Link>
                 <Link href={"./carrinho"} style={{ position: "relative" }}>
