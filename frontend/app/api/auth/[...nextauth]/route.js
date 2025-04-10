@@ -18,7 +18,11 @@ const handler = NextAuth({
 
         const user = await res.json();
 
-        if (res.ok && user) return user;
+        if (res.ok && user) {
+          const { password, ...userSafe } = user;
+          return userSafe;
+        }
+
         return null;
       },
     }),
@@ -28,13 +32,18 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.user = user;
+      if (user) {
+        token.user = user;
+      }
       return token;
     },
     async session({ session, token }) {
       session.user = token.user;
       return session;
     },
+  },
+  pages: {
+    signIn: "/login",
   },
 });
 
