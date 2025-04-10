@@ -1,10 +1,22 @@
 "use client";
 
+import NavBar from '@/components/ClientComponents/NavBar';
 import { Sidebar } from '@/components/CoreUI/Sidebar';
 import '@coreui/coreui/dist/css/coreui.min.css';
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+
+import styled from 'styled-components';
+
+const Container = styled.div`
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 100px;
+`;
 
 export default function Perfil() {
     const { data: session, status } = useSession();
@@ -58,14 +70,19 @@ export default function Perfil() {
     */
 
     return (
-        <div style={{ padding: "2rem" }}>
+        <div>
             {!user ? (
                 <>
                     <h1>Carregando</h1>
                 </>
             ) : (
                 <>
+                    <NavBar/>
                     <Sidebar/>
+                    <Container>
+                        <h1>{user?.genero === 'Masculino' ? "Bem-vindo " : "Bem-vinda "}{user?.nome}</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores veritatis, libero sequi voluptate nobis magnam sunt alias atque molestias earum tempora exercitationem fugit maiores nam dolorum sed repellat, quasi animi!</p>
+                    </Container>
                 </>
             )}
         </div>

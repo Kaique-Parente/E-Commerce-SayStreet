@@ -111,7 +111,7 @@ export default function NavBar() {
                     </label>
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
-                <Link href={cliente !== null ? "./perfil" : "./login"}>
+                <Link id="icone-pessoa" href={cliente !== null ? "./perfil" : "./login"}>
                     <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
                 </Link>
                 <Link href={"./carrinho"} style={{ position: "relative" }}>

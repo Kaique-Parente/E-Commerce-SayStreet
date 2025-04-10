@@ -11,50 +11,32 @@ import {
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilCloudDownload, cilLayers, cilPuzzle, cilSpeedometer } from '@coreui/icons'
+import { cilHome, cilCloudDownload, cilLayers, cilPuzzle, cilSpeedometer } from '@coreui/icons'
+import Image from 'next/image'
 
 export const Sidebar = () => {
   return (
-    <CSidebar className="border-end" unfoldable colorScheme="dark">
-      <CSidebarHeader className="border-bottom">
-        <CSidebarBrand>CUI</CSidebarBrand>
-      </CSidebarHeader>
-      <CSidebarNav>
-        <CNavTitle>Nav Title</CNavTitle>
-        <CNavItem href="#">
-          <CIcon customClassName="nav-icon" icon={cilSpeedometer} /> Nav item
-        </CNavItem>
-        <CNavItem href="#">
-          <CIcon customClassName="nav-icon" icon={cilSpeedometer} /> With badge{' '}
-          <CBadge color="primary ms-auto">NEW</CBadge>
-        </CNavItem>
-        <CNavGroup
-          toggler={
-            <>
-              <CIcon customClassName="nav-icon" icon={cilPuzzle} /> Nav dropdown
-            </>
-          }
-        >
+    <>
+      <CSidebar style={{ marginTop: "80px", boxShadow: "rgba(40, 41, 61, 0.04) 0px 2px 4px, rgba(96, 97, 112, 0.16) 0px 8px 16px" }} className="border-end" unfoldable size='xl'>
+        <CSidebarHeader className="border-bottom">
+          <CSidebarBrand>SAY</CSidebarBrand>
+        </CSidebarHeader>
+        <CSidebarNav>
+          <CNavTitle>Nav Title</CNavTitle>
           <CNavItem href="#">
-            <span className="nav-icon">
-              <span className="nav-icon-bullet"></span>
-            </span>{' '}
-            Nav dropdown item
+            <Image style={{marginRight: "15px"}} src={"/web/sidebar/home.png"} width={28} height={28} alt='home' /> Início
           </CNavItem>
           <CNavItem href="#">
-            <span className="nav-icon">
-              <span className="nav-icon-bullet"></span>
-            </span>{' '}
-            Nav dropdown item
+            <Image style={{marginRight: "15px"}} src={"/web/sidebar/pessoa.png"} width={28} height={28} alt='pessoa' /> Meus dados
           </CNavItem>
-        </CNavGroup>
-        <CNavItem href="https://coreui.io">
-          <CIcon customClassName="nav-icon" icon={cilCloudDownload} /> Download CoreUI
-        </CNavItem>
-        <CNavItem href="https://coreui.io/pro/">
-          <CIcon customClassName="nav-icon" icon={cilLayers} /> Try CoreUI PRO
-        </CNavItem>
-      </CSidebarNav>
-    </CSidebar>
+          <CNavItem href="#">
+            <Image style={{marginRight: "15px"}} src={"/web/sidebar/sacola.png"} width={28} height={28} alt='sacola' /> Meus pedidos
+          </CNavItem>
+          <CNavItem href="#">
+            <Image style={{marginRight: "15px"}} src={"/web/sidebar/carteira.png"} width={28} height={28} alt='carteira' /> Minha carteira
+          </CNavItem>
+        </CSidebarNav>
+      </CSidebar>
+    </>
   )
 }
