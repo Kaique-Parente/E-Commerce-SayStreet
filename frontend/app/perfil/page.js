@@ -15,7 +15,7 @@ export default function Perfil() {
 
     timeoutRef.current = setTimeout(() => {
       signOut(); 
-    }, 10 * 60 * 1000);
+    }, 60 * 60 * 1000);
   };
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 "use client"
 
 import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado";
+import InputPersonalizado from "@/components/ClientComponents/InputPersonalizado";
 import NavBar from "@/components/ClientComponents/NavBar";
 import { TextField } from "@mui/material";
 import { signIn, useSession } from "next-auth/react";
@@ -51,20 +52,6 @@ const InputsContainer = styled.div`
 
     label{
         font-size: 18px;
-    }
-
-    input{
-        margin-bottom: 15px;
-        padding: 15px 18px;
-
-        border: 1px solid #584439;
-        border-radius: 6px;
-
-        font-size: 14px;
-    }
-
-    input:focus{
-        border: 2px solid rgb(43, 34, 29);
     }
 `
 
@@ -145,8 +132,8 @@ export default function Login() {
 
                         <InputsContainer>
                             <label htmlFor="email">Email</label>
-                            <input
-                                required
+                            <InputPersonalizado
+                                isRequired={true}
                                 id="email"
                                 value={email || ""}
                                 onChange={handleEmailChange}
@@ -155,8 +142,8 @@ export default function Login() {
                             />
 
                             <label htmlFor="password">Senha</label>
-                            <input
-                                required
+                            <InputPersonalizado 
+                                isRequired={true}
                                 id="password"
                                 value={password || ""}
                                 onChange={handlePasswordChange}
