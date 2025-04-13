@@ -94,9 +94,8 @@ public class ClienteService {
 
         return "Cadastro realizado com sucesso";
     }
-    
 
-    //Método para buscar um cliente pelo id
+    // Método para buscar um cliente pelo id
     public ClienteModel buscarCliente(Long id) throws Exception {
         Optional<ClienteModel> clienteExistente = clienteRepository.findById(id);
 
@@ -107,12 +106,15 @@ public class ClienteService {
         throw new Exception("Cliente não encontrado");
     }
 
-    //Método para editar um cliente
+    // Método para editar um cliente
     public String editCliente(Long id, ClienteDto dto) throws Exception {
 
         ClienteModel cliente = buscarCliente(id);
 
         if (dto.getNome() != null) {
+            if (!NameValidator.validaNome(dto.getNome())) {
+                throw new InvalidNameException("Este nome não é válido. Por favor, digite um nome válido.");
+            }
             cliente.setNome(dto.getNome());
         }
 
@@ -124,12 +126,12 @@ public class ClienteService {
             cliente.setGenero(dto.getGenero());
         }
 
-        if(dto.getSenha() != null){
+        if (dto.getSenha() != null) {
             String encryptedPassword = PasswordEncryptionUtil.encrypt(dto.getSenha());
             cliente.setSenha(encryptedPassword);
         }
 
-        cliente.getEnderecos().clear(); 
+        cliente.getEnderecos().clear();
         boolean temPradrao = false;
 
         if (dto.getEnderecos() != null && !dto.getEnderecos().isEmpty()) {
@@ -163,8 +165,7 @@ public class ClienteService {
         return "Cliente atualizado com sucesso!";
     }
 
-
-    public List<ClienteModel> listAll(){
+    public List<ClienteModel> listAll() {
         return this.clienteRepository.findAll();
     }
 }
