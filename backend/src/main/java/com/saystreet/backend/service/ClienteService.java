@@ -42,7 +42,7 @@ public class ClienteService {
             throw new InvalidCpfException("Este CPF não é válido. Por favor, digite um CPF válido.");
         }
 
-        if(!NameValidator.validaNome(clienteDto.getNome())){
+        if (!NameValidator.validaNome(clienteDto.getNome())) {
             throw new InvalidNameException("Este nome não é válido. Por favor, digite um nome válido.");
         }
 
@@ -91,7 +91,75 @@ public class ClienteService {
 
         cliente.setEnderecos(enderecos);
         clienteRepository.save(cliente);
-        
+
         return "Cadastro realizado com sucesso";
+    }
+    
+
+    //Método para buscar um cliente pelo id
+    public ClienteModel buscarCliente(Long id) throws Exception {
+        Optional<ClienteModel> clienteExistente = clienteRepository.findById(id);
+
+        if (clienteExistente.isPresent()) {
+            ClienteModel newCliente = clienteExistente.get();
+            return newCliente;
+        }
+        throw new Exception("Cliente não encontrado");
+    }
+
+    //Método para editar um cliente
+    public String editCliente(Long id, ClienteDto dto) throws Exception {
+
+        ClienteModel cliente = buscarCliente(id);
+
+        if (dto.getNome() != null) {
+            cliente.setNome(dto.getNome());
+        }
+
+        if (dto.getDataNascimento() != null) {
+            cliente.setDataNascimento(dto.getDataNascimento());
+        }
+
+        if (dto.getGenero() != null) {
+            cliente.setGenero(dto.getGenero());
+        }
+
+        cliente.getEnderecos().clear(); 
+        boolean temPradrao = false;
+
+        if (dto.getEnderecos() != null && !dto.getEnderecos().isEmpty()) {
+            for (EnderecosDto enderecoDTO : dto.getEnderecos()) {
+                boolean isPrincipal = enderecoDTO.isEnderecoPadrao();
+
+                if (isPrincipal) {
+                    if (temPradrao) {
+                        throw new IllegalArgumentException("Só pode haver um endereço padrão.");
+                    }
+                    temPradrao = true;
+                }
+
+                cliente.getEnderecos().add(EnderecoModel.builder()
+                        .cep(enderecoDTO.getCep())
+                        .logradouro(enderecoDTO.getLogradouro())
+                        .complemento(enderecoDTO.getComplemento())
+                        .bairro(enderecoDTO.getBairro())
+                        .localidade(enderecoDTO.getLocalidade())
+                        .uf(enderecoDTO.getUf())
+                        .estado(enderecoDTO.getEstado())
+                        .numero(enderecoDTO.getNumero())
+                        .enderecoPadrao(isPrincipal)
+                        .cliente(cliente)
+                        .build());
+            }
+        }
+
+        clienteRepository.save(cliente);
+
+        return "Cliente atualizado com sucesso!";
+    }
+
+
+    public List<ClienteModel> listAll(){
+        return this.clienteRepository.findAll();
     }
 }

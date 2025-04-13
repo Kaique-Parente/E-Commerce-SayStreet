@@ -6,7 +6,7 @@ public class NameValidator {
         if(nome == null || nome.trim().isEmpty()){
             return false;
         }
-
+        
         String[] palavras = nome.trim().split("\\s+");
 
         if(palavras.length < 2 ){
