@@ -48,4 +48,10 @@ public class ClienteController {
         return clienteService.listAll();
     }
 
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<ClienteModel> buscaId (@PathVariable Long id) throws Exception{
+        ClienteModel user = clienteService.buscarCliente(id);
+        return ResponseEntity.ok(user);
+    }
+
 }

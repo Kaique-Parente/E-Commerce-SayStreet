@@ -124,6 +124,11 @@ public class ClienteService {
             cliente.setGenero(dto.getGenero());
         }
 
+        if(dto.getSenha() != null){
+            String encryptedPassword = PasswordEncryptionUtil.encrypt(dto.getSenha());
+            cliente.setSenha(encryptedPassword);
+        }
+
         cliente.getEnderecos().clear(); 
         boolean temPradrao = false;
 
