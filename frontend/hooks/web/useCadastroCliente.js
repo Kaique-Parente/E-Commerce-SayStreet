@@ -1,70 +1,99 @@
-'use client'
+import { formatCep, formatCpf } from '@/utils/regex';
+import { useState } from 'react';
 
-import { useState } from "react"
+export const useCadastroCliente = () => {
+    const [nome, setNome] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [email, setEmail] = useState('');
+    const [dataNascimento, setDataNascimento] = useState('');
+    const [genero, setGenero] = useState('');
 
-export function useCadastroCliente() {
-  const [nome, setNome] = useState('');
-  const [cpf, setCpf] = useState('');
-  const [email, setEmail] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
-  const [genero, setGenero] = useState('');
+    const [logradouro, setLogradouro] = useState("");
+    const [numero, setNumero] = useState("");
+    const [complemento, setComplemento] = useState("");
+    const [cep, setCep] = useState("");
+    const [cidade, setCidade] = useState("");
+    const [uf, setUf] = useState("");
+    const [principal, setPrincipal] = useState(false);
 
-  const [enderecos, setEnderecos] = useState([]);
-  const [newAddress, setNewAddress] = useState({
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    cep: '',
-    cidade: '',
-    uf: '',
-  });
+    const handleNomeChange = (e) => setNome(e.target.value);
+    const handleCpfChange = (e) => {
+        const formattedCpf = formatCpf(e.target.value);
+        setCpf(formattedCpf);
+    }
+    const handleEmailChange = (e) => setEmail(e.target.value);
+    const handleDataNascimentoChange = (e) => setDataNascimento(e.target.value);
+    const handleGeneroChange = (e) => setGenero(e.target.value);
 
-  const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [erro, setErro] = useState(null);
+    const handleLogradouroChange = (e) => setLogradouro(e.target.value);
+    const handleNumeroChange = (e) => setNumero(e.target.value);
+    const handleComplementoChange = (e) => setComplemento(e.target.value);
+    const handleCepChange = (e) => {
+        const formattedCep = formatCep(e.target.value);
+        setCep(formattedCep);
+    };
+    const handleCidadeChange = (e) => setCidade(e.target.value);
+    const handleUfChange = (e) => setUf(e.target.value);
 
-  const handleNomeChange = (e) => setNome(e.target.value);
-  const handleCpfChange = (e) => setCpf(e.target.value);
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handleDataNascimentoChange = (e) => setDataNascimento(e.target.value);
-  const handleGeneroChange = (e) => setGenero(e.target.value);
+    const handlePrincipalChange = (e) => setPrincipal(e.target.checked);
 
-  const handleEnderecoChange = (e) => {
-    const { name, value } = e.target;
-    setNewAddress(prev => ({ ...prev, [name]: value }));
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Aqui você pode adicionar a lógica para salvar os dados
+        console.log({
+            nome,
+            cpf,
+            email,
+            dataNascimento,
+            genero,
+            enderecosEntrega: [
+                {
+                    logradouro,
+                    numero,
+                    complemento,
+                    cep,
+                    cidade,
+                    uf
+                }
+            ]
+        });
+    };
 
-  const adicionarEndereco = () => {
-    setEnderecos([...enderecos, newAddress]);
-    setNewAddress({
-      logradouro: '',
-      numero: '',
-      complemento: '',
-      cep: '',
-      cidade: '',
-      uf: '',
-    });
-    setIsAddingAddress(false);
-  };
+    return {
+        nome,
+        cpf,
+        email,
+        dataNascimento,
+        genero,
+        handleNomeChange,
+        handleCpfChange,
+        handleEmailChange,
+        handleDataNascimentoChange,
+        handleGeneroChange,
 
-  return {
-    nome,
-    cpf,
-    email,
-    dataNascimento,
-    genero,
-    enderecos,
-    newAddress,
-    isAddingAddress,
-    erro,
-    handleNomeChange,
-    handleCpfChange,
-    handleEmailChange,
-    handleDataNascimentoChange,
-    handleGeneroChange,
-    handleEnderecoChange,
-    adicionarEndereco,
-    setNewAddress,
-    setIsAddingAddress,
-    setErro,
-  }
-}
+        logradouro,
+        numero,
+        complemento,
+        cep,
+        cidade,
+        uf,
+        principal,
+        setLogradouro,
+        setNumero,
+        setComplemento,
+        setCep,
+        setCidade,
+        setUf,
+        setPrincipal,
+
+        handleLogradouroChange,
+        handleNumeroChange,
+        handleComplementoChange,
+        handleCepChange,
+        handleCidadeChange,
+        handleUfChange,
+        handlePrincipalChange,
+
+        handleSubmit,
+    };
+};

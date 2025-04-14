@@ -6,6 +6,11 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useCadastroCliente } from "@/hooks/web/useCadastroCliente";
+import RadiusButton from "@/components/MUI/RadiusButton";
+import { FormControlLabel, Switch } from "@mui/material";
+import NavBar from "@/components/ClientComponents/NavBar";
+import { useRouter } from "next/navigation";
+import SelectPersonalizado from "@/components/ClientComponents/SelectPersonalizado";
 
 const Container = styled.div`
   width: 100%;
@@ -110,341 +115,306 @@ export default function Cadastrar() {
         email,
         dataNascimento,
         genero,
-        enderecos,
-        newAddress,
-        isAddingAddress,
-        erro,
         handleNomeChange,
         handleCpfChange,
         handleEmailChange,
         handleDataNascimentoChange,
         handleGeneroChange,
-        handleEnderecoChange,
-        adicionarEndereco,
-        setNewAddress,
-        setIsAddingAddress
+
+        logradouro,
+        numero,
+        complemento,
+        cep,
+        cidade,
+        uf,
+        principal,
+        setLogradouro,
+        setNumero,
+        setComplemento,
+        setCep,
+        setCidade,
+        setUf,
+        setPrincipal,
+
+        handleLogradouroChange,
+        handleNumeroChange,
+        handleComplementoChange,
+        handleCepChange,
+        handleCidadeChange,
+        handleUfChange,
+        handlePrincipalChange,
+
+        handleSubmit,
     } = useCadastroCliente();
 
     const [user, setUser] = useState({});
+    const [enderecos, setEnderecos] = useState([]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Dados atualizados:", user);
-    };
+    const [newAddress, setNewAddress] = useState({});
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        console.log(principal);
+    }, [principal])
 
     return (
-        <Container>
-            <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "10px", marginBottom: "30px" }}>
-                    <Image src={"/web/sidebar/dados.png"} width={32} height={32} alt="Dados" />
-                    <h2>Criar Conta</h2>
-                </div>
+        <>
+            <NavBar />
+            <Container>
+                <div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "10px", marginBottom: "30px" }}>
+                        <Image src={"/web/sidebar/dados.png"} width={32} height={32} alt="Dados" />
+                        <h2>Criar Conta</h2>
+                    </div>
 
-                <div style={{ display: "flex", gap: "50px" }}>
-                    <CardContainer>
-                        <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "600px" }}>
-                            <FormGrid>
-                                <InputsContainer>
-                                    <label htmlFor="nome">Nome</label>
-                                    <InputPersonalizado
-                                        id="nome"
-                                        value={nome}
-                                        onChange={handleNomeChange}
-                                        placeholder="Nome"
-                                        isRequired
-                                    />
-                                </InputsContainer>
+                    <div style={{ display: "flex", gap: "50px" }}>
+                        <CardContainer>
+                            <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "600px" }}>
+                                <FormGrid>
+                                    <InputsContainer>
+                                        <label htmlFor="nome">Nome</label>
+                                        <InputPersonalizado
+                                            id="nome"
+                                            value={nome}
+                                            onChange={handleNomeChange}
+                                            placeholder="Nome"
+                                            isRequired
+                                        />
+                                    </InputsContainer>
 
-                                <InputsContainer>
-                                    <label htmlFor="cpf">CPF</label>
-                                    <InputPersonalizado
-                                        id="cpf"
-                                        value={cpf}
-                                        onChange={handleCpfChange}
-                                        placeholder="CPF"
-                                        isRequired
-                                    />
-                                </InputsContainer>
+                                    <InputsContainer>
+                                        <label htmlFor="cpf">CPF</label>
+                                        <InputPersonalizado
+                                            id="cpf"
+                                            value={cpf}
+                                            onChange={handleCpfChange}
+                                            placeholder="CPF"
+                                            isRequired
+                                            maxLength={14}
+                                        />
+                                    </InputsContainer>
 
-                                <InputsContainer>
-                                    <label htmlFor="email">Email</label>
-                                    <InputPersonalizado
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={handleEmailChange}
-                                        placeholder="Email"
-                                        isRequired
-                                    />
-                                </InputsContainer>
+                                    <InputsContainer>
+                                        <label htmlFor="email">Email</label>
+                                        <InputPersonalizado
+                                            id="email"
+                                            type="email"
+                                            value={email}
+                                            onChange={handleEmailChange}
+                                            placeholder="Email"
+                                            isRequired
+                                        />
+                                    </InputsContainer>
 
-                                <InputsContainer>
-                                    <label htmlFor="dataNascimento">Data de Nascimento</label>
-                                    <InputPersonalizado
-                                        id="dataNascimento"
-                                        type="date"
-                                        value={dataNascimento}
-                                        onChange={handleDataNascimentoChange}
-                                        placeholder="Data de Nascimento"
-                                        isRequired
-                                    />
-                                </InputsContainer>
+                                    <InputsContainer>
+                                        <label htmlFor="dataNascimento">Data de Nascimento</label>
+                                        <InputPersonalizado
+                                            id="dataNascimento"
+                                            type="date"
+                                            value={dataNascimento}
+                                            onChange={handleDataNascimentoChange}
+                                            placeholder="Data de Nascimento"
+                                            isRequired
+                                        />
+                                    </InputsContainer>
 
-                                <InputsContainer>
-                                    <label htmlFor="genero">Gênero</label>
-                                    <InputPersonalizado
-                                        id="genero"
-                                        value={genero}
-                                        onChange={handleGeneroChange}
-                                        placeholder="Gênero"
-                                        isRequired
-                                    />
-                                </InputsContainer>
-                            </FormGrid>
+                                    <InputsContainer>
+                                        <label htmlFor="genero">Gênero</label>
+                                        <SelectPersonalizado
+                                            id="genero"
+                                            value={genero}
+                                            onChange={handleGeneroChange}
+                                            isRequired
+                                        >
+                                            <option value="">Selecione</option>
+                                            <option value="masculino">Masculino</option>
+                                            <option value="feminino">Feminino</option>
+                                            <option value="nao-informado">Prefiro não informar</option>
+                                        </SelectPersonalizado>
+                                    </InputsContainer>
+                                </FormGrid>
 
-                            <div>
-                                <BotaoPersonalizado
-                                    type="submit"
-                                    color="amarelo"
-                                    width="100%"
-                                    style={{ marginTop: "30px" }}
-                                >
-                                    Salvar alterações
-                                </BotaoPersonalizado>
-                            </div>
-
-                        </form>
-                    </CardContainer>
-
-                    <CardContainer style={{ width: "450px", justifyContent: "start", padding: "50px 20px" }}>
-                        <div style={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                            <AddressContainer>
-                                <TitleAddress>
-                                    <Image src="/web/sidebar/endereco.png" width={32} height={32} alt="Endereco" />
-                                    <h3>Meus endereços</h3>
-                                </TitleAddress>
-
-                                {isAddingAddress ? (
-                                    <form
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            // Salvar novo endereço
-                                            setIsAddingAddress(false);
-                                        }}
-                                        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+                                <div style={{ display: "flex", alignItems: "center", gap: "15px", marginTop: "30px" }}>
+                                    <BotaoPersonalizado
+                                        onClick={() => router.back("/login")}
+                                        type="button"
+                                        color="marrom"
+                                        width="25%"
                                     >
-                                        <label>Logradouro</label>
-                                        <InputPersonalizado
-                                            name="logradouro"
-                                            value={newAddress.logradouro}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="Logradouro"
-                                            isRequired
-                                        />
-                                        <label>Número</label>
-                                        <InputPersonalizado
-                                            name="numero"
-                                            value={newAddress.numero}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="Número"
-                                            isRequired
-                                        />
-                                        <label>Complemento</label>
-                                        <InputPersonalizado
-                                            name="complemento"
-                                            value={newAddress.complemento}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="Complemento"
-                                        />
-                                        <label>CEP</label>
-                                        <InputPersonalizado
-                                            name="cep"
-                                            value={newAddress.cep}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="CEP"
-                                            isRequired
-                                        />
-                                        <label>Cidade</label>
-                                        <InputPersonalizado
-                                            name="cidade"
-                                            value={newAddress.cidade}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="Cidade"
-                                            isRequired
-                                        />
-                                        <label>UF</label>
-                                        <InputPersonalizado
-                                            name="uf"
-                                            value={newAddress.uf}
-                                            onChange={handleEnderecoChange}
-                                            placeholder="UF"
-                                            isRequired
-                                        />
+                                        Voltar
+                                    </BotaoPersonalizado>
 
-                                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                                            <BotaoPersonalizado
-                                                type="button"
-                                                color="marrom"
-                                                width="100%"
-                                                onClick={() => setIsAddingAddress(false)}
-                                            >
-                                                Cancelar
-                                            </BotaoPersonalizado>
-                                            <BotaoPersonalizado type="submit" color="amarelo" width="100%">
-                                                Salvar
-                                            </BotaoPersonalizado>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    user.enderecosEntrega && user.enderecosEntrega.length > 0 ? (
-                                        user.enderecosEntrega.map((address, index) => (
-                                            <div key={address.id} style={{ marginBottom: "25px" }}>
-                                                {editingAddressId === address.id ? (
-                                                    <form
-                                                        onSubmit={(e) => {
-                                                            e.preventDefault();
-                                                            setEditingAddressId(null);
-                                                            // Salvar alterações no endereço
-                                                        }}
-                                                        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-                                                    >
-                                                        <label>Logradouro</label>
-                                                        <InputPersonalizado
-                                                            value={address.logradouro}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].logradouro = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="Logradouro"
-                                                            isRequired
-                                                        />
+                                    <BotaoPersonalizado
+                                        type="submit"
+                                        color="amarelo"
+                                        width="75%"
+                                    >
+                                        Realizar Cadastro
+                                    </BotaoPersonalizado>
+                                </div>
 
-                                                        <label>Número</label>
-                                                        <InputPersonalizado
-                                                            value={address.numero}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].numero = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="Número"
-                                                            isRequired
-                                                        />
+                            </form>
+                        </CardContainer>
 
-                                                        <label>Complemento</label>
-                                                        <InputPersonalizado
-                                                            value={address.complemento}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].complemento = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="Complemento"
-                                                        />
+                        <CardContainer style={{ width: "450px", justifyContent: "start", padding: "50px 20px" }}>
+                            <div style={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                                <AddressContainer>
+                                    <TitleAddress>
+                                        <Image src="/web/sidebar/endereco.png" width={32} height={32} alt="Endereco" />
+                                        <h3>Meus endereços</h3>
+                                    </TitleAddress>
 
-                                                        <label>CEP</label>
-                                                        <InputPersonalizado
-                                                            value={address.cep}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].cep = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="CEP"
-                                                            isRequired
-                                                        />
+                                    {isAddingAddress ? (
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
 
-                                                        <label>Cidade</label>
-                                                        <InputPersonalizado
-                                                            value={address.cidade}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].cidade = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="Cidade"
-                                                            isRequired
-                                                        />
+                                                setIsAddingAddress(false);
+                                                const newAddress = {
+                                                    logradouro: logradouro,
+                                                    numero: numero,
+                                                    complemento: complemento,
+                                                    cep: cep,
+                                                    cidade: cidade,
+                                                    uf: uf,
+                                                    principal: principal,
+                                                }
 
-                                                        <label>UF</label>
-                                                        <InputPersonalizado
-                                                            value={address.uf}
-                                                            onChange={(e) => {
-                                                                const updated = [...formData.enderecosEntrega];
-                                                                updated[index].uf = e.target.value;
-                                                                setFormData({ ...formData, enderecosEntrega: updated });
-                                                            }}
-                                                            placeholder="UF"
-                                                            isRequired
-                                                        />
+                                                setEnderecos((prevEnderecos) => {
+                                                    const atualizados = principal
+                                                        ? prevEnderecos.map((end) => ({ ...end, principal: false }))
+                                                        : [...prevEnderecos];
 
-                                                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                                                            <BotaoPersonalizado
-                                                                type="button"
-                                                                color="marrom"
-                                                                width="100%"
-                                                                onClick={() => setEditingAddressId(null)}
-                                                            >
-                                                                Cancelar
-                                                            </BotaoPersonalizado>
-                                                            <BotaoPersonalizado type="submit" color="amarelo" width="100%">
-                                                                Salvar
-                                                            </BotaoPersonalizado>
-                                                        </div>
-                                                    </form>
-                                                ) : (
-                                                    <AddressContent isPrincipal={address.principal}>
+                                                    return [...atualizados, newAddress];
+                                                });
+
+                                                console.log(newAddress);  // Aqui você pode enviar para o servidor ou armazenar no estado
+                                            }}
+                                            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+                                        >
+                                            <label>CEP</label>
+                                            <InputPersonalizado
+                                                name="cep"
+                                                value={cep}
+                                                onChange={handleCepChange}
+                                                placeholder="CEP"
+                                                isRequired
+                                                maxLength={10}
+                                            />
+                                            <label>Logradouro</label>
+                                            <InputPersonalizado
+                                                name="logradouro"
+                                                value={logradouro}
+                                                onChange={handleLogradouroChange}
+                                                placeholder="Logradouro"
+                                                isRequired
+                                            />
+                                            <label>Número</label>
+                                            <InputPersonalizado
+                                                name="numero"
+                                                type="number"
+                                                value={numero}
+                                                onChange={handleNumeroChange}
+                                                placeholder="Número"
+                                                isRequired
+                                            />
+                                            <label>Complemento</label>
+                                            <InputPersonalizado
+                                                name="complemento"
+                                                value={complemento}
+                                                onChange={handleComplementoChange}
+                                                placeholder="Complemento"
+                                            />
+                                            <label>Cidade</label>
+                                            <InputPersonalizado
+                                                name="cidade"
+                                                value={cidade}
+                                                onChange={handleCidadeChange}
+                                                placeholder="Cidade"
+                                                isRequired
+                                            />
+                                            <label>UF</label>
+                                            <InputPersonalizado
+                                                name="uf"
+                                                value={uf}
+                                                onChange={handleUfChange}
+                                                placeholder="UF"
+                                                isRequired
+                                            />
+
+                                            <FormControlLabel control={
+                                                <Switch
+                                                    checked={principal}
+                                                    onChange={handlePrincipalChange}
+                                                />
+                                            }
+                                                label={principal ? "Endereço principal" : "Endereço comum"}
+                                            />
+
+                                            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                                                <BotaoPersonalizado
+                                                    type="button"
+                                                    color="marrom"
+                                                    width="100%"
+                                                    onClick={() => setIsAddingAddress(false)}
+                                                >
+                                                    Cancelar
+                                                </BotaoPersonalizado>
+                                                <BotaoPersonalizado type="submit" color="amarelo" width="100%">
+                                                    Salvar
+                                                </BotaoPersonalizado>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <>
+                                            {enderecos && enderecos.length > 0 ? (
+                                                enderecos.map((address) => (
+                                                    <AddressContent key={address.numero} isPrincipal={address.principal}>
                                                         <h2>Endereço</h2>
                                                         <p>{address.logradouro}</p>
-                                                        <p>Número: {address.numero}, {address.complemento}</p>
+                                                        <p>Número: {address.numero}{address.complemento && `, ${address.complemento}`}</p>
                                                         <p>CEP: {address.cep} - {address.cidade}, {address.uf}</p>
-
                                                         {address.principal && (
                                                             <p className="principal-address">
                                                                 <span>(</span>Endereço Padrão<span>)</span>
                                                             </p>
                                                         )}
-
-                                                        <button type="button" onClick={() => setEditingAddressId(address.id)}>
-                                                            Editar
-                                                        </button>
                                                     </AddressContent>
-                                                )}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p>Nenhum endereço cadastrado.</p>
-                                    )
-                                )}
-                            </AddressContainer>
+                                                ))
+                                            ) : (
+                                                <p>Nenhum endereço cadastrado.</p>
+                                            )}
+                                        </>
+                                    )}
+                                </AddressContainer>
 
-                            {!isAddingAddress && (
-                                <BotaoPersonalizado
-                                    type="button"
-                                    color="amarelo"
-                                    width="100%"
-                                    style={{ marginTop: "50px" }}
-                                    onClick={() => {
-                                        setIsAddingAddress(true);
-                                        setNewAddress({
-                                            logradouro: "",
-                                            numero: "",
-                                            complemento: "",
-                                            cep: "",
-                                            cidade: "",
-                                            uf: "",
-                                            principal: false,
-                                        });
-                                    }}
-                                >
-                                    + Cadastrar novo endereço
-                                </BotaoPersonalizado>
-                            )}
-                        </div>
-                    </CardContainer>
+                                {!isAddingAddress && (
+                                    <BotaoPersonalizado
+                                        type="button"
+                                        color="amarelo"
+                                        width="100%"
+                                        style={{ marginTop: "50px" }}
+                                        onClick={() => {
+                                            setIsAddingAddress(true);
+                                            setLogradouro("");
+                                            setNumero("");
+                                            setComplemento("");
+                                            setCep("");
+                                            setCidade("");
+                                            setUf("");
+                                            setPrincipal("");
+                                        }}
+                                    >
+                                        + Cadastrar novo endereço
+                                    </BotaoPersonalizado>
+                                )}
+                            </div>
+                        </CardContainer>
+                    </div>
                 </div>
-            </div>
-        </Container>
+            </Container>
+        </>
     );
 }
