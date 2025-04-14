@@ -14,7 +14,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 100px;
+    padding: 120px 120px 50px;
 `;
 
 export default function Perfil() {
