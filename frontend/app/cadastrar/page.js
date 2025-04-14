@@ -11,6 +11,7 @@ import { FormControlLabel, Switch } from "@mui/material";
 import NavBar from "@/components/ClientComponents/NavBar";
 import { useRouter } from "next/navigation";
 import SelectPersonalizado from "@/components/ClientComponents/SelectPersonalizado";
+import { cadastrarCliente } from "@/services/ClienteService";
 
 const Container = styled.div`
   width: 100%;
@@ -113,11 +114,13 @@ export default function Cadastrar() {
         nome,
         cpf,
         email,
+        senha,
         dataNascimento,
         genero,
         handleNomeChange,
         handleCpfChange,
         handleEmailChange,
+        handleSenhaChange,
         handleDataNascimentoChange,
         handleGeneroChange,
 
@@ -128,6 +131,7 @@ export default function Cadastrar() {
         cidade,
         uf,
         principal,
+        bairro,
         setLogradouro,
         setNumero,
         setComplemento,
@@ -135,6 +139,8 @@ export default function Cadastrar() {
         setCidade,
         setUf,
         setPrincipal,
+        setCepValido,
+        setBairro,
 
         handleLogradouroChange,
         handleNumeroChange,
@@ -143,9 +149,10 @@ export default function Cadastrar() {
         handleCidadeChange,
         handleUfChange,
         handlePrincipalChange,
+        handleBairroChange,
 
+        cepValido,
         handleCepValidate,
-        handleSubmit,
     } = useCadastroCliente();
 
     const [user, setUser] = useState({});
@@ -155,6 +162,42 @@ export default function Cadastrar() {
     const [isAddingAddress, setIsAddingAddress] = useState(false);
 
     const router = useRouter();
+
+    const handleCancelarEndereco = () => {
+        setCepValido(false);
+        setIsAddingAddress(false)
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (enderecos.length === 0) {
+            alert("Cadastre pelo menos um endereço antes de continuar.");
+            return;
+        }
+    
+        const dadosCliente = {
+            nome,
+            cpf,
+            email,
+            senha,
+            dataNascimento,
+            genero,
+            enderecos
+        };
+
+        console.log(dadosCliente);
+    
+        try {
+            const mensagem = await cadastrarCliente(dadosCliente);
+    
+            if (mensagem) {
+                alert(mensagem);
+                router.back("/login");
+            }
+        } catch (error) {
+            alert("Erro no cadastro: " + error.message);
+        }
+    };
 
     useEffect(() => {
         console.log(principal);
@@ -205,6 +248,18 @@ export default function Cadastrar() {
                                             value={email}
                                             onChange={handleEmailChange}
                                             placeholder="Email"
+                                            isRequired
+                                        />
+                                    </InputsContainer>
+
+                                    <InputsContainer>
+                                        <label htmlFor="senha">Senha</label>
+                                        <InputPersonalizado
+                                            id="senha"
+                                            type="password"
+                                            value={senha}
+                                            onChange={handleSenhaChange}
+                                            placeholder="Senha"
                                             isRequired
                                         />
                                     </InputsContainer>
@@ -278,9 +333,11 @@ export default function Cadastrar() {
                                                     numero: numero,
                                                     complemento: complemento,
                                                     cep: cep,
-                                                    cidade: cidade,
+                                                    localidade: cidade,
                                                     uf: uf,
+                                                    estado: uf,
                                                     principal: principal,
+                                                    bairro: bairro,
                                                 }
 
                                                 setEnderecos((prevEnderecos) => {
@@ -304,6 +361,7 @@ export default function Cadastrar() {
                                                     placeholder="CEP"
                                                     isRequired
                                                     maxLength={10}
+                                                    disabled={cepValido}
                                                 />
                                                 <BotaoPersonalizado 
                                                     type="button" 
@@ -339,6 +397,15 @@ export default function Cadastrar() {
                                                 onChange={handleComplementoChange}
                                                 placeholder="Complemento"
                                             />
+                                            <label>Bairro</label>
+                                            <InputPersonalizado
+                                                name="bairro"
+                                                value={bairro}
+                                                onChange={handleBairroChange}
+                                                placeholder="Bairro"
+                                                isRequired
+                                                disabled={true}
+                                            />
                                             <label>Cidade</label>
                                             <InputPersonalizado
                                                 name="cidade"
@@ -372,7 +439,7 @@ export default function Cadastrar() {
                                                     type="button"
                                                     color="marrom"
                                                     width="100%"
-                                                    onClick={() => setIsAddingAddress(false)}
+                                                    onClick={handleCancelarEndereco}
                                                 >
                                                     Cancelar
                                                 </BotaoPersonalizado>
@@ -398,7 +465,7 @@ export default function Cadastrar() {
                                                     </AddressContent>
                                                 ))
                                             ) : (
-                                                <p>Nenhum endereço cadastrado.</p>
+                                                <p style={{textAlign: "center"}}>Nenhum endereço cadastrado.</p>
                                             )}
                                         </>
                                     )}

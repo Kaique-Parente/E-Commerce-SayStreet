@@ -6,6 +6,7 @@ export const useCadastroCliente = () => {
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
     const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [genero, setGenero] = useState('');
 
@@ -15,7 +16,11 @@ export const useCadastroCliente = () => {
     const [cep, setCep] = useState("");
     const [cidade, setCidade] = useState("");
     const [uf, setUf] = useState("");
+    const [bairro, setBairro] = useState("");
+
     const [principal, setPrincipal] = useState(false);
+
+    const [cepValido, setCepValido] = useState(false);
 
     const handleNomeChange = (e) => setNome(e.target.value);
     const handleCpfChange = (e) => {
@@ -23,6 +28,7 @@ export const useCadastroCliente = () => {
         setCpf(formattedCpf);
     }
     const handleEmailChange = (e) => setEmail(e.target.value);
+    const handleSenhaChange = (e) => setSenha(e.target.value);
     const handleDataNascimentoChange = (e) => setDataNascimento(e.target.value);
     const handleGeneroChange = (e) => setGenero(e.target.value);
 
@@ -35,6 +41,7 @@ export const useCadastroCliente = () => {
     };
     const handleCidadeChange = (e) => setCidade(e.target.value);
     const handleUfChange = (e) => setUf(e.target.value);
+    const handleBairroChange = (e) => setUf(e.target.value);
 
     const handlePrincipalChange = (e) => setPrincipal(e.target.checked);
 
@@ -48,6 +55,9 @@ export const useCadastroCliente = () => {
                 setLogradouro(dadosCep.logradouro);
                 setCidade(dadosCep.localidade);
                 setUf(dadosCep.uf);
+                setBairro(dadosCep.bairro);
+
+                setCepValido(true);
             } else {
                 alert("Erro ao buscar os dados do CEP");
             }
@@ -56,37 +66,17 @@ export const useCadastroCliente = () => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Aqui você pode adicionar a lógica para salvar os dados
-        console.log({
-            nome,
-            cpf,
-            email,
-            dataNascimento,
-            genero,
-            enderecosEntrega: [
-                {
-                    logradouro,
-                    numero,
-                    complemento,
-                    cep,
-                    cidade,
-                    uf
-                }
-            ]
-        });
-    };
-
     return {
         nome,
         cpf,
         email,
+        senha,
         dataNascimento,
         genero,
         handleNomeChange,
         handleCpfChange,
         handleEmailChange,
+        handleSenhaChange,
         handleDataNascimentoChange,
         handleGeneroChange,
 
@@ -97,6 +87,7 @@ export const useCadastroCliente = () => {
         cidade,
         uf,
         principal,
+        bairro,
         setLogradouro,
         setNumero,
         setComplemento,
@@ -104,6 +95,8 @@ export const useCadastroCliente = () => {
         setCidade,
         setUf,
         setPrincipal,
+        setCepValido,
+        setBairro,
 
         handleLogradouroChange,
         handleNumeroChange,
@@ -112,8 +105,9 @@ export const useCadastroCliente = () => {
         handleCidadeChange,
         handleUfChange,
         handlePrincipalChange,
+        handleBairroChange,
 
+        cepValido,
         handleCepValidate,
-        handleSubmit,
     };
 };
