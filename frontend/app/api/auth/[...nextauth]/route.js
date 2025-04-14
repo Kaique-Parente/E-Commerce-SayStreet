@@ -7,19 +7,22 @@ const handler = NextAuth({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "Senha", type: "password" },
+        senha: { label: "Senha", type: "password" },
       },
       async authorize(credentials) {
         const res = await fetch("http://localhost:8080/cliente/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(credentials),
+          body: JSON.stringify({
+            email: credentials.email,
+            senha: credentials.password,
+          }),
         });
 
         const user = await res.json();
 
         if (res.ok && user) {
-          const { password, ...userSafe } = user;
+          const { senha, ...userSafe } = user;
           return userSafe;
         }
 
