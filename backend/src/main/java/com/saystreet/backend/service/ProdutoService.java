@@ -25,7 +25,7 @@ public class ProdutoService {
 
     // Método para criar um produto
     public String create(ProdutoDto produtoDto) {
-        try {
+
             ProdutoModel produto = ProdutoModel.builder()
                     .produtoNome(produtoDto.getProdutoNome())
                     .produtoPreco(produtoDto.getProdutoPreco())
@@ -67,9 +67,7 @@ public class ProdutoService {
             produtoRepository.save(produto);
 
             return "Produto criado com sucesso";
-        } catch (Exception e) {
-            return "Erro ao salvar produto: " + e.getMessage();
-        }
+
     }
 
     // Método para buscar um produto pelo ID
@@ -86,7 +84,7 @@ public class ProdutoService {
     // Méotodo para editar um produto, verificando se existe um produto com o ID
     // informado
     public String editarProduto(Long id, ProdutoDto produtoDto) {
-        try {
+      
             ProdutoModel produtoExistente = buscarProdutoPorId(id);
 
             produtoExistente.setProdutoNome(produtoDto.getProdutoNome());
@@ -123,9 +121,6 @@ public class ProdutoService {
 
             return "Produto atualizado com sucesso!";
 
-        } catch (Exception e) {
-            return "Erro ao atualizar o produto: " + e.getMessage();
-        }
     }
 
     // Método para alterar o status do produto, verificando se existe um produto com

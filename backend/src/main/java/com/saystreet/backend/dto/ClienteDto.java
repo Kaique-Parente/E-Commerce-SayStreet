@@ -1,35 +1,31 @@
 package com.saystreet.backend.dto;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 @Getter
 @Setter
 public class ClienteDto {
 
+    private String nome;
+
     private String cpf;
 
-    private String nome;
-    
+    private String genero; 
+
+    private Date dataNascimento;
+
     private String email;
+
+    private String senha;
     
-    private String password;
-
-    private LocalDate dataNascimento;
-
-    private String genero;
-
-    private boolean status;
-
-    private List<EnderecoDto> enderecosEntrega;
+    // Implementar o endereço:
+    private List<EnderecosDto> enderecos;
 }

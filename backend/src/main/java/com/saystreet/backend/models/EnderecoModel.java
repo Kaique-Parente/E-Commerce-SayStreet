@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table (name = "endereco_entrega")
+@Table(name = "endereco_cliente")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -27,33 +27,35 @@ import lombok.ToString;
 public class EnderecoModel {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "endereco_id")
+    @GeneratedValue (strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "endereco_cep", nullable = false)
+    @Column(nullable = false)
     private String cep;
 
-    @Column(name = "endereco_logradouro", nullable = false)
+    @Column(nullable = false)
     private String logradouro;
 
-    @Column(name = "endereco_numero", nullable = false)
-    private String numero;
-
-    @Column(name = "endereco_complemento", nullable = false)
+    @Column(nullable = true)
     private String complemento;
 
-    @Column(name = "endereco_bairro", nullable = false)
-    private String bairro;
+    @Column(nullable = false)
+    private String bairro; 
 
-    @Column(name = "endereco_cidade", nullable = false)
-    private String cidade; 
+    @Column(nullable = false)
+    private String localidade;
 
-    @Column(name = "endereco_uf", nullable = false)
-    private String uf;
+    @Column(nullable = false)
+    private String  uf;
 
-    @Column(name = "isPrincipal", nullable = false)
-    private boolean principal;
+    @Column(nullable = false)
+    private String estado; 
+
+    @Column(nullable = false)
+    private Integer numero;
+
+    @Column(name = "isPadrao", nullable = false)
+    private boolean enderecoPadrao;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", referencedColumnName = "cliente_id")

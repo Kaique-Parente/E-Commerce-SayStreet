@@ -1,7 +1,7 @@
 package com.saystreet.backend.models;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -23,52 +23,48 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table (name = "cliente")
-@AllArgsConstructor
+@Table(name = "cliente")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class ClienteModel {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.SEQUENCE)
     @Column(name = "cliente_id")
     private Long id;
-
-    @Column(name = "cliente_cpf", nullable = false, unique = true)
-    private String cpf;
 
     @Column(name = "cliente_nome", nullable = false)
     private String nome;
 
-    @Column(name = "cliente_email", nullable = false)
-    private String email;
+    @Column(name = "cliente_cpf",nullable = false, unique = true)
+    private String cpf;
 
-    @Column(name = "cliente_password", nullable = false)
-    private String password;
-
-    @Column(name = "cliente_nascimento", nullable = false)
-    private LocalDate dataNascimento;
-
-    @Column(name = "cliente_genero", nullable = false)
+    @Column(nullable = false)
     private String genero;
 
-    @Column(name = "cliente_status", nullable = false)
-    private boolean status;
+    
+    @Column(name = "data_nascimento", nullable = false)
+    private Date dataNascimento;
 
-    @OneToMany (mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Column(name = "cliente_email",nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "cliente_senha", nullable = false)
+    private String senha;
+
+    @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, 
+    orphanRemoval = true, fetch = FetchType.LAZY)
+    @Setter(value = AccessLevel.NONE)
     @Builder.Default
     @JsonManagedReference
-    private List<EnderecoModel> enderecosEntrega = new ArrayList<>();
-
-    public void setEnderecosEntrega(List<EnderecoModel> enderecosEntrega) {
-        this.enderecosEntrega = enderecosEntrega;
-    }
-
+    @Column(nullable = false)
+    private List<EnderecoModel> enderecos = new ArrayList<>();
+    
     public void setEnderecos(List<EnderecoModel> enderecos){
         enderecos.forEach(endereco -> endereco.setCliente(this));
-        this.enderecosEntrega = enderecos;
+        this.enderecos = enderecos;
     }
-
 }
