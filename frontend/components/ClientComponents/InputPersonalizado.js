@@ -29,6 +29,7 @@ export default function InputPersonalizado(props){
             onChange={props.onChange}
             type={props.type}
             placeholder={props.placeholder}
+            maxLength={props.maxLength}
         />
     );
 }
