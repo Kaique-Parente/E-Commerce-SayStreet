@@ -1,3 +1,4 @@
+import { buscarCep } from '@/services/ClienteService';
 import { formatCep, formatCpf } from '@/utils/regex';
 import { useState } from 'react';
 
@@ -36,6 +37,24 @@ export const useCadastroCliente = () => {
     const handleUfChange = (e) => setUf(e.target.value);
 
     const handlePrincipalChange = (e) => setPrincipal(e.target.checked);
+
+    const handleCepValidate = async () => {
+        if (cep.length === 9) {
+            const cepFormatado = cep.replace("-", "");
+
+            const dadosCep = await buscarCep(cepFormatado);
+    
+            if (dadosCep && dadosCep.logradouro && dadosCep.localidade && dadosCep.uf) {
+                setLogradouro(dadosCep.logradouro);
+                setCidade(dadosCep.localidade);
+                setUf(dadosCep.uf);
+            } else {
+                alert("Erro ao buscar os dados do CEP");
+            }
+        } else {
+            alert("CEP inválido");
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -94,6 +113,7 @@ export const useCadastroCliente = () => {
         handleUfChange,
         handlePrincipalChange,
 
+        handleCepValidate,
         handleSubmit,
     };
 };

@@ -144,6 +144,7 @@ export default function Cadastrar() {
         handleUfChange,
         handlePrincipalChange,
 
+        handleCepValidate,
         handleSubmit,
     } = useCadastroCliente();
 
@@ -295,14 +296,24 @@ export default function Cadastrar() {
                                             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
                                         >
                                             <label>CEP</label>
-                                            <InputPersonalizado
-                                                name="cep"
-                                                value={cep}
-                                                onChange={handleCepChange}
-                                                placeholder="CEP"
-                                                isRequired
-                                                maxLength={10}
-                                            />
+                                            <div style={{display: "flex", gap: "10px"}}>
+                                                <InputPersonalizado
+                                                    name="cep"
+                                                    value={cep}
+                                                    onChange={handleCepChange}
+                                                    placeholder="CEP"
+                                                    isRequired
+                                                    maxLength={10}
+                                                />
+                                                <BotaoPersonalizado 
+                                                    type="button" 
+                                                    color="marrom" 
+                                                    width="100%"
+                                                    onClick={handleCepValidate}
+                                                >
+                                                    Validar
+                                                </BotaoPersonalizado>
+                                            </div>
                                             <label>Logradouro</label>
                                             <InputPersonalizado
                                                 name="logradouro"
@@ -310,6 +321,7 @@ export default function Cadastrar() {
                                                 onChange={handleLogradouroChange}
                                                 placeholder="Logradouro"
                                                 isRequired
+                                                disabled={true}
                                             />
                                             <label>Número</label>
                                             <InputPersonalizado
@@ -334,6 +346,7 @@ export default function Cadastrar() {
                                                 onChange={handleCidadeChange}
                                                 placeholder="Cidade"
                                                 isRequired
+                                                disabled={true}
                                             />
                                             <label>UF</label>
                                             <InputPersonalizado
@@ -342,6 +355,7 @@ export default function Cadastrar() {
                                                 onChange={handleUfChange}
                                                 placeholder="UF"
                                                 isRequired
+                                                disabled={true}
                                             />
 
                                             <FormControlLabel control={
