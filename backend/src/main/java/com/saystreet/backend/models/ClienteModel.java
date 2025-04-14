@@ -32,7 +32,7 @@ import lombok.Setter;
 public class ClienteModel {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "cliente_id")
     private Long id;
 
