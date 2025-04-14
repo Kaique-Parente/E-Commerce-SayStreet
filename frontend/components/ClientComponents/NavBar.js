@@ -111,10 +111,10 @@ export default function NavBar() {
                     </label>
                     <input id="pesquisa" type="text" placeholder="Pesquisar" />
                 </SearchBar>
-                <Link id="icone-pessoa" href={cliente !== null ? "./perfil" : "./login"}>
+                <Link id="icone-pessoa" href={cliente !== null ? "/perfil" : "/login"}>
                     <Image width={20} height={20} src={'/web/pessoa.svg'} alt="Ícone pessoa" />
                 </Link>
-                <Link href={"./carrinho"} style={{ position: "relative" }}>
+                <Link href={"/carrinho"} style={{ position: "relative" }}>
                     <div style={{ position: "absolute", top: -8, right: -12, padding: "0px 8px", backgroundColor: "red", borderRadius: "20px", fontSize: "14px", color: "white" }}>{quantidadeTotal}</div>
                     <Image width={20} height={20} src={'/web/sacola.svg'} alt="Ícone sacola" />
                 </Link>
