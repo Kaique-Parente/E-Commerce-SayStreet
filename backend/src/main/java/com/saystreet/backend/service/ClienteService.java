@@ -13,8 +13,12 @@ import com.saystreet.backend.exceptions.CpfAlreadyExistsException;
 import com.saystreet.backend.exceptions.EmailAlreadyExistsException;
 import com.saystreet.backend.exceptions.InvalidCpfException;
 import com.saystreet.backend.exceptions.InvalidNameException;
+import com.saystreet.backend.exceptions.InvalidPasswordException;
+import com.saystreet.backend.exceptions.UnauthorizedAccessException;
+import com.saystreet.backend.exceptions.UserInactiveException;
 import com.saystreet.backend.models.ClienteModel;
 import com.saystreet.backend.models.EnderecoModel;
+import com.saystreet.backend.models.UserModel;
 import com.saystreet.backend.repository.ClienteRepository;
 import com.saystreet.backend.security.CpfValidator;
 import com.saystreet.backend.security.NameValidator;
@@ -25,6 +29,31 @@ public class ClienteService {
 
     @Autowired
     ClienteRepository clienteRepository;
+
+    public ClienteModel login(ClienteModel user) throws Exception{
+        Optional<ClienteModel> clienteOpt = clienteRepository.findByEmail(user.getEmail());
+        System.out.println("EMAILLLL:" + user.getEmail());
+
+        if (clienteOpt.isEmpty()) {
+            throw new UnauthorizedAccessException("Acesso negado! E-mail não encontrado.");
+        }
+
+        ClienteModel existingClient = clienteOpt.get();
+
+        // Criptografa a senha fornecida e compara com a armazenada no banco
+        String encryptedPassword = PasswordEncryptionUtil.encrypt(user.getSenha());
+
+        if (!existingClient.getSenha().equals(encryptedPassword)) {
+            throw new InvalidPasswordException("Senha incorreta!");
+        }
+
+        // Verifica se o usuário está ativo
+        if (!existingClient.isStatus()) {
+            throw new UserInactiveException("Usuário inativado.");
+        }
+
+        return existingClient;
+    }
 
     public String create(ClienteDto clienteDto) throws Exception {
 
@@ -55,6 +84,7 @@ public class ClienteService {
                 .dataNascimento(clienteDto.getDataNascimento())
                 .email(clienteDto.getEmail())
                 .senha(encryptedPassword)
+                .status(true)
                 .build();
 
         List<EnderecoModel> enderecos = new ArrayList<>();
@@ -130,6 +160,8 @@ public class ClienteService {
             String encryptedPassword = PasswordEncryptionUtil.encrypt(dto.getSenha());
             cliente.setSenha(encryptedPassword);
         }
+
+        cliente.setStatus(dto.isStatus());
 
         cliente.getEnderecos().clear();
         boolean temPradrao = false;

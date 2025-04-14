@@ -25,6 +25,8 @@ public class ClienteDto {
     private String email;
 
     private String senha;
+
+    private boolean status;
     
     // Implementar o endereço:
     private List<EnderecosDto> enderecos;

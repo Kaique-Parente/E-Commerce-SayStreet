@@ -42,9 +42,8 @@ public class ClienteModel {
     @Column(name = "cliente_cpf",nullable = false, unique = true)
     private String cpf;
 
-    @Column(nullable = false)
+    @Column(name = "cliente_genero", nullable = false)
     private String genero;
-
     
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
@@ -54,6 +53,9 @@ public class ClienteModel {
 
     @Column(name = "cliente_senha", nullable = false)
     private String senha;
+
+    @Column(name = "cliente_status", nullable = false)
+    private boolean status;
 
     @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, 
     orphanRemoval = true, fetch = FetchType.LAZY)
