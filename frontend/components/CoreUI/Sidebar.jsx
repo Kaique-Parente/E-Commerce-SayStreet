@@ -11,7 +11,7 @@ import {
   CSidebarToggler,
 } from '@coreui/react'
 
-import '@coreui/coreui/dist/css/coreui.min.css';
+import '@/app/styles/sidebarUI.css';
 import Image from 'next/image'
 import styled from 'styled-components'
 import { signOut } from 'next-auth/react'

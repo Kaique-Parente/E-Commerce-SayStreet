@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.saystreet.backend.dto.ClienteDto;
@@ -55,24 +57,24 @@ public class ClienteService {
         return existingClient;
     }
 
-    public String create(ClienteDto clienteDto) throws Exception {
+    public ResponseEntity<String> create(ClienteDto clienteDto) throws Exception {
 
         Optional<ClienteModel> clienteOpt = clienteRepository.findByEmail(clienteDto.getEmail());
         if (clienteOpt.isPresent()) {
-            throw new EmailAlreadyExistsException("Esse email já está cadastrado no sistema!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("E-mail já cadastrado no sistema.");
         }
 
         clienteOpt = clienteRepository.findByCpf(clienteDto.getCpf());
         if (clienteOpt.isPresent()) {
-            throw new CpfAlreadyExistsException("Esse CPF já está cadastrado no sistema!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Esse CPF já está cadastrado no sistema!");
         }
 
         if (!CpfValidator.isValidCPF(clienteDto.getCpf())) {
-            throw new InvalidCpfException("Este CPF não é válido. Por favor, digite um CPF válido.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Este CPF não é válido. Por favor, digite um CPF válido.");
         }
 
         if (!NameValidator.validaNome(clienteDto.getNome())) {
-            throw new InvalidNameException("Este nome não é válido. Por favor, digite um nome válido.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Este nome não é válido. Por favor, digite um nome válido.");
         }
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(clienteDto.getSenha());
@@ -122,7 +124,7 @@ public class ClienteService {
         cliente.setEnderecos(enderecos);
         clienteRepository.save(cliente);
 
-        return "Cadastro realizado com sucesso";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Cliente cadastrado com sucesso!");
     }
 
     // Método para buscar um cliente pelo id
@@ -156,12 +158,12 @@ public class ClienteService {
             cliente.setGenero(dto.getGenero());
         }
 
-        if (dto.getSenha() != null) {
+        if (dto.getSenha() != null && !dto.getSenha().equals("")) {
             String encryptedPassword = PasswordEncryptionUtil.encrypt(dto.getSenha());
             cliente.setSenha(encryptedPassword);
         }
 
-        cliente.setStatus(dto.isStatus());
+        cliente.setStatus(!dto.isStatus());
 
         cliente.getEnderecos().clear();
         boolean temPradrao = false;

@@ -45,7 +45,7 @@ public class ClienteController {
     @Operation(summary = "Cadastrar Cliente", description = "Método para cadastrar um cliente.", tags = "cliente")
     @PostMapping("/cadastrar")
     public ResponseEntity<String> cadastrar(@RequestBody ClienteDto clienteDto) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.create(clienteDto));
+        return clienteService.create(clienteDto);
     }
 
     @Operation(summary = "Editar Cliente", description = "Método para editar um cliente.", tags = "cliente")

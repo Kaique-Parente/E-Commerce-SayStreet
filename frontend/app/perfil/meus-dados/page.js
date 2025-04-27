@@ -2,10 +2,15 @@
 
 import InputPersonalizado from "@/components/ClientComponents/InputPersonalizado";
 import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useDadosCliente } from "@/hooks/web/useDadosCliente";
+import { FormControlLabel, Switch } from "@mui/material";
+import SelectPersonalizado from "@/components/ClientComponents/SelectPersonalizado";
+import { editarCliente } from "@/services/ClienteService";
+import { useRouter } from "next/navigation";
 
 const Container = styled.div`
   width: 100%;
@@ -103,18 +108,9 @@ const AddressContent = styled.div.withConfig({
 `;
 
 export default function MeusDados() {
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
+    
     const user = session?.user;
-
-    const [formData, setFormData] = useState({
-        id: -1,
-        nome: "",
-        email: "",
-        cpf: "",
-        dataNascimento: "",
-        genero: "",
-        enderecosEntrega: []
-    });
 
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -123,19 +119,77 @@ export default function MeusDados() {
     const [editingAddressId, setEditingAddressId] = useState(null);
     const [isAddingAddress, setIsAddingAddress] = useState(false);
 
+    const handleCancelarEndereco = () => {
+        setCepValido(false);
+        setIsAddingAddress(false)
+    }
+
+    const {
+        nome,
+        cpf,
+        email,
+        senha,
+        dataNascimento,
+        genero,
+        setNome,
+        setEmail,
+        setSenha,
+        setCpf,
+        setDataNascimento,
+        setGenero,
+        handleNomeChange,
+        handleCpfChange,
+        handleEmailChange,
+        handleSenhaChange,
+        handleDataNascimentoChange,
+        handleGeneroChange,
+
+        logradouro,
+        numero,
+        complemento,
+        cep,
+        cidade,
+        uf,
+        principal,
+        bairro,
+        setLogradouro,
+        setNumero,
+        setComplemento,
+        setCep,
+        setCidade,
+        setUf,
+        setPrincipal,
+        setCepValido,
+        setBairro,
+
+        handleLogradouroChange,
+        handleNumeroChange,
+        handleComplementoChange,
+        handleCepChange,
+        handleCidadeChange,
+        handleUfChange,
+        handlePrincipalChange,
+        handleBairroChange,
+
+        cepValido,
+        handleCepValidate,
+    } = useDadosCliente();
+
+    const [enderecos, setEnderecos] = useState([]);
+    const router = useRouter();
+
+
     useEffect(() => {
         if (user) {
-            console.log("USERR");
+            setNome(user.nome || '');
+            setEmail(user.email || '');
+            setSenha(user.senha || '');
+            setCpf(user.cpf || '');
+            setDataNascimento(user.dataNascimento?.split('T')[0] || ''); // pega só a parte da data
+            setGenero(user.genero || '');
+            setEnderecos(user.enderecos || []);
+
             console.log(user);
-            setFormData({
-                id: user.id || -1,
-                nome: user.nome || "",
-                email: user.email || "",
-                cpf: user.cpf || "",
-                dataNascimento: user.dataNascimento || "",
-                genero: user.genero || "",
-                enderecosEntrega: user.enderecosEntrega || []
-            });
         }
     }, [user]);
 
@@ -145,14 +199,45 @@ export default function MeusDados() {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setFormData((prev) => ({ ...prev, [id]: value }));
+        //setFormData((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Dados atualizados:", formData);
-        setIsEditing(false);
-        // Aqui você pode fazer uma requisição PUT ou PATCH para atualizar os dados no backend
+
+        const dadosCliente = {
+            nome,
+            email,
+            cpf,
+            dataNascimento,
+            genero,
+            enderecos,
+        };
+
+        try {
+            const response = await editarCliente(user.id, dadosCliente);
+            console.log(response);
+            
+            if (response) {
+                alert(response);
+                /*
+                await update({
+                    ...session,
+                    user: {
+                      ...session.user,
+                      nome: dadosCliente.nome, // ou o que você alterou
+                      email: dadosCliente.email,
+                      // qualquer outro campo que mudou
+                    },
+                  });
+                */
+                signOut({ callbackUrl: "/login" })
+            }
+               
+        } catch (error) {
+            console.error("Erro ao tentar atualizar os dados:", error);
+            alert("Ocorreu um erro inesperado. Tente novamente.");
+        }
     };
 
     return (
@@ -160,7 +245,7 @@ export default function MeusDados() {
             <div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "10px", marginBottom: "30px" }}>
                     <Image src={"/web/sidebar/dados.png"} width={32} height={32} alt="Dados" />
-                    <h2>Meus dados</h2>
+                    <h2>Meus Dados</h2>
                 </div>
 
                 <div style={{ display: "flex", gap: "50px" }}>
@@ -171,8 +256,8 @@ export default function MeusDados() {
                                     <label htmlFor="nome">Nome</label>
                                     <InputPersonalizado
                                         id="nome"
-                                        value={formData.nome}
-                                        onChange={handleChange}
+                                        value={nome}
+                                        onChange={handleNomeChange}
                                         disabled={!isEditing}
                                         placeholder="Nome"
                                         isRequired
@@ -183,9 +268,9 @@ export default function MeusDados() {
                                     <label htmlFor="cpf">CPF</label>
                                     <InputPersonalizado
                                         id="cpf"
-                                        value={formData.cpf}
-                                        onChange={handleChange}
-                                        disabled={!isEditing}
+                                        value={cpf}
+                                        onChange={handleCpfChange}
+                                        disabled={true}
                                         placeholder="CPF"
                                         isRequired
                                     />
@@ -196,11 +281,23 @@ export default function MeusDados() {
                                     <InputPersonalizado
                                         id="email"
                                         type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        disabled={!isEditing}
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        disabled={true}
                                         placeholder="Email"
                                         isRequired
+                                    />
+                                </InputsContainer>
+
+                                <InputsContainer>
+                                    <label htmlFor="senha">Senha</label>
+                                    <InputPersonalizado
+                                        id="senha"
+                                        type="password"
+                                        value={senha}
+                                        onChange={handleSenhaChange}
+                                        placeholder="Senha"
+                                        disabled={!isEditing}
                                     />
                                 </InputsContainer>
 
@@ -209,8 +306,8 @@ export default function MeusDados() {
                                     <InputPersonalizado
                                         id="dataNascimento"
                                         type="date"
-                                        value={formData.dataNascimento}
-                                        onChange={handleChange}
+                                        value={dataNascimento}
+                                        onChange={handleDataNascimentoChange}
                                         disabled={!isEditing}
                                         placeholder="Data de Nascimento"
                                         isRequired
@@ -219,27 +316,22 @@ export default function MeusDados() {
 
                                 <InputsContainer>
                                     <label htmlFor="genero">Gênero</label>
-                                    <InputPersonalizado
+                                    <SelectPersonalizado
                                         id="genero"
-                                        value={formData.genero}
-                                        onChange={handleChange}
-                                        disabled={!isEditing}
-                                        placeholder="Gênero"
+                                        value={genero}
+                                        onChange={handleGeneroChange}
                                         isRequired
-                                    />
+                                        disabled={!isEditing}
+                                    >
+                                        <option value="">Selecione</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="feminino">Feminino</option>
+                                        <option value="nao-informado">Prefiro não informar</option>
+                                    </SelectPersonalizado>
                                 </InputsContainer>
                             </FormGrid>
-                            {!isEditing ? (
-                                <div>
-                                    <BotaoPersonalizado
-                                        onClick={() => setIsEditing(true)}
-                                        type="button"
-                                        color="marrom"
-                                        width="100%"
-                                        style={{ display: "none", marginTop: "30px" }}
-                                    >
-                                        Editar dados
-                                    </BotaoPersonalizado>
+                            
+                                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                                     <BotaoPersonalizado
                                         onClick={() => setIsEditing(true)}
                                         type="button"
@@ -249,19 +341,17 @@ export default function MeusDados() {
                                     >
                                         Editar dados
                                     </BotaoPersonalizado>
-                                </div>
-                            ) : (
-                                <div>
                                     <BotaoPersonalizado
+                                        onClick={handleSubmit}
                                         type="submit"
                                         color="amarelo"
-                                        width="100%"
+                                        width="75%"
                                         style={{ marginTop: "30px" }}
                                     >
-                                        Salvar alterações
+                                        Salvar Todas as Alterações
                                     </BotaoPersonalizado>
                                 </div>
-                            )}
+                            
                         </form>
                     </CardContainer>
 
@@ -277,51 +367,113 @@ export default function MeusDados() {
                                     <form
                                         onSubmit={(e) => {
                                             e.preventDefault();
-                                            // Salvar novo endereço
+                                            const isFirstAddress = enderecos.length === 0; 
+
                                             setIsAddingAddress(false);
+                                            const newAddress = {
+                                                logradouro: logradouro,
+                                                numero: numero,
+                                                complemento: complemento,
+                                                cep: cep,
+                                                localidade: cidade,
+                                                uf: uf,
+                                                estado: uf,
+                                                enderecoPadrao: isFirstAddress ? true : principal,
+                                                bairro: bairro,
+                                            }
+
+                                            setEnderecos((prevEnderecos) => {
+                                                const atualizados = principal
+                                                    ? prevEnderecos.map((end) => ({ ...end, enderecoPadrao: false }))
+                                                    : [...prevEnderecos];
+
+                                                return [...atualizados, newAddress];
+                                            });
+
+                                            console.log(newAddress);  // Aqui você pode enviar para o servidor ou armazenar no estado
                                         }}
                                         style={{ display: "flex", flexDirection: "column", gap: "10px" }}
                                     >
+                                        <label>CEP</label>
+                                        <div style={{ display: "flex", gap: "10px" }}>
+                                            <InputPersonalizado
+                                                name="cep"
+                                                value={cep}
+                                                onChange={handleCepChange}
+                                                placeholder="CEP"
+                                                isRequired
+                                                maxLength={10}
+                                                disabled={cepValido}
+                                            />
+                                            <BotaoPersonalizado
+                                                type="button"
+                                                color="marrom"
+                                                width="100%"
+                                                onClick={handleCepValidate}
+                                            >
+                                                Validar
+                                            </BotaoPersonalizado>
+                                        </div>
                                         <label>Logradouro</label>
                                         <InputPersonalizado
-                                            value={newAddress.logradouro}
-                                            onChange={(e) => setNewAddress({ ...newAddress, logradouro: e.target.value })}
+                                            name="logradouro"
+                                            value={logradouro}
+                                            onChange={handleLogradouroChange}
                                             placeholder="Logradouro"
                                             isRequired
+                                            disabled={true}
                                         />
                                         <label>Número</label>
                                         <InputPersonalizado
-                                            value={newAddress.numero}
-                                            onChange={(e) => setNewAddress({ ...newAddress, numero: e.target.value })}
+                                            name="numero"
+                                            type="number"
+                                            value={numero}
+                                            onChange={handleNumeroChange}
                                             placeholder="Número"
                                             isRequired
                                         />
                                         <label>Complemento</label>
                                         <InputPersonalizado
-                                            value={newAddress.complemento}
-                                            onChange={(e) => setNewAddress({ ...newAddress, complemento: e.target.value })}
+                                            name="complemento"
+                                            value={complemento}
+                                            onChange={handleComplementoChange}
                                             placeholder="Complemento"
                                         />
-                                        <label>CEP</label>
+                                        <label>Bairro</label>
                                         <InputPersonalizado
-                                            value={newAddress.cep}
-                                            onChange={(e) => setNewAddress({ ...newAddress, cep: e.target.value })}
-                                            placeholder="CEP"
+                                            name="bairro"
+                                            value={bairro}
+                                            onChange={handleBairroChange}
+                                            placeholder="Bairro"
                                             isRequired
+                                            disabled={true}
                                         />
                                         <label>Cidade</label>
                                         <InputPersonalizado
-                                            value={newAddress.cidade}
-                                            onChange={(e) => setNewAddress({ ...newAddress, cidade: e.target.value })}
+                                            name="cidade"
+                                            value={cidade}
+                                            onChange={handleCidadeChange}
                                             placeholder="Cidade"
                                             isRequired
+                                            disabled={true}
                                         />
                                         <label>UF</label>
                                         <InputPersonalizado
-                                            value={newAddress.uf}
-                                            onChange={(e) => setNewAddress({ ...newAddress, uf: e.target.value })}
+                                            name="uf"
+                                            value={uf}
+                                            onChange={handleUfChange}
                                             placeholder="UF"
                                             isRequired
+                                            disabled={true}
+                                        />
+
+                                        <FormControlLabel control={
+                                            <Switch
+                                                checked={principal}
+                                                onChange={handlePrincipalChange}
+                                            />
+                                        }
+                                            label={principal ? "Endereço principal" : "Endereço comum"}
                                         />
 
                                         <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
@@ -329,7 +481,7 @@ export default function MeusDados() {
                                                 type="button"
                                                 color="marrom"
                                                 width="100%"
-                                                onClick={() => setIsAddingAddress(false)}
+                                                onClick={handleCancelarEndereco}
                                             >
                                                 Cancelar
                                             </BotaoPersonalizado>
@@ -339,86 +491,119 @@ export default function MeusDados() {
                                         </div>
                                     </form>
                                 ) : (
-                                    formData.enderecosEntrega.map((address, index) => (
-                                        <div key={address.id} style={{ marginBottom: "25px" }}>
+                                    enderecos.map((address, index) => (
+                                        <div key={address.id} style={{ marginBottom: "15px" }}>
                                             {editingAddressId === address.id ? (
                                                 <form
                                                     onSubmit={(e) => {
                                                         e.preventDefault();
+
+                                                        const updated = [...enderecos];
+                                                        updated[index] = {
+                                                            ...updated[index],
+                                                            logradouro,
+                                                            numero,
+                                                            complemento,
+                                                            cep,
+                                                            localidade: cidade,
+                                                            uf,
+                                                            estado: uf,
+                                                            enderecoPadrao: principal,
+                                                            bairro,
+                                                        };
+
+                                                        // Se o endereço for marcado como principal, zera os outros
+                                                        if (principal) {
+                                                            for (let i = 0; i < updated.length; i++) {
+                                                                if (updated[i].id !== address.id) {
+                                                                    updated[i].enderecoPadrao = false;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        setEnderecos(updated);
                                                         setEditingAddressId(null);
-                                                        // Salvar alterações no endereço
                                                     }}
                                                     style={{ display: "flex", flexDirection: "column", gap: "10px" }}
                                                 >
+                                                    <label>CEP</label>
+                                                    <div style={{ display: "flex", gap: "10px" }}>
+                                                        <InputPersonalizado
+                                                            name="cep"
+                                                            value={cep}
+                                                            onChange={handleCepChange}
+                                                            placeholder="CEP"
+                                                            isRequired
+                                                            maxLength={10}
+                                                            disabled={cepValido}
+                                                        />
+                                                        <BotaoPersonalizado
+                                                            type="button"
+                                                            color="marrom"
+                                                            width="100%"
+                                                            onClick={handleCepValidate}
+                                                        >
+                                                            Validar
+                                                        </BotaoPersonalizado>
+                                                    </div>
                                                     <label>Logradouro</label>
                                                     <InputPersonalizado
-                                                        value={address.logradouro}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].logradouro = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
+                                                        value={logradouro}
+                                                        onChange={handleLogradouroChange}
                                                         placeholder="Logradouro"
                                                         isRequired
+                                                        disabled={true}
                                                     />
 
                                                     <label>Número</label>
                                                     <InputPersonalizado
-                                                        value={address.numero}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].numero = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
+                                                        value={numero}
+                                                        onChange={handleNumeroChange}
                                                         placeholder="Número"
                                                         isRequired
                                                     />
 
                                                     <label>Complemento</label>
                                                     <InputPersonalizado
-                                                        value={address.complemento}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].complemento = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
+                                                        value={complemento}
+                                                        onChange={handleComplementoChange}
                                                         placeholder="Complemento"
                                                     />
 
-                                                    <label>CEP</label>
+                                                    <label>Bairro</label>
                                                     <InputPersonalizado
-                                                        value={address.cep}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].cep = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
-                                                        placeholder="CEP"
-                                                        isRequired
+                                                        value={bairro}
+                                                        onChange={handleBairroChange}
+                                                        placeholder="Bairro"
+                                                        disabled={true}
                                                     />
 
                                                     <label>Cidade</label>
                                                     <InputPersonalizado
-                                                        value={address.cidade}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].cidade = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
+                                                        value={cidade}
+                                                        onChange={handleCidadeChange}
                                                         placeholder="Cidade"
                                                         isRequired
+                                                        disabled={true}
                                                     />
 
                                                     <label>UF</label>
                                                     <InputPersonalizado
-                                                        value={address.uf}
-                                                        onChange={(e) => {
-                                                            const updated = [...formData.enderecosEntrega];
-                                                            updated[index].uf = e.target.value;
-                                                            setFormData({ ...formData, enderecosEntrega: updated });
-                                                        }}
+                                                        value={uf}
+                                                        onChange={handleUfChange}
                                                         placeholder="UF"
                                                         isRequired
+                                                        disabled={true}
+                                                    />
+
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Switch
+                                                                checked={principal}
+                                                                onChange={handlePrincipalChange}
+                                                            />
+                                                        }
+                                                        label={principal ? "Endereço principal" : "Endereço comum"}
                                                     />
 
                                                     <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
@@ -436,7 +621,7 @@ export default function MeusDados() {
                                                     </div>
                                                 </form>
                                             ) : (
-                                                <AddressContent isPrincipal={address.principal}>
+                                                <AddressContent isPrincipal={address.enderecoPadrao}>
                                                     <h2>Endereço</h2>
                                                     <p>{address.logradouro}</p>
                                                     <p>Número: {address.numero}, {address.complemento}</p>
@@ -448,7 +633,20 @@ export default function MeusDados() {
                                                         </p>
                                                     )}
 
-                                                    <button type="button" onClick={() => setEditingAddressId(address.id)}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setEditingAddressId(address.id);
+                                                            setCep(address.cep || "");
+                                                            setLogradouro(address.logradouro || "");
+                                                            setNumero(address.numero || "");
+                                                            setComplemento(address.complemento || "");
+                                                            setCidade(address.localidade || "");
+                                                            setUf(address.uf || "");
+                                                            setBairro(address.bairro || "");
+                                                            setPrincipal(address.principal || false);
+                                                        }}
+                                                    >
                                                         Editar
                                                     </button>
                                                 </AddressContent>
@@ -467,15 +665,15 @@ export default function MeusDados() {
                                     onClick={() => {
                                         setEditingAddressId(null);
                                         setIsAddingAddress(true);
-                                        setNewAddress({
-                                            logradouro: "",
-                                            numero: "",
-                                            complemento: "",
-                                            cep: "",
-                                            cidade: "",
-                                            uf: "",
-                                            principal: false,
-                                        });
+                                        setIsAddingAddress(true);
+                                        setLogradouro("");
+                                        setNumero("");
+                                        setComplemento("");
+                                        setCep("");
+                                        setCidade("");
+                                        setUf("");
+                                        setPrincipal("");
+                                        setBairro("");
                                     }}
                                 >
                                     + Cadastrar novo endereço
