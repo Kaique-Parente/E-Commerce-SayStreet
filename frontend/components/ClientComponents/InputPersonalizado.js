@@ -30,6 +30,8 @@ export default function InputPersonalizado(props){
             type={props.type}
             placeholder={props.placeholder}
             maxLength={props.maxLength}
+            min={props.min}
+            max={props.max}
         />
     );
 }
