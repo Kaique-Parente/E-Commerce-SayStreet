@@ -206,12 +206,12 @@ export default function MeusDados() {
         e.preventDefault();
 
         const dadosCliente = {
-            nome,
-            email,
-            cpf,
-            dataNascimento,
-            genero,
-            enderecos,
+            nome: user.nome,
+            email: user.email,
+            cpf: user.cpf,
+            dataNascimento: user.dataNascimento,
+            genero: user.genero,
+            enderecos: enderecos,
         };
 
         try {
@@ -369,25 +369,29 @@ export default function MeusDados() {
                                             const isFirstAddress = enderecos.length === 0;
 
                                             setIsAddingAddress(false);
-                                            const newAddress = {
-                                                logradouro: logradouro,
-                                                numero: numero,
-                                                complemento: complemento,
-                                                cep: cep,
-                                                localidade: cidade,
-                                                uf: uf,
-                                                estado: uf,
-                                                enderecoPadrao: isFirstAddress ? true : principal,
-                                                bairro: bairro,
+                                            if (logradouro !== "" && bairro !== "" && cidade !== "") {
+                                                const newAddress = {
+                                                    logradouro: logradouro,
+                                                    numero: numero,
+                                                    complemento: complemento,
+                                                    cep: cep,
+                                                    localidade: cidade,
+                                                    uf: uf,
+                                                    estado: uf,
+                                                    enderecoPadrao: isFirstAddress ? true : principal,
+                                                    bairro: bairro,
+                                                }
+
+                                                setEnderecos((prevEnderecos) => {
+                                                    const atualizados = principal
+                                                        ? prevEnderecos.map((end) => ({ ...end, enderecoPadrao: false }))
+                                                        : [...prevEnderecos];
+
+                                                    return [...atualizados, newAddress];
+                                                });
+                                            } else {
+                                                alert("Valide o CEP para continuar com o cadastro!");
                                             }
-
-                                            setEnderecos((prevEnderecos) => {
-                                                const atualizados = principal
-                                                    ? prevEnderecos.map((end) => ({ ...end, enderecoPadrao: false }))
-                                                    : [...prevEnderecos];
-
-                                                return [...atualizados, newAddress];
-                                            });
 
                                             console.log(newAddress);  // Aqui você pode enviar para o servidor ou armazenar no estado
                                         }}
@@ -402,7 +406,7 @@ export default function MeusDados() {
                                                 placeholder="CEP"
                                                 isRequired
                                                 maxLength={10}
-                                                disabled={cepValido}
+                                                disabled={false}
                                             />
                                             <BotaoPersonalizado
                                                 type="button"
@@ -491,7 +495,7 @@ export default function MeusDados() {
                                     </form>
                                 ) : (
                                     enderecos.map((address, index) => (
-                                        <div key={address.id} style={{ marginBottom: "15px" }}>
+                                        <div key={address.id || index} style={{ marginBottom: "15px" }}>
                                             {editingAddressId === address.id ? (
                                                 <form
                                                     onSubmit={(e) => {
@@ -534,7 +538,7 @@ export default function MeusDados() {
                                                             placeholder="CEP"
                                                             isRequired
                                                             maxLength={10}
-                                                            disabled={cepValido}
+                                                            disabled={true}
                                                         />
                                                         <BotaoPersonalizado
                                                             type="button"
@@ -597,12 +601,18 @@ export default function MeusDados() {
 
                                                     <FormControlLabel
                                                         control={
-                                                            <Switch
-                                                                checked={principal}
-                                                                onChange={handlePrincipalChange}
-                                                            />
+                                                            address.enderecoPadrao ?
+                                                                <Switch
+                                                                    checked={address.enderecoPadrao}
+                                                                    disabled={address.enderecoPadrao}
+                                                                />
+                                                                :
+                                                                <Switch
+                                                                    checked={principal}
+                                                                    onChange={handlePrincipalChange}
+                                                                />
                                                         }
-                                                        label={principal ? "Endereço principal" : "Endereço comum"}
+                                                        label={principal || address.enderecoPadrao ? "Endereço principal" : "Endereço comum"}
                                                     />
 
                                                     <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
@@ -671,7 +681,7 @@ export default function MeusDados() {
                                         setCep("");
                                         setCidade("");
                                         setUf("");
-                                        setPrincipal("");
+                                        setPrincipal(false);
                                         setBairro("");
                                     }}
                                 >

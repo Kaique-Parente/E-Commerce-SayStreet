@@ -12,6 +12,11 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import normalizeSlug from "@/utils/normalizeSlug";
+import { useSession } from "next-auth/react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch } from "@mui/material";
+import { useDadosCliente } from "@/hooks/web/useDadosCliente";
+import InputPersonalizado from "@/components/ClientComponents/InputPersonalizado";
+import { editarCliente } from "@/services/ClienteService";
 
 const Container = styled.div`
     width: 100%;
@@ -314,20 +319,79 @@ const DetailsContainer = styled.div`
 `
 
 export default function Carrinho() {
+    const {
+        nome,
+        cpf,
+        email,
+        senha,
+        dataNascimento,
+        genero,
+        setNome,
+        setEmail,
+        setSenha,
+        setCpf,
+        setDataNascimento,
+        setGenero,
+        handleNomeChange,
+        handleCpfChange,
+        handleEmailChange,
+        handleSenhaChange,
+        handleDataNascimentoChange,
+        handleGeneroChange,
+
+        logradouro,
+        numero,
+        complemento,
+        cep,
+        cidade,
+        uf,
+        principal,
+        bairro,
+        setLogradouro,
+        setNumero,
+        setComplemento,
+        setCep,
+        setCidade,
+        setUf,
+        setPrincipal,
+        setCepValido,
+        setBairro,
+
+        handleLogradouroChange,
+        handleNumeroChange,
+        handleComplementoChange,
+        handleCidadeChange,
+        handleUfChange,
+        handlePrincipalChange,
+        handleBairroChange,
+
+        cepValido,
+        handleCepValidate,
+    } = useDadosCliente();
+
+
     const { carrinho, incrementarQuantidade, decrementarQuantidade, removerProduto } = useCarrinho();
+
     const [frete, setFrete] = useState(0.0);
     const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
-    const [cep, setCep] = useState("");
+
     const [valorTotalProdutos, setValorTotalProdutos] = useState(0.0);
     const [valorTotalComFrete, setValorTotalComFrete] = useState(0.0);
 
+    const [enderecoSelecionado, setEnderecoSelecionado] = useState("");
+
     const router = useRouter();
+
+    const { data: session, status, update } = useSession();
+    const user = session?.user;
+
+    const [enderecos, setEnderecos] = useState(user?.enderecos);
 
     useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
         setValorTotalProdutos(totalProdutos);
 
-        if(carrinho.length === 0){
+        if (carrinho.length === 0) {
             setCep("");
             setFrete(0.0);
             setMostrarOpcoes(false);
@@ -361,12 +425,133 @@ export default function Carrinho() {
 
     const handleMostrarOpcoes = () => {
         const cepSemHifen = cep.replace("-", "");
-       
-        if(cepSemHifen.length === 8){
+
+        if (cepSemHifen.length === 8) {
             setMostrarOpcoes(true);
-        }else {
+        } else {
             setMostrarOpcoes(false);
             setFrete(0.0);
+        }
+    }
+
+    const handleEnderecoSelecionado = (e) => {
+        setEnderecoSelecionado(e.target.value);
+        setMostrarOpcoes(true);
+        console.log(user.enderecos);
+    }
+
+    //Teste para adicionar
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            setOpen(false);
+
+            setCep("");
+            setCepValido(false);
+            setLogradouro("");
+            setNumero("");
+            setComplemento("");
+            setBairro("");
+            setCidade("");
+            setUf("");
+
+            setPrincipal(false);
+        }
+    };
+
+    const handleAdicionarEndereco = async (e) => {
+        e.preventDefault();
+
+        if (logradouro !== "" && bairro !== "" && cidade !== "") {
+            const newAddress = {
+                logradouro: logradouro,
+                numero: numero,
+                complemento: complemento,
+                cep: cep,
+                localidade: cidade,
+                uf: uf,
+                estado: uf,
+                enderecoPadrao: principal,
+                bairro: bairro,
+            };
+
+            const enderecosAtualizados = principal
+                ? enderecos.map((end) => ({ ...end, enderecoPadrao: false }))
+                : [...enderecos];
+
+            const novosEnderecos = [...enderecosAtualizados, newAddress];
+            console.log("NOVOS ENDEREÇOS");
+            console.log(novosEnderecos);
+
+            setEnderecos(novosEnderecos);
+
+            const dadosCliente = {
+                nome: user.nome,
+                email: user.email,
+                cpf: user.cpf,
+                dataNascimento: user.dataNascimento,
+                genero: user.genero,
+                enderecos: novosEnderecos,
+            };
+
+            try {
+                const response = await editarCliente(user.id, dadosCliente);
+                console.log(response);
+
+                if (response) {
+                    alert(response);
+
+                    await update({
+                        id: user.id,
+                        nome: dadosCliente.nome,
+                        email: dadosCliente.email,
+                        cpf: dadosCliente.cpf,
+                        dataNascimento: dadosCliente.dataNascimento,
+                        genero: dadosCliente.genero,
+                        enderecos: dadosCliente.enderecos,
+                        status: user.status,
+                    });
+                }
+
+                setCep("");
+                setCepValido(false);
+                setLogradouro("");
+                setNumero("");
+                setComplemento("");
+                setBairro("");
+                setCidade("");
+                setUf("");
+
+                setPrincipal(false);
+                setOpen(false);
+            } catch (error) {
+                console.error("Erro ao tentar atualizar os dados:", error);
+                alert("Ocorreu um erro inesperado. Tente novamente.");
+            }
+        } else {
+            alert("Valide o CEP para continuar com o cadastro!");
+        }
+    };
+
+    ///adwadwa
+
+    const handleFinalizarCompra = () => {
+        console.log(session);
+
+        if (frete > 0.0) {
+            if (session !== undefined && session !== null) {
+                router.push("./checkout")
+                console.log("Logado!");
+            } else {
+                router.push("./login")
+            }
+        } else {
+            alert("Selecione um frete e uma entregadora!");
         }
     }
 
@@ -489,24 +674,161 @@ export default function Carrinho() {
                                 </div>
                             </div>
 
-                            <div className="frete">
-                                <h2>Calcular Frete</h2>
-                                <div className="input-container">
-                                    <input
-                                        type="text"
-                                        placeholder="CEP:"
-                                        value={cep}
-                                        onChange={handleCepChange}
-                                    />
-                                    <button onClick={handleMostrarOpcoes}>OK</button>
+                            {session ? (
+                                <div className="frete">
+                                    <h2>Endereços de Entrega</h2>
+                                    <div className="input-container">
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Selecionar endereço</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={enderecoSelecionado}
+                                                label="Selecionar endereço"
+                                                onChange={handleEnderecoSelecionado}
+                                            >
+                                                {enderecos?.map((endereco, index) => (
+                                                    <MenuItem key={endereco.id || index} value={endereco.logradouro}>
+                                                        {endereco.logradouro + ", " + endereco.numero}
+                                                        <br />
+                                                        {"CEP: " + endereco.cep}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                    {mostrarOpcoes && (
+                                        <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
+                                    )}
+
+                                    <Button onClick={handleClickOpen}>Novo endereço</Button>
+                                    <Dialog style={{ margin: "80px 0px" }} disableEscapeKeyDown open={open} onClose={handleClose}>
+                                        <DialogTitle>Cadastrar Endereço</DialogTitle>
+                                        <DialogContent>
+                                            <form
+                                                onSubmit={handleAdicionarEndereco}
+                                                style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+                                            >
+                                                <label>CEP</label>
+                                                <div style={{ display: "flex", gap: "10px" }}>
+                                                    <InputPersonalizado
+                                                        name="cep"
+                                                        value={cep}
+                                                        onChange={handleCepChange}
+                                                        placeholder="CEP"
+                                                        isRequired
+                                                        maxLength={10}
+                                                        disabled={cepValido}
+                                                    />
+                                                    <BotaoPersonalizado
+                                                        type="button"
+                                                        color="marrom"
+                                                        width="100%"
+                                                        onClick={handleCepValidate}
+                                                    >
+                                                        Validar
+                                                    </BotaoPersonalizado>
+                                                </div>
+                                                <label>Logradouro</label>
+                                                <InputPersonalizado
+                                                    name="logradouro"
+                                                    value={logradouro}
+                                                    onChange={handleLogradouroChange}
+                                                    placeholder="Logradouro"
+                                                    isRequired
+                                                    disabled={true}
+                                                />
+                                                <label>Número</label>
+                                                <InputPersonalizado
+                                                    name="numero"
+                                                    type="number"
+                                                    min="1"
+                                                    value={numero}
+                                                    onChange={handleNumeroChange}
+                                                    placeholder="Número"
+                                                    isRequired
+                                                />
+                                                <label>Complemento</label>
+                                                <InputPersonalizado
+                                                    name="complemento"
+                                                    value={complemento}
+                                                    onChange={handleComplementoChange}
+                                                    placeholder="Complemento"
+                                                />
+                                                <label>Bairro</label>
+                                                <InputPersonalizado
+                                                    name="bairro"
+                                                    value={bairro}
+                                                    onChange={handleBairroChange}
+                                                    placeholder="Bairro"
+                                                    isRequired
+                                                    disabled={true}
+                                                />
+                                                <label>Cidade</label>
+                                                <InputPersonalizado
+                                                    name="cidade"
+                                                    value={cidade}
+                                                    onChange={handleCidadeChange}
+                                                    placeholder="Cidade"
+                                                    isRequired
+                                                    disabled={true}
+                                                />
+                                                <label>UF</label>
+                                                <InputPersonalizado
+                                                    name="uf"
+                                                    value={uf}
+                                                    onChange={handleUfChange}
+                                                    placeholder="UF"
+                                                    isRequired
+                                                    disabled={true}
+                                                />
+
+                                                <FormControlLabel control={
+                                                    <Switch
+                                                        checked={principal}
+                                                        onChange={handlePrincipalChange}
+                                                    />
+                                                }
+                                                    label={principal ? "Endereço principal" : "Endereço comum"}
+                                                />
+
+                                                <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                                                    <BotaoPersonalizado
+                                                        type="button"
+                                                        color="marrom"
+                                                        width="100%"
+                                                        onClick={handleClose}
+                                                    >
+                                                        Cancelar
+                                                    </BotaoPersonalizado>
+                                                    <BotaoPersonalizado type="submit" color="amarelo" width="100%">
+                                                        Salvar
+                                                    </BotaoPersonalizado>
+                                                </div>
+                                            </form>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
-                                {mostrarOpcoes && (
-                                    <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
-                                )}
-                            </div>
+                            ) : (
+                                <div className="frete">
+                                    <h2>Calcular Frete</h2>
+                                    <div className="input-container">
+                                        <input
+                                            type="text"
+                                            placeholder="CEP:"
+                                            value={cep}
+                                            onChange={handleCepChange}
+                                        />
+                                        <button onClick={handleMostrarOpcoes}>OK</button>
+                                    </div>
+                                    {mostrarOpcoes && (
+                                        <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
+                                    )}
+                                </div>
+                            )}
 
                             <div style={{ marginTop: "5px" }}>
-                                <BotaoPersonalizado width={"100%"} height={"50px"} color={"amarelo"}>
+                                <BotaoPersonalizado onClick={handleFinalizarCompra} width={"100%"} height={"50px"} color={"amarelo"}>
                                     Finalizar a Compra
                                 </BotaoPersonalizado>
                             </div>
