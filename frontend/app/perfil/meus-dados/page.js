@@ -109,7 +109,7 @@ const AddressContent = styled.div.withConfig({
 
 export default function MeusDados() {
     const { data: session, update } = useSession();
-    
+
     const user = session?.user;
 
     const [isEditing, setIsEditing] = useState(false);
@@ -217,23 +217,22 @@ export default function MeusDados() {
         try {
             const response = await editarCliente(user.id, dadosCliente);
             console.log(response);
-            
+
             if (response) {
                 alert(response);
-                /*
+
                 await update({
-                    ...session,
-                    user: {
-                      ...session.user,
-                      nome: dadosCliente.nome, // ou o que você alterou
-                      email: dadosCliente.email,
-                      // qualquer outro campo que mudou
-                    },
-                  });
-                */
-                signOut({ callbackUrl: "/login" })
+                    id: user.id,
+                    nome: dadosCliente.nome,
+                    email: dadosCliente.email,
+                    cpf: dadosCliente.cpf,
+                    dataNascimento: dadosCliente.dataNascimento,
+                    genero: dadosCliente.genero,
+                    enderecos: dadosCliente.enderecos,
+                    status: user.status
+                });
             }
-               
+
         } catch (error) {
             console.error("Erro ao tentar atualizar os dados:", error);
             alert("Ocorreu um erro inesperado. Tente novamente.");
@@ -330,28 +329,28 @@ export default function MeusDados() {
                                     </SelectPersonalizado>
                                 </InputsContainer>
                             </FormGrid>
-                            
-                                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                                    <BotaoPersonalizado
-                                        onClick={() => setIsEditing(true)}
-                                        type="button"
-                                        color="marrom"
-                                        width="100%"
-                                        style={{ marginTop: "30px" }}
-                                    >
-                                        Editar dados
-                                    </BotaoPersonalizado>
-                                    <BotaoPersonalizado
-                                        onClick={handleSubmit}
-                                        type="submit"
-                                        color="amarelo"
-                                        width="75%"
-                                        style={{ marginTop: "30px" }}
-                                    >
-                                        Salvar Todas as Alterações
-                                    </BotaoPersonalizado>
-                                </div>
-                            
+
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <BotaoPersonalizado
+                                    onClick={() => setIsEditing(true)}
+                                    type="button"
+                                    color="marrom"
+                                    width="100%"
+                                    style={{ marginTop: "30px" }}
+                                >
+                                    Editar dados
+                                </BotaoPersonalizado>
+                                <BotaoPersonalizado
+                                    onClick={handleSubmit}
+                                    type="submit"
+                                    color="amarelo"
+                                    width="75%"
+                                    style={{ marginTop: "30px" }}
+                                >
+                                    Salvar Todas as Alterações
+                                </BotaoPersonalizado>
+                            </div>
+
                         </form>
                     </CardContainer>
 
@@ -367,7 +366,7 @@ export default function MeusDados() {
                                     <form
                                         onSubmit={(e) => {
                                             e.preventDefault();
-                                            const isFirstAddress = enderecos.length === 0; 
+                                            const isFirstAddress = enderecos.length === 0;
 
                                             setIsAddingAddress(false);
                                             const newAddress = {

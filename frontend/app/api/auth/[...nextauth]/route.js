@@ -36,10 +36,24 @@ const handler = NextAuth({
     updateAge: 15 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.user = user;
       }
+  
+      if (trigger === "update" && session) {
+        token.user = { 
+          id: session.id,
+          nome: session.nome, 
+          email: session.email,
+          cpf: session.cpf,
+          dataNascimento: session.dataNascimento,
+          genero: session.genero,
+          enderecos: session.enderecos,
+        };
+        console.log(token);
+      }
+  
       return token;
     },
     async session({ session, token }) {
