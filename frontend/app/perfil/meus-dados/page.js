@@ -206,11 +206,11 @@ export default function MeusDados() {
         e.preventDefault();
 
         const dadosCliente = {
-            nome: user.nome,
-            email: user.email,
-            cpf: user.cpf,
-            dataNascimento: user.dataNascimento,
-            genero: user.genero,
+            nome: nome,
+            email: email,
+            cpf: cpf,
+            dataNascimento: dataNascimento,
+            genero: genero,
             enderecos: enderecos,
         };
 
@@ -229,7 +229,7 @@ export default function MeusDados() {
                     dataNascimento: dadosCliente.dataNascimento,
                     genero: dadosCliente.genero,
                     enderecos: dadosCliente.enderecos,
-                    status: user.status
+                    status: user.status,
                 });
             }
 
