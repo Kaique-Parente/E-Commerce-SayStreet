@@ -57,6 +57,9 @@ public class ClienteService {
                 .senha(encryptedPassword)
                 .build();
 
+        EnderecoModel enderecoFatura = converterDtoParaModel(clienteDto.getEnderecoFatura());
+        cliente.setEnderecoFatura(enderecoFatura);
+
         List<EnderecoModel> enderecos = new ArrayList<>();
         boolean temPradrao = false;
 
@@ -86,9 +89,9 @@ public class ClienteService {
         }
 
         if (!temPradrao && !enderecos.isEmpty()) {
-            enderecos.get(0).setEnderecoPadrao(true);
+            cliente.getEnderecoFatura().setEnderecoPadrao(true);
         }
-
+        
         cliente.setEnderecos(enderecos);
         clienteRepository.save(cliente);
 
@@ -143,6 +146,7 @@ public class ClienteService {
                         throw new IllegalArgumentException("Só pode haver um endereço padrão.");
                     }
                     temPradrao = true;
+                    cliente.getEnderecoFatura().setEnderecoPadrao(false);
                 }
 
                 cliente.getEnderecos().add(EnderecoModel.builder()
@@ -160,12 +164,36 @@ public class ClienteService {
             }
         }
 
+        if (!temPradrao && !cliente.getEnderecos().isEmpty()) {
+            cliente.getEnderecoFatura().setEnderecoPadrao(true);
+        }
         clienteRepository.save(cliente);
 
         return "Cliente atualizado com sucesso!";
     }
 
+    //Método para listar
     public List<ClienteModel> listAll() {
         return this.clienteRepository.findAll();
+    }
+
+
+    //Método para converter o EnderecoDto para EnderecoModel para que assim eu passe na criação do Objeto
+    public EnderecoModel converterDtoParaModel(EnderecosDto dto) {
+        if (dto == null) {
+            return null;
+        }
+    
+        return EnderecoModel.builder()
+                .cep(dto.getCep())
+                .logradouro(dto.getLogradouro())
+                .complemento(dto.getComplemento())
+                .bairro(dto.getBairro())
+                .localidade(dto.getLocalidade())
+                .uf(dto.getUf())
+                .estado(dto.getEstado())
+                .numero(dto.getNumero())
+                .enderecoPadrao(dto.isEnderecoPadrao())
+                .build();
     }
 }
