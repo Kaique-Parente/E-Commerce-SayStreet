@@ -388,6 +388,15 @@ export default function Carrinho() {
     const [enderecos, setEnderecos] = useState(user?.enderecos);
 
     useEffect(() => {
+        setMostrarOpcoes(false);
+        
+        if (user?.enderecos) {
+            setEnderecos(user.enderecos);
+        }
+       
+    }, [user])
+
+    useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
         setValorTotalProdutos(totalProdutos);
 
@@ -504,7 +513,7 @@ export default function Carrinho() {
                 console.log(response);
 
                 if (response) {
-                    alert(response);
+                    alert("Endereço de entrega adicionado com sucesso!");
 
                     await update({
                         id: user.id,
@@ -545,10 +554,10 @@ export default function Carrinho() {
 
         if (frete > 0.0) {
             if (session !== undefined && session !== null) {
-                router.push("./checkout")
+                router.push("/checkout")
                 console.log("Logado!");
             } else {
-                router.push("./login")
+                router.push("/login")
             }
         } else {
             alert("Selecione um frete e uma entregadora!");
@@ -701,7 +710,7 @@ export default function Carrinho() {
                                         <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
                                     )}
 
-                                    <Button onClick={handleClickOpen}>Novo endereço</Button>
+                                    <Button style={{ display: "flex", justifyContent: "flex-start", fontWeight: "bold", textDecoration: "underline" }} onClick={handleClickOpen}>Novo endereço</Button>
                                     <Dialog style={{ margin: "80px 0px" }} disableEscapeKeyDown open={open} onClose={handleClose}>
                                         <DialogTitle>Cadastrar Endereço</DialogTitle>
                                         <DialogContent>
