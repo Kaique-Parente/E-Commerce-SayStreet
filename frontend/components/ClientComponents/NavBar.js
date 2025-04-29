@@ -95,7 +95,7 @@ export default function NavBar() {
 
     return (
         <Container>
-            <Link href={"./"}>
+            <Link href={"/"}>
                 <Image style={{ marginLeft: "25px" }} width={80} height={80} src={'/web/logo.svg'} alt="Logo Say Street" />
             </Link>
             <LinksNavBar>
