@@ -369,8 +369,13 @@ export default function Carrinho() {
         handleCepValidate,
     } = useDadosCliente();
 
-
-    const { carrinho, incrementarQuantidade, decrementarQuantidade, removerProduto } = useCarrinho();
+    const { 
+        carrinho, 
+        incrementarQuantidade, 
+        decrementarQuantidade, 
+        removerProduto, 
+        atualizarFreteContext,
+    } = useCarrinho();
 
     const [frete, setFrete] = useState(0.0);
     const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
@@ -395,6 +400,10 @@ export default function Carrinho() {
         }
        
     }, [user])
+
+    useEffect(() => {
+        atualizarFreteContext(Number.parseFloat(frete));
+    }, [frete])
 
     useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
