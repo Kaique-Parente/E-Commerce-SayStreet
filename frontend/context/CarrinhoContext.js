@@ -6,6 +6,8 @@ const CarrinhoContext = createContext();
 
 export const CarrinhoProvider = ({ children }) => {
     const [carrinho, setCarrinho] = useState([]);
+    const [valorTotal, setValorTotal] = useState(0.0);
+    const [frete, setFrete] = useState(0.0);
 
     const salvarCarrinhoNoLocalStorage = (novoCarrinho) => {
         localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
@@ -18,6 +20,11 @@ export const CarrinhoProvider = ({ children }) => {
             setCarrinho(JSON.parse(carrinhoSalvo));
         }
     }, []);
+
+    useEffect(() => {
+        const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
+        setValorTotal(totalProdutos);
+    }, [carrinho]);
 
     // Função para adicionar item ao carrinho
     const adicionarItem = (novoItem) => {
@@ -80,6 +87,11 @@ export const CarrinhoProvider = ({ children }) => {
         });
     };
 
+    // Função para atualizar o frete
+    const atualizarFreteContext = (valor) => {
+        setFrete(valor);
+    };
+
     // Calcular a quantidade total de itens no carrinho
     const quantidadeTotal = carrinho.reduce((total, item) => total + item.quantidade, 0);
 
@@ -92,6 +104,9 @@ export const CarrinhoProvider = ({ children }) => {
                 incrementarQuantidade,
                 decrementarQuantidade,
                 removerProduto,
+                frete, 
+                atualizarFreteContext,
+                valorTotal,
             }}
         >
             {children}
