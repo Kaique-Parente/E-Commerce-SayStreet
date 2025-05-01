@@ -22,8 +22,62 @@ const Container = styled.div`
 
 const ContainerTipoPagamento = styled.div`
     width: 100%;
-    background-color: blueviolet;
-     margin: 20px 0;
+    margin: 20px 0;
+`;
+
+const MetodoLabel = styled.label.withConfig({
+    shouldForwardProp: (prop) => prop !== 'selecionado'
+})`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+
+  border-radius: ${props => props.selecionado ? '10px 10px 0px 0px' : '10px'};
+  
+  border: 2px solid ${props => props.selecionado ? 'rgba(255, 227, 23, 95)' : '#ccc'};
+  background-color: ${props => props.selecionado ? '#e1f5f2' : '#f9f9f9'};
+
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: #dff4f0;
+    border-color: #C8B312;
+  }
+
+  span {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+`;
+
+const RadioContainer = styled.div`
+    position: relative;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid rgb(75 73 63);
+`
+
+const RadioVisual = styled.div.withConfig({
+    shouldForwardProp: (prop) => prop !== 'selecionado'
+})`
+  width: 15px;
+  height: 15px;
+
+  position: absolute;
+  top: 15%;
+  right: 12%;
+
+  border-radius: 50%;
+  background-color: ${props => props.selecionado ? 'rgba(255, 227, 23, 95)' : 'transparent'};
+  transition: 0.2s;
+`;
+
+const HiddenRadio = styled.input`
+  display: none;
 `;
 
 const CampoInformacoes = styled.div`
@@ -36,10 +90,10 @@ const CampoInformacoes = styled.div`
 `;
 
 const CampoCartao = styled.div`
-  margin-top: 10px;
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 10px;
+
+  border-radius: 0px 0px 10px 10px;
   max-width: 500px;
 `;
 
@@ -131,6 +185,11 @@ const DetailsContainer = styled.div`
 export default function Checkout() {
     const { valorTotal, frete } = useCarrinho();
 
+    const [numeroCartao, setNumeroCartao] = useState('');
+    const [nomeNoCartao, setNomeNoCartao] = useState('');
+    const [validadeCartao, setValidadeCartao] = useState('');
+    const [cvvCartao, setCvvCartao] = useState('');
+
     const [metodoPagamento, setMetodoPagamento] = useState('');
     const { data: session, status } = useSession();
     const user = session?.user;
@@ -162,7 +221,7 @@ export default function Checkout() {
             }}>
                 <h1>Carregando...</h1>
             </div>
-        ); 
+        );
     }
 
     return (
@@ -173,7 +232,7 @@ export default function Checkout() {
                     <h1 style={{ margin: "50px 0px" }}>Selecione o método de pagamento</h1>
                     <form onSubmit={handleSubmit}>
                         <ContainerTipoPagamento>
-                            <input
+                            <HiddenRadio
                                 type="radio"
                                 id="cartao"
                                 name="metodoPagamento"
@@ -181,33 +240,41 @@ export default function Checkout() {
                                 checked={metodoPagamento === 'cartao'}
                                 onChange={handleMetodoChange}
                             />
-                            <label htmlFor="cartao">Cartão de Crédito</label>
-
+                            <MetodoLabel htmlFor="cartao" selecionado={metodoPagamento === 'cartao'}>
+                                <RadioContainer>
+                                    <RadioVisual selecionado={metodoPagamento === 'cartao'} />
+                                </RadioContainer>
+                                <span>Cartão de Crédito</span>
+                            </MetodoLabel>
                             {metodoPagamento === 'cartao' && (
                                 <CampoCartao>
                                     <h3>Dados do Cartão de Crédito</h3>
                                     <div>
-                                        <label>Número do Cartão</label><br />
-                                        <input type="text" name="numeroCartao" />
+                                        <label>
+                                            <div className="radio-btn"></div>
+                                            <span>Número do Cartão</span>
+                                        </label>
+                                        <br />
+                                        <input className="input-radio" type="text" name="numeroCartao" />
                                     </div>
                                     <div>
                                         <label>Nome no Cartão</label><br />
-                                        <input type="text" name="nomeCartao" />
+                                        <input className="input-radio" type="text" name="nomeCartao" />
                                     </div>
                                     <div>
                                         <label>Validade</label><br />
-                                        <input type="text" name="validadeCartao" placeholder="MM/AA" />
+                                        <input className="input-radio" type="text" name="validadeCartao" placeholder="MM/AA" />
                                     </div>
                                     <div>
                                         <label>CVV</label><br />
-                                        <input type="text" name="cvvCartao" />
+                                        <input className="input-radio" type="text" name="cvvCartao" />
                                     </div>
                                 </CampoCartao>
                             )}
                         </ContainerTipoPagamento>
 
                         <ContainerTipoPagamento>
-                            <input
+                            <HiddenRadio
                                 type="radio"
                                 id="boleto"
                                 name="metodoPagamento"
@@ -215,7 +282,12 @@ export default function Checkout() {
                                 checked={metodoPagamento === 'boleto'}
                                 onChange={handleMetodoChange}
                             />
-                            <label htmlFor="boleto">Boleto</label>
+                            <MetodoLabel htmlFor="boleto" selecionado={metodoPagamento === 'boleto'}>
+                                <RadioContainer>
+                                    <RadioVisual selecionado={metodoPagamento === 'boleto'} />
+                                </RadioContainer>
+                                <span>Boleto</span>
+                            </MetodoLabel>
 
                             {metodoPagamento === 'boleto' && (
                                 <CampoInformacoes>
@@ -228,7 +300,7 @@ export default function Checkout() {
                         </ContainerTipoPagamento>
 
                         <ContainerTipoPagamento>
-                            <input
+                            <HiddenRadio
                                 type="radio"
                                 id="pix"
                                 name="metodoPagamento"
@@ -236,8 +308,12 @@ export default function Checkout() {
                                 checked={metodoPagamento === 'pix'}
                                 onChange={handleMetodoChange}
                             />
-                            <label htmlFor="pix">Pix</label>
-
+                            <MetodoLabel htmlFor="pix" selecionado={metodoPagamento === 'pix'}>
+                                <RadioContainer>
+                                    <RadioVisual selecionado={metodoPagamento === 'pix'} />
+                                </RadioContainer>
+                                <span>Pix</span>
+                            </MetodoLabel>
                             {metodoPagamento === 'pix' && (
                                 <CampoInformacoes>
                                     Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.
