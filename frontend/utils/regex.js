@@ -23,3 +23,28 @@ export const validateCep = (value) => {
     return cepRegex.test(value);
 };
 
+export const formatNumeroCartao = (value) => {
+    const onlyNumbers = value.replace(/\D/g, '').slice(0, 16); // Máximo de 16 dígitos
+    return onlyNumbers
+        .replace(/(\d{4})(\d)/, '$1 $2')
+        .replace(/(\d{4})(\d)/, '$1 $2')
+        .replace(/(\d{4})(\d)/, '$1 $2');
+};
+
+export const formatNomeCartao = (value) => {
+    const onlyLettersAndSpaces = value.replace(/[^A-Za-z\s]/g, '').slice(0, 18); // Máximo de 18 caracteres (letras e espaços)
+    return onlyLettersAndSpaces;
+};
+
+export const formatValidadeCartao = (value) => {
+    const onlyNumbers = value.replace(/\D/g, '').slice(0, 4); // Máximo de 4 dígitos
+    return onlyNumbers
+        .replace(/(\d{2})(\d)/, '$1/$2');
+};
+
+export const formatCvvCartao = (value) => {
+    const onlyNumbers = value.replace(/\D/g, '').slice(0, 3); // Máximo de 3 dígitos
+    return onlyNumbers;
+};
+
+

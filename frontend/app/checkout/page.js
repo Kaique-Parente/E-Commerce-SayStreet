@@ -6,22 +6,32 @@ import { useSession } from 'next-auth/react';
 import NavBar from '@/components/ClientComponents/NavBar';
 import styled from 'styled-components';
 import { useCarrinho } from '@/context/CarrinhoContext';
+import Cards from 'react-credit-cards-2';
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
+import { formatCvvCartao, formatNomeCartao, formatNumeroCartao, formatValidadeCartao } from '@/utils/regex';
+import BotaoPersonalizado from '@/components/ClientComponents/BotaoPersonalizado';
 
 const Container = styled.div`
   width: 100%;
   min-height: 100vh;
+
   display: flex;
+  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  padding-top: 80px;
+  
+
+  padding-top: 50px;
 
   form{
-    width: 750px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 75px;
   }
 `;
 
 const ContainerTipoPagamento = styled.div`
-    width: 100%;
+    width: 750px;
     margin: 20px 0;
 `;
 
@@ -68,8 +78,8 @@ const RadioVisual = styled.div.withConfig({
   height: 15px;
 
   position: absolute;
-  top: 15%;
-  right: 12%;
+  top: 17%;
+  right: 17%;
 
   border-radius: 50%;
   background-color: ${props => props.selecionado ? 'rgba(255, 227, 23, 95)' : 'transparent'};
@@ -80,35 +90,78 @@ const HiddenRadio = styled.input`
   display: none;
 `;
 
-const CampoInformacoes = styled.div`
-  margin-top: 10px;
-  padding: 15px;
-  border-left: 4px solid #0070f3;
+const CampoCartao = styled.div`
+  width: 100%;
   background: #f0f0f0;
-  border-radius: 8px;
-  max-width: 500px;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  flex-wrap: wrap;
+  
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 10px 10px; 
+
+  .rccs{
+    margin: 0;
+  }
 `;
 
-const CampoCartao = styled.div`
-  padding: 20px;
-  border: 1px solid #ccc;
+const CampoCartaoInputs = styled.div`
 
-  border-radius: 0px 0px 10px 10px;
-  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  div {
+    input {
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1.99px solid #005C53;
+      transition: border-color 0.2s;
+
+      &:hover {
+        border-color: #C8B312;
+      }
+
+      &:focus {
+        border-color: #C8B312;
+        outline: none;
+      }
+    }
+  }
+`;
+
+const CampoInformacoes = styled.div`
+  width: 100%;
+  background: #f0f0f0;
+  
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+
+  color: #005c53;
+  font-weight: 600;
+
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 10px 10px; 
 `;
 
 const DetailsContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
-    
 
     .resumo-pedido, .frete{   
+        height: 340px;
+
         background-color: #CFCFCF;
         border-radius: 6px;
         padding: 20px 25px;
 
         display: flex;
+        justify-content: center;
         flex-direction: column;
         gap: 12px;
 
@@ -189,11 +242,37 @@ export default function Checkout() {
     const [nomeNoCartao, setNomeNoCartao] = useState('');
     const [validadeCartao, setValidadeCartao] = useState('');
     const [cvvCartao, setCvvCartao] = useState('');
+    const [cartaoFocus, setCartaoFocus] = useState('');
 
+    const [valorTotalFrete, setValorTotalFrete] = useState(0.00);
     const [metodoPagamento, setMetodoPagamento] = useState('');
+    const [desconto, setDesconto] = useState(0.0);
     const { data: session, status } = useSession();
     const user = session?.user;
     const router = useRouter();
+
+    useEffect(() => {
+        setValorTotalFrete(valorTotal+frete);
+    }, [valorTotal, frete])
+
+    useEffect(() => {
+        switch(metodoPagamento){
+            case "boleto": 
+                setDesconto(valorTotalFrete*0.05);
+                break;
+            case "pix":
+                setDesconto(valorTotalFrete*0.2);
+                break;
+            default:
+                setDesconto(0.00);
+                break;
+        }
+
+    }, [metodoPagamento])
+
+    useEffect(() => {
+        console.log(desconto);
+    }, [desconto])
 
     const handleMetodoChange = (e) => {
         setMetodoPagamento(e.target.value);
@@ -201,6 +280,49 @@ export default function Checkout() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (metodoPagamento === 'cartao') {
+            const numero = numeroCartao.replace(/\s/g, '');
+            const [mes, ano] = validadeCartao.split('/');
+            const agora = new Date();
+            const validade = new Date(`20${ano}`, mes);
+
+            if (numero.length !== 16) {
+                alert("Número do cartão incompleto.");
+                return;
+            }
+
+            if (!/^\d{2}\/\d{2}$/.test(validadeCartao)) {
+                alert("Formato da validade inválido.");
+                return;
+            }
+
+            if (validade < agora) {
+                alert("O cartão está expirado.");
+                return;
+            }
+
+            if (cvvCartao.length < 3) {
+                alert("CVV inválido.");
+                return;
+            }
+
+            if (nomeNoCartao.trim().length < 3) {
+                alert("Nome no cartão muito curto.");
+                return;
+            }
+
+            alert("Clickey Cartao");
+        }
+
+        if(metodoPagamento === "boleto"){
+            alert("Clickey Boleto");
+        }
+
+        if(metodoPagamento === "pix"){
+            alert("Clickey Pix");
+        }
+
+        
     };
 
     useEffect(() => {
@@ -228,9 +350,10 @@ export default function Checkout() {
         <>
             <NavBar />
             <Container>
-                <div>
-                    <h1 style={{ margin: "50px 0px" }}>Selecione o método de pagamento</h1>
-                    <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <h1 style={{ color: "#005c53", margin: "50px 0px" }}>Selecione o método de pagamento</h1>
+
                         <ContainerTipoPagamento>
                             <HiddenRadio
                                 type="radio"
@@ -248,27 +371,77 @@ export default function Checkout() {
                             </MetodoLabel>
                             {metodoPagamento === 'cartao' && (
                                 <CampoCartao>
-                                    <h3>Dados do Cartão de Crédito</h3>
-                                    <div>
-                                        <label>
-                                            <div className="radio-btn"></div>
-                                            <span>Número do Cartão</span>
-                                        </label>
-                                        <br />
-                                        <input className="input-radio" type="text" name="numeroCartao" />
-                                    </div>
-                                    <div>
-                                        <label>Nome no Cartão</label><br />
-                                        <input className="input-radio" type="text" name="nomeCartao" />
-                                    </div>
-                                    <div>
-                                        <label>Validade</label><br />
-                                        <input className="input-radio" type="text" name="validadeCartao" placeholder="MM/AA" />
-                                    </div>
-                                    <div>
-                                        <label>CVV</label><br />
-                                        <input className="input-radio" type="text" name="cvvCartao" />
-                                    </div>
+                                    <Cards
+                                        number={numeroCartao || ''}
+                                        name={nomeNoCartao || ''}
+                                        expiry={validadeCartao || ''}
+                                        cvc={cvvCartao || ''}
+                                        focused={cartaoFocus || ''}
+                                        id="credit-card"
+                                    />
+
+                                    <CampoCartaoInputs>
+                                        <div>
+                                            <label>Número do Cartão</label><br />
+                                            <input
+                                                type="text"
+                                                name="number"
+                                                value={numeroCartao}
+                                                onChange={(e) => setNumeroCartao(formatNumeroCartao(e.target.value))}
+                                                required
+                                                maxLength={19}
+                                                placeholder="Número do Cartão"
+                                                pattern="\d{4} \d{4} \d{4} \d{4}"
+                                                title="Formato: 0000 0000 0000 0000"
+                                                onFocus={() => setCartaoFocus('number')}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label>Nome no Cartão</label><br />
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={nomeNoCartao}
+                                                onChange={(e) => setNomeNoCartao(formatNomeCartao(e.target.value))}
+                                                required
+                                                maxLength={18}
+                                                placeholder="Nome no Cartão"
+                                                title="Máximo de 18 caracteres"
+                                                onFocus={() => setCartaoFocus('name')}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label>Validade</label><br />
+                                            <input
+                                                type="text"
+                                                name="expiry"
+                                                value={validadeCartao}
+                                                onChange={(e) => setValidadeCartao(formatValidadeCartao(e.target.value))}
+                                                required
+                                                maxLength={5}
+                                                placeholder="MM/AA"
+                                                pattern="(0[1-9]|1[0-2])\/\d{2}"
+                                                title="Formato: MM/AA"
+                                                onFocus={() => setCartaoFocus('expiry')}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label>CVV</label><br />
+                                            <input
+                                                type="text"
+                                                name="cvc"
+                                                value={cvvCartao}
+                                                onChange={(e) => setCvvCartao(formatCvvCartao(e.target.value))}
+                                                required
+                                                maxLength={4}
+                                                placeholder="CVV"
+                                                pattern="\d{3,4}"
+                                                title="Formato: 000"
+                                                onFocus={() => setCartaoFocus('cvc')}
+                                            />
+                                        </div>
+                                    </CampoCartaoInputs>
+
                                 </CampoCartao>
                             )}
                         </ContainerTipoPagamento>
@@ -291,10 +464,10 @@ export default function Checkout() {
 
                             {metodoPagamento === 'boleto' && (
                                 <CampoInformacoes>
-                                    Até 5% de desconto. Você poderá visualizar ou imprimir o boleto após a finalização do pedido.
+                                    <p>Até 5% de desconto. Você poderá visualizar ou imprimir o boleto após a finalização do pedido.</p>
                                     <br />
                                     <br />
-                                    Mas fique de olho! Passada a data de vencimento, seu pedido perderá automaticamente a validade.
+                                    <p>Mas fique de olho! Passada a data de vencimento, seu pedido perderá automaticamente a validade.</p>
                                 </CampoInformacoes>
                             )}
                         </ContainerTipoPagamento>
@@ -316,26 +489,38 @@ export default function Checkout() {
                             </MetodoLabel>
                             {metodoPagamento === 'pix' && (
                                 <CampoInformacoes>
-                                    Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.
+                                    <p>Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.</p>
                                 </CampoInformacoes>
                             )}
                         </ContainerTipoPagamento>
-                    </form>
-                </div>
 
-                <DetailsContainer>
-                    <div className="resumo-pedido">
-                        <h2>Resumo do Pedido</h2>
-                        <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
-                        <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                        <div className="total-pedido">
-                            <h3>Valor Total: <span>R$ {parseFloat(valorTotal + frete).toFixed(2)}</span></h3>
-                            <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorTotal + frete / 10).toFixed(2)}</span> sem juros)</p>
-                        </div>
                     </div>
 
-                    <button type="submit" style={{ marginTop: '20px' }}>Confirmar Pagamento</button>
-                </DetailsContainer>
+                    <DetailsContainer>
+                        <div className="resumo-pedido">
+                            <h2>Resumo do Pedido</h2>
+                            <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
+                            <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
+                            <p>Desconto: <span style={{color:"#005c53"}}>R$ -{parseFloat(desconto).toFixed(2)}</span></p>
+                            <div className="total-pedido">
+                                <h3>Valor Total: <span>R$ {parseFloat(valorTotalFrete - desconto).toFixed(2)}</span></h3>
+                                <p>(em até <span>10x</span> de <span>R$ {parseFloat((valorTotalFrete - desconto) / 10).toFixed(2)}</span> sem juros)</p>
+                            </div>
+                        </div>
+
+
+                        <div style={{ width: "100%", textAlign: "center" }}>
+                            <BotaoPersonalizado
+                                width={"75%"}
+                                height={"45px"}
+                                color="amarelo"
+                                type="submit"
+                            >
+                                Confirmar Pagamento
+                            </BotaoPersonalizado>
+                        </div>
+                    </DetailsContainer>
+                </form>
             </Container>
         </>
     )
