@@ -374,16 +374,16 @@ export default function Carrinho() {
         incrementarQuantidade, 
         decrementarQuantidade, 
         removerProduto, 
-        atualizarFreteContext,
+        enderecoSelecionado,
+        setEnderecoSelecionado,
+        frete,
+        setFrete
     } = useCarrinho();
 
-    const [frete, setFrete] = useState(0.0);
     const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
 
     const [valorTotalProdutos, setValorTotalProdutos] = useState(0.0);
     const [valorTotalComFrete, setValorTotalComFrete] = useState(0.0);
-
-    const [enderecoSelecionado, setEnderecoSelecionado] = useState("");
 
     const router = useRouter();
 
@@ -402,8 +402,14 @@ export default function Carrinho() {
     }, [user])
 
     useEffect(() => {
-        atualizarFreteContext(Number.parseFloat(frete));
+        setFrete(Number.parseFloat(frete));
     }, [frete])
+
+    useEffect(() => {
+        if(enderecoSelecionado !== "" && enderecoSelecionado !== undefined){
+            setMostrarOpcoes(true);
+        }
+    }, [enderecoSelecionado])
 
     useEffect(() => {
         const totalProdutos = carrinho.reduce((acc, item) => acc + (item.produtoPreco * item.quantidade), 0);
@@ -454,8 +460,6 @@ export default function Carrinho() {
 
     const handleEnderecoSelecionado = (e) => {
         setEnderecoSelecionado(e.target.value);
-        setMostrarOpcoes(true);
-        console.log(user.enderecos);
     }
 
     //Teste para adicionar

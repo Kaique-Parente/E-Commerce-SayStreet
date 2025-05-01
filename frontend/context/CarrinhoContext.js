@@ -8,6 +8,7 @@ export const CarrinhoProvider = ({ children }) => {
     const [carrinho, setCarrinho] = useState([]);
     const [valorTotal, setValorTotal] = useState(0.0);
     const [frete, setFrete] = useState(0.0);
+    const [enderecoSelecionado, setEnderecoSelecionado] = useState('');
 
     const salvarCarrinhoNoLocalStorage = (novoCarrinho) => {
         localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
@@ -87,11 +88,6 @@ export const CarrinhoProvider = ({ children }) => {
         });
     };
 
-    // Função para atualizar o frete
-    const atualizarFreteContext = (valor) => {
-        setFrete(valor);
-    };
-
     // Calcular a quantidade total de itens no carrinho
     const quantidadeTotal = carrinho.reduce((total, item) => total + item.quantidade, 0);
 
@@ -104,8 +100,10 @@ export const CarrinhoProvider = ({ children }) => {
                 incrementarQuantidade,
                 decrementarQuantidade,
                 removerProduto,
+                enderecoSelecionado,
+                setEnderecoSelecionado,
                 frete, 
-                atualizarFreteContext,
+                setFrete,
                 valorTotal,
             }}
         >
