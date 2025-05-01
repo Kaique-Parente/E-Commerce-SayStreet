@@ -115,7 +115,8 @@ const CampoCartaoInputs = styled.div`
   gap: 10px;
 
   div {
-    input {
+    input, #select-parcelas{
+      width: 100%;
       padding: 5px 8px;
       border-radius: 6px;
       border: 1.99px solid #005C53;
@@ -247,24 +248,26 @@ export default function Checkout() {
     const [valorTotalFrete, setValorTotalFrete] = useState(0.00);
     const [metodoPagamento, setMetodoPagamento] = useState('');
     const [desconto, setDesconto] = useState(0.0);
+    const [numeroParcelas, setNumeroParcelas] = useState(1);
+
     const { data: session, status } = useSession();
     const user = session?.user;
     const router = useRouter();
 
     useEffect(() => {
-        setValorTotalFrete(valorTotal+frete);
+        setValorTotalFrete(valorTotal + frete);
     }, [valorTotal, frete])
 
     useEffect(() => {
-        switch(metodoPagamento){
-            case "boleto": 
-                setDesconto(valorTotalFrete*0.05);
+        switch (metodoPagamento) {
+            case "boleto":
+                setDesconto(valorTotalFrete * 0.05);
                 break;
             case "pix":
-                setDesconto(valorTotalFrete*0.2);
+                setDesconto(valorTotalFrete * 0.2);
                 break;
-            default:
-                setDesconto(0.00);
+            case "cartao":
+                setDesconto(valorTotalFrete * 0.1);
                 break;
         }
 
@@ -278,8 +281,22 @@ export default function Checkout() {
         setMetodoPagamento(e.target.value);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleNumeroParcelas = (e) => {
+        const quantidade = Number(e.target.value);
+
+        switch (quantidade) {
+            case 1:
+                setDesconto(valorTotalFrete * 0.1);
+                break;
+            default:
+                setDesconto(0.0);   
+                break;
+        }
+        setNumeroParcelas(quantidade);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if (metodoPagamento === 'cartao') {
             const numero = numeroCartao.replace(/\s/g, '');
             const [mes, ano] = validadeCartao.split('/');
@@ -314,15 +331,15 @@ export default function Checkout() {
             alert("Clickey Cartao");
         }
 
-        if(metodoPagamento === "boleto"){
+        if (metodoPagamento === "boleto") {
             alert("Clickey Boleto");
         }
 
-        if(metodoPagamento === "pix"){
+        if (metodoPagamento === "pix") {
             alert("Clickey Pix");
         }
 
-        
+
     };
 
     useEffect(() => {
@@ -440,6 +457,31 @@ export default function Checkout() {
                                                 onFocus={() => setCartaoFocus('cvc')}
                                             />
                                         </div>
+
+                                        <div>
+                                            <label htmlFor="select-parcelas">Selecione a quantidade de parcelas</label>
+                                            <br/>
+                                            <select
+                                                id="select-parcelas"
+                                                value={numeroParcelas}
+                                                onChange={handleNumeroParcelas}
+                                                required
+                                            >
+                                                <option value={"1"}>
+                                                    1x sem juros - Até 10% de desconto
+                                                </option>
+                                                <option value={"2"}>2x sem juros - R$ {parseFloat((valorTotalFrete) / 2).toFixed(2)}</option>
+                                                <option value={"3"}>3x sem juros - R$ {parseFloat((valorTotalFrete) / 3).toFixed(2)}</option>
+                                                <option value={"4"}>4x sem juros - R$ {parseFloat((valorTotalFrete) / 4).toFixed(2)}</option>
+                                                <option value={"5"}>5x sem juros - R$ {parseFloat((valorTotalFrete) / 5).toFixed(2)}</option>
+                                                <option value={"6"}>6x sem juros - R$ {parseFloat((valorTotalFrete) / 6).toFixed(2)}</option>
+                                                <option value={"7"}>7x sem juros - R$ {parseFloat((valorTotalFrete) / 7).toFixed(2)}</option>
+                                                <option value={"8"}>8x sem juros - R$ {parseFloat((valorTotalFrete) / 8).toFixed(2)}</option>
+                                                <option value={"9"}>9x sem juros - R$ {parseFloat((valorTotalFrete) / 9).toFixed(2)}</option>
+                                                <option value={"10"}>10x sem juros - R$ {parseFloat((valorTotalFrete) / 10).toFixed(2)}</option>
+                                            </select>
+                                        </div>
+
                                     </CampoCartaoInputs>
 
                                 </CampoCartao>
@@ -501,7 +543,7 @@ export default function Checkout() {
                             <h2>Resumo do Pedido</h2>
                             <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
                             <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                            <p>Desconto: <span style={{color:"#005c53"}}>R$ -{parseFloat(desconto).toFixed(2)}</span></p>
+                            <p>Desconto: <span style={{ color: "#005c53" }}>R$ -{parseFloat(desconto).toFixed(2)}</span></p>
                             <div className="total-pedido">
                                 <h3>Valor Total: <span>R$ {parseFloat(valorTotalFrete - desconto).toFixed(2)}</span></h3>
                                 <p>(em até <span>10x</span> de <span>R$ {parseFloat((valorTotalFrete - desconto) / 10).toFixed(2)}</span> sem juros)</p>
