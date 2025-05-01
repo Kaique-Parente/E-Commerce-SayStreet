@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useCadastroCliente } from "@/hooks/web/useCadastroCliente";
 import RadiusButton from "@/components/MUI/RadiusButton";
-import { FormControlLabel, Switch } from "@mui/material";
+import { Checkbox, FormControlLabel, Switch } from "@mui/material";
 import NavBar from "@/components/ClientComponents/NavBar";
 import { useRouter } from "next/navigation";
 import SelectPersonalizado from "@/components/ClientComponents/SelectPersonalizado";
@@ -73,7 +73,7 @@ const TitleAddress = styled.div`
 const AddressContent = styled.div.withConfig({
     shouldForwardProp: (prop) => prop !== 'isPrincipal'
 })`
-    height: 150px;
+    height: 160px;
     font-size: 14px;
     padding: 10px;
 
@@ -87,9 +87,8 @@ const AddressContent = styled.div.withConfig({
     }
 
     .principal-address {
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
+        font-size: 16px;
+        margin-top: 10px;
         
         span{
             color: rgba(255, 227, 23, 0.95);
@@ -163,10 +162,23 @@ export default function Cadastrar() {
 
     const router = useRouter();
 
+    useEffect(() => {
+        console.log(principal);
+    }, [principal])
+
     const handleCancelarEndereco = () => {
         setCepValido(false);
         setIsAddingAddress(false)
     }
+
+    const handleEnderecoFaturamento = (id) => {
+        const updateEnderecos = enderecos.map((endereco) => ({
+            ...endereco,
+            isEnderecoFaturamento: endereco.id === id
+        }));
+        setEnderecos(updateEnderecos);
+    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -174,7 +186,16 @@ export default function Cadastrar() {
             alert("Cadastre pelo menos um endereço antes de continuar.");
             return;
         }
-    
+
+        const enderecoFatura = enderecos.find((end) => end.isEnderecoFaturamento === true);
+
+        const updateEnderecoFatura = enderecoFatura
+            ? (({ isEnderecoFaturamento, ...rest }) => ({
+                ...rest,
+                principal: false,
+            }))(enderecoFatura)
+            : null;
+
         const dadosCliente = {
             nome,
             cpf,
@@ -182,14 +203,15 @@ export default function Cadastrar() {
             senha,
             dataNascimento,
             genero,
-            enderecos
+            enderecos,
+            enderecoFatura: updateEnderecoFatura,
         };
 
         console.log(dadosCliente);
-    
+
         try {
             const mensagem = await cadastrarCliente(dadosCliente);
-    
+
             if (mensagem) {
                 alert(mensagem);
                 router.back("/login");
@@ -199,9 +221,6 @@ export default function Cadastrar() {
         }
     };
 
-    useEffect(() => {
-        console.log(principal);
-    }, [principal])
 
     return (
         <>
@@ -329,6 +348,7 @@ export default function Cadastrar() {
 
                                                 setIsAddingAddress(false);
                                                 const newAddress = {
+                                                    id: Date.now(),
                                                     logradouro: logradouro,
                                                     numero: numero,
                                                     complemento: complemento,
@@ -336,8 +356,9 @@ export default function Cadastrar() {
                                                     localidade: cidade,
                                                     uf: uf,
                                                     estado: uf,
-                                                    principal: principal,
+                                                    principal: enderecos.length === 0 ? true : principal,
                                                     bairro: bairro,
+                                                    isEnderecoFaturamento: enderecos.length === 0
                                                 }
 
                                                 setEnderecos((prevEnderecos) => {
@@ -348,12 +369,12 @@ export default function Cadastrar() {
                                                     return [...atualizados, newAddress];
                                                 });
 
-                                                console.log(newAddress);  // Aqui você pode enviar para o servidor ou armazenar no estado
+                                                console.log(newAddress);
                                             }}
                                             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
                                         >
                                             <label>CEP</label>
-                                            <div style={{display: "flex", gap: "10px"}}>
+                                            <div style={{ display: "flex", gap: "10px" }}>
                                                 <InputPersonalizado
                                                     name="cep"
                                                     value={cep}
@@ -363,9 +384,9 @@ export default function Cadastrar() {
                                                     maxLength={10}
                                                     disabled={cepValido}
                                                 />
-                                                <BotaoPersonalizado 
-                                                    type="button" 
-                                                    color="marrom" 
+                                                <BotaoPersonalizado
+                                                    type="button"
+                                                    color="marrom"
                                                     width="100%"
                                                     onClick={handleCepValidate}
                                                 >
@@ -457,15 +478,32 @@ export default function Cadastrar() {
                                                         <p>{address.logradouro}</p>
                                                         <p>Número: {address.numero}{address.complemento && `, ${address.complemento}`}</p>
                                                         <p>CEP: {address.cep} - {address.cidade}, {address.uf}</p>
+
                                                         {address.principal && (
                                                             <p className="principal-address">
                                                                 <span>(</span>Endereço Padrão<span>)</span>
                                                             </p>
                                                         )}
+
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    checked={address.isEnderecoFaturamento}
+                                                                    onChange={() => {
+                                                                        if (!address.isEnderecoFaturamento) {
+                                                                            handleEnderecoFaturamento(address.id);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            }
+
+                                                            label="Endereço faturamento"
+                                                            labelPlacement="end"
+                                                        />
                                                     </AddressContent>
                                                 ))
                                             ) : (
-                                                <p style={{textAlign: "center"}}>Nenhum endereço cadastrado.</p>
+                                                <p style={{ textAlign: "center" }}>Nenhum endereço cadastrado.</p>
                                             )}
                                         </>
                                     )}
