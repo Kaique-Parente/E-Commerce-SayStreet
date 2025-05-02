@@ -34,7 +34,7 @@ import lombok.Setter;
 public class ClienteModel {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "cliente_id")
     private Long id;
 
@@ -44,7 +44,7 @@ public class ClienteModel {
     @Column(name = "cliente_cpf",nullable = false, unique = true)
     private String cpf;
 
-    @Column(nullable = false)
+    @Column(name = "cliente_genero", nullable = false)
     private String genero;
 
     
@@ -57,8 +57,11 @@ public class ClienteModel {
     @Column(name = "cliente_senha", nullable = false)
     private String senha;
 
+    @Column(name = "cliente_status", nullable =  false)
+    private Boolean status;
+
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "endereco_fatura_id")
+    @JoinColumn(name = "endereco_fatura_id", nullable = true)
     private EnderecoModel enderecoFatura;
 
     @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, 
@@ -66,7 +69,7 @@ public class ClienteModel {
     @Setter(value = AccessLevel.NONE)
     @Builder.Default
     @JsonManagedReference
-    @Column(nullable = false)
+    @Column(nullable = true)
     private List<EnderecoModel> enderecos = new ArrayList<>();
     
     public void setEnderecos(List<EnderecoModel> enderecos){

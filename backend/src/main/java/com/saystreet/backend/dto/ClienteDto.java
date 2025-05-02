@@ -26,6 +26,8 @@ public class ClienteDto {
 
     private String senha;
 
+    private Boolean status;
+
     private EnderecosDto enderecoFatura;
     
     // Implementar o endereço:

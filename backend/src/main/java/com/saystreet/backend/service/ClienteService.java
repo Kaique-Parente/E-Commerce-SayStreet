@@ -55,6 +55,7 @@ public class ClienteService {
                 .dataNascimento(clienteDto.getDataNascimento())
                 .email(clienteDto.getEmail())
                 .senha(encryptedPassword)
+                .status(true)
                 .build();
 
         EnderecoModel enderecoFatura = converterDtoParaModel(clienteDto.getEnderecoFatura());
