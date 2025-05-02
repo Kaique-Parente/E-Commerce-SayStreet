@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDadosCliente } from "@/hooks/web/useDadosCliente";
-import { FormControlLabel, Switch } from "@mui/material";
+import { Checkbox, FormControlLabel, Switch } from "@mui/material";
 import SelectPersonalizado from "@/components/ClientComponents/SelectPersonalizado";
 import { editarCliente } from "@/services/ClienteService";
 import { useRouter } from "next/navigation";
@@ -176,6 +176,7 @@ export default function MeusDados() {
     } = useDadosCliente();
 
     const [enderecos, setEnderecos] = useState([]);
+    const [enderecoFatura, setEnderecoFatura] = useState({});
     const router = useRouter();
 
 
@@ -187,7 +188,14 @@ export default function MeusDados() {
             setCpf(user.cpf || '');
             setDataNascimento(user.dataNascimento?.split('T')[0] || ''); // pega só a parte da data
             setGenero(user.genero || '');
-            setEnderecos(user.enderecos || []);
+            setEnderecoFatura(user.enderecoFatura || []);
+
+            const updateEnderecos = user.enderecos.map((endereco) => ({
+                ...endereco,
+                isEnderecoFaturamento: user.enderecoFatura?.id === endereco.id
+            }));
+
+            setEnderecos(updateEnderecos || []);
 
             console.log(user);
         }
@@ -197,30 +205,59 @@ export default function MeusDados() {
         console.log(isEditing);
     }, [isEditing])
 
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        //setFormData((prev) => ({ ...prev, [id]: value }));
-    };
+    useEffect(() => {
+        console.log(enderecos);
+    }, [enderecos])
+
+    const handleEnderecoFaturamento = (id) => {
+        const updateEnderecos = enderecos.map((endereco) => ({
+            ...endereco,
+            isEnderecoFaturamento: endereco.id === id
+        }));
+        setEnderecos(updateEnderecos);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let enderecoFaturaSearch = enderecos.find((end) => end.isEnderecoFaturamento === true);
+
+        if (!enderecoFaturaSearch && enderecos.length === 1) {
+            enderecoFaturaSearch = enderecos[0];
+        }
+
+        const updateEnderecoFatura = enderecoFaturaSearch
+            ? (({ isEnderecoFaturamento, ...rest }) => ({
+                ...rest,
+                enderecoPadrao: false,
+            }))(enderecoFaturaSearch)
+            : null;
+
+        const updateEnderecos = enderecos.map((endereco) => {
+            const { isEnderecoFaturamento, ...rest } = endereco;
+            return rest;
+        });
+
         const dadosCliente = {
-            nome: nome,
-            email: email,
-            cpf: cpf,
-            dataNascimento: dataNascimento,
-            genero: genero,
-            enderecos: enderecos,
+            nome,
+            cpf,
+            email,
+            senha,
+            dataNascimento,
+            genero,
+            enderecos: updateEnderecos,
+            enderecoFatura: updateEnderecoFatura,
         };
 
+        console.log(dadosCliente);
+        /*
         try {
             const response = await editarCliente(user.id, dadosCliente);
             console.log(response);
-
+    
             if (response) {
                 alert(response);
-
+    
                 await update({
                     id: user.id,
                     nome: dadosCliente.nome,
@@ -229,14 +266,16 @@ export default function MeusDados() {
                     dataNascimento: dadosCliente.dataNascimento,
                     genero: dadosCliente.genero,
                     enderecos: dadosCliente.enderecos,
+                    enderecoFatura: dadosCliente.enderecoFatura,
                     status: user.status,
                 });
             }
-
+    
         } catch (error) {
             console.error("Erro ao tentar atualizar os dados:", error);
             alert("Ocorreu um erro inesperado. Tente novamente.");
         }
+            */
     };
 
     return (
@@ -366,11 +405,11 @@ export default function MeusDados() {
                                     <form
                                         onSubmit={(e) => {
                                             e.preventDefault();
-                                            const isFirstAddress = enderecos.length === 0;
 
                                             setIsAddingAddress(false);
                                             if (logradouro !== "" && bairro !== "" && cidade !== "") {
                                                 const newAddress = {
+                                                    id: Date.now(),
                                                     logradouro: logradouro,
                                                     numero: numero,
                                                     complemento: complemento,
@@ -378,8 +417,9 @@ export default function MeusDados() {
                                                     localidade: cidade,
                                                     uf: uf,
                                                     estado: uf,
-                                                    enderecoPadrao: isFirstAddress ? true : principal,
+                                                    enderecoPadrao: enderecos.length === 0 ? true : principal,
                                                     bairro: bairro,
+                                                    isEnderecoFaturamento: enderecos.length === 0,
                                                 }
 
                                                 setEnderecos((prevEnderecos) => {
@@ -511,8 +551,9 @@ export default function MeusDados() {
                                                             localidade: cidade,
                                                             uf,
                                                             estado: uf,
-                                                            enderecoPadrao: principal,
+                                                            enderecoPadrao: enderecos.length === 1 ? true : principal,
                                                             bairro,
+                                                            isEnderecoFaturamento: enderecos.length === 1 ? true : !!address.isEnderecoFaturamento,
                                                         };
 
                                                         // Se o endereço for marcado como principal, zera os outros
@@ -641,6 +682,22 @@ export default function MeusDados() {
                                                             <span>(</span>Endereço Padrão<span>)</span>
                                                         </p>
                                                     )}
+
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={address.isEnderecoFaturamento}
+                                                                onChange={() => {
+                                                                    if (!address.isEnderecoFaturamento) {
+                                                                        handleEnderecoFaturamento(address.id);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        }
+
+                                                        label="Endereço faturamento"
+                                                        labelPlacement="end"
+                                                    />
 
                                                     <button
                                                         type="button"

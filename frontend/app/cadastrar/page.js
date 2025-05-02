@@ -192,9 +192,14 @@ export default function Cadastrar() {
         const updateEnderecoFatura = enderecoFatura
             ? (({ isEnderecoFaturamento, ...rest }) => ({
                 ...rest,
-                principal: false,
+                enderecoPadrao: false,
             }))(enderecoFatura)
             : null;
+
+        const updateEnderecos = enderecos.map((endereco) => {
+            const { isEnderecoFaturamento, ...rest } = endereco;
+            return rest;
+        });
 
         const dadosCliente = {
             nome,
@@ -203,7 +208,7 @@ export default function Cadastrar() {
             senha,
             dataNascimento,
             genero,
-            enderecos,
+            enderecos: updateEnderecos,
             enderecoFatura: updateEnderecoFatura,
         };
 
@@ -356,14 +361,14 @@ export default function Cadastrar() {
                                                     localidade: cidade,
                                                     uf: uf,
                                                     estado: uf,
-                                                    principal: enderecos.length === 0 ? true : principal,
+                                                    enderecoPadrao: enderecos.length === 0 ? true : principal,
                                                     bairro: bairro,
                                                     isEnderecoFaturamento: enderecos.length === 0
                                                 }
 
                                                 setEnderecos((prevEnderecos) => {
                                                     const atualizados = principal
-                                                        ? prevEnderecos.map((end) => ({ ...end, principal: false }))
+                                                        ? prevEnderecos.map((end) => ({ ...end, enderecoPadrao: false }))
                                                         : [...prevEnderecos];
 
                                                     return [...atualizados, newAddress];
@@ -473,7 +478,7 @@ export default function Cadastrar() {
                                         <>
                                             {enderecos && enderecos.length > 0 ? (
                                                 enderecos.map((address) => (
-                                                    <AddressContent key={address.numero} isPrincipal={address.principal}>
+                                                    <AddressContent key={address.numero} isPrincipal={address.enderecoPadrao}>
                                                         <h2>Endereço</h2>
                                                         <p>{address.logradouro}</p>
                                                         <p>Número: {address.numero}{address.complemento && `, ${address.complemento}`}</p>

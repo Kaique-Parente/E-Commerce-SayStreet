@@ -50,6 +50,7 @@ const handler = NextAuth({
           dataNascimento: session.dataNascimento,
           genero: session.genero,
           enderecos: session.enderecos,
+          enderecoFatura: session.enderecoFatura,
           status: session.status
         };
         console.log(token);
