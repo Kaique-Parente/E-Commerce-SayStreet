@@ -189,12 +189,17 @@ export default function MeusDados() {
             setDataNascimento(user.dataNascimento?.split('T')[0] || ''); // pega só a parte da data
             setGenero(user.genero || '');
             setEnderecoFatura(user.enderecoFatura || []);
-
-            const updateEnderecos = user.enderecos.map((endereco) => ({
+            
+            const updateEnderecos = user.enderecos.map((endereco, index) => ({
                 ...endereco,
-                isEnderecoFaturamento: user.enderecoFatura?.id === endereco.id
+                isEnderecoFaturamento: user.enderecoFatura
+                    ? endereco.cep === user.enderecoFatura.cep &&
+                      endereco.numero === user.enderecoFatura.numero &&
+                      endereco.logradouro === user.enderecoFatura.logradouro &&
+                      endereco.uf === user.enderecoFatura.uf
+                    : index === 0 // se não tiver enderecoFatura, marca o primeiro como true
             }));
-
+            
             setEnderecos(updateEnderecos || []);
 
             console.log(user);
@@ -226,17 +231,17 @@ export default function MeusDados() {
             enderecoFaturaSearch = enderecos[0];
         }
 
+        const updateEnderecos = enderecos.map((endereco) => {
+            const { isEnderecoFaturamento, ...rest } = endereco;
+            return rest;
+        });
+
         const updateEnderecoFatura = enderecoFaturaSearch
             ? (({ isEnderecoFaturamento, ...rest }) => ({
                 ...rest,
                 enderecoPadrao: false,
             }))(enderecoFaturaSearch)
             : null;
-
-        const updateEnderecos = enderecos.map((endereco) => {
-            const { isEnderecoFaturamento, ...rest } = endereco;
-            return rest;
-        });
 
         const dadosCliente = {
             nome,
@@ -250,14 +255,14 @@ export default function MeusDados() {
         };
 
         console.log(dadosCliente);
-        /*
+
         try {
             const response = await editarCliente(user.id, dadosCliente);
             console.log(response);
-    
+
             if (response) {
                 alert(response);
-    
+
                 await update({
                     id: user.id,
                     nome: dadosCliente.nome,
@@ -270,12 +275,11 @@ export default function MeusDados() {
                     status: user.status,
                 });
             }
-    
+
         } catch (error) {
             console.error("Erro ao tentar atualizar os dados:", error);
             alert("Ocorreu um erro inesperado. Tente novamente.");
         }
-            */
     };
 
     return (

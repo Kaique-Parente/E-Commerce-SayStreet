@@ -42,7 +42,7 @@ const handler = NextAuth({
       }
   
       if (trigger === "update" && session) {
-        token.user = { 
+        token.user = {     
           id: session.id,
           nome: session.nome, 
           email: session.email,
