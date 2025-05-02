@@ -10,6 +10,11 @@ export const CarrinhoProvider = ({ children }) => {
     const [frete, setFrete] = useState(0.0);
     const [enderecoSelecionado, setEnderecoSelecionado] = useState('');
 
+    const [valorTotalFrete, setValorTotalFrete] = useState(0.0);
+    const [metodoPagamento, setMetodoPagamento] = useState({});
+    const [desconto, setDesconto] = useState(0.0);
+    const [numeroParcelas, setNumeroParcelas] = useState(0);
+
     const salvarCarrinhoNoLocalStorage = (novoCarrinho) => {
         localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
     };
@@ -105,6 +110,14 @@ export const CarrinhoProvider = ({ children }) => {
                 frete, 
                 setFrete,
                 valorTotal,
+                valorTotalFrete, 
+                setValorTotalFrete,
+                metodoPagamento, 
+                setMetodoPagamento,
+                desconto, 
+                setDesconto,
+                numeroParcelas, 
+                setNumeroParcelas,
             }}
         >
             {children}

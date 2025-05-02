@@ -237,7 +237,18 @@ const DetailsContainer = styled.div`
 `
 
 export default function Checkout() {
-    const { valorTotal, frete } = useCarrinho();
+    const {
+        valorTotal,
+        frete,
+        valorTotalFrete,
+        setValorTotalFrete,
+        metodoPagamento,
+        setMetodoPagamento,
+        desconto,
+        setDesconto,
+        numeroParcelas,
+        setNumeroParcelas,
+    } = useCarrinho();
 
     const [numeroCartao, setNumeroCartao] = useState('');
     const [nomeNoCartao, setNomeNoCartao] = useState('');
@@ -245,21 +256,25 @@ export default function Checkout() {
     const [cvvCartao, setCvvCartao] = useState('');
     const [cartaoFocus, setCartaoFocus] = useState('');
 
-    const [valorTotalFrete, setValorTotalFrete] = useState(0.00);
-    const [metodoPagamento, setMetodoPagamento] = useState('');
-    const [desconto, setDesconto] = useState(0.0);
-    const [numeroParcelas, setNumeroParcelas] = useState(1);
+    const [nomeDoMetodo, setNomeDoMetodo] = useState('');
 
     const { data: session, status } = useSession();
     const user = session?.user;
     const router = useRouter();
 
     useEffect(() => {
+        if (frete <= 0.00) {
+            router.push("/carrinho");
+            alert("Por favor, volte para o carrinho e selecione um método de entrega!");
+        }
+    }, [])
+
+    useEffect(() => {
         setValorTotalFrete(valorTotal + frete);
     }, [valorTotal, frete])
 
     useEffect(() => {
-        switch (metodoPagamento) {
+        switch (nomeDoMetodo) {
             case "boleto":
                 setDesconto(valorTotalFrete * 0.05);
                 break;
@@ -271,14 +286,14 @@ export default function Checkout() {
                 break;
         }
 
-    }, [metodoPagamento])
+    }, [nomeDoMetodo])
 
     useEffect(() => {
         console.log(desconto);
     }, [desconto])
 
-    const handleMetodoChange = (e) => {
-        setMetodoPagamento(e.target.value);
+    const handleNomeDoMetodoChange = (e) => {
+        setNomeDoMetodo(e.target.value);
     };
 
     const handleNumeroParcelas = (e) => {
@@ -289,7 +304,7 @@ export default function Checkout() {
                 setDesconto(valorTotalFrete * 0.1);
                 break;
             default:
-                setDesconto(0.0);   
+                setDesconto(0.0);
                 break;
         }
         setNumeroParcelas(quantidade);
@@ -297,7 +312,7 @@ export default function Checkout() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (metodoPagamento === 'cartao') {
+        if (nomeDoMetodo === 'cartao') {
             const numero = numeroCartao.replace(/\s/g, '');
             const [mes, ano] = validadeCartao.split('/');
             const agora = new Date();
@@ -331,15 +346,34 @@ export default function Checkout() {
             alert("Clickey Cartao");
         }
 
-        if (metodoPagamento === "boleto") {
+        if (nomeDoMetodo === "boleto") {
             alert("Clickey Boleto");
         }
 
-        if (metodoPagamento === "pix") {
+        if (nomeDoMetodo === "pix") {
             alert("Clickey Pix");
         }
 
+        if (nomeDoMetodo !== "" && nomeDoMetodo !== undefined) {
+            let updateMetodoPagamento = {
+                nomeDoMetodo: nomeDoMetodo
+            };
 
+            if (nomeDoMetodo === "cartao") {
+                updateMetodoPagamento = {
+                    nomeDoMetodo: nomeDoMetodo,
+                    numeroCartao: numeroCartao,
+                    nomeNoCartao: nomeNoCartao,
+                    validadeCartao: validadeCartao,
+                    cvvCartao: cvvCartao,
+                    numeroParcelas: numeroParcelas,
+                }
+            }
+            setMetodoPagamento(updateMetodoPagamento);
+            router.push("/confirmacao");
+        } else {
+            alert("Selecione uma forma de pagamento!");
+        }
     };
 
     useEffect(() => {
@@ -375,18 +409,18 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="cartao"
-                                name="metodoPagamento"
+                                name="nomeDoMetodo"
                                 value="cartao"
-                                checked={metodoPagamento === 'cartao'}
-                                onChange={handleMetodoChange}
+                                checked={nomeDoMetodo === 'cartao'}
+                                onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="cartao" selecionado={metodoPagamento === 'cartao'}>
+                            <MetodoLabel htmlFor="cartao" selecionado={nomeDoMetodo === 'cartao'}>
                                 <RadioContainer>
-                                    <RadioVisual selecionado={metodoPagamento === 'cartao'} />
+                                    <RadioVisual selecionado={nomeDoMetodo === 'cartao'} />
                                 </RadioContainer>
                                 <span>Cartão de Crédito</span>
                             </MetodoLabel>
-                            {metodoPagamento === 'cartao' && (
+                            {nomeDoMetodo === 'cartao' && (
                                 <CampoCartao>
                                     <Cards
                                         number={numeroCartao || ''}
@@ -460,7 +494,7 @@ export default function Checkout() {
 
                                         <div>
                                             <label htmlFor="select-parcelas">Selecione a quantidade de parcelas</label>
-                                            <br/>
+                                            <br />
                                             <select
                                                 id="select-parcelas"
                                                 value={numeroParcelas}
@@ -492,19 +526,19 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="boleto"
-                                name="metodoPagamento"
+                                name="nomeDoMetodo"
                                 value="boleto"
-                                checked={metodoPagamento === 'boleto'}
-                                onChange={handleMetodoChange}
+                                checked={nomeDoMetodo === 'boleto'}
+                                onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="boleto" selecionado={metodoPagamento === 'boleto'}>
+                            <MetodoLabel htmlFor="boleto" selecionado={nomeDoMetodo === 'boleto'}>
                                 <RadioContainer>
-                                    <RadioVisual selecionado={metodoPagamento === 'boleto'} />
+                                    <RadioVisual selecionado={nomeDoMetodo === 'boleto'} />
                                 </RadioContainer>
                                 <span>Boleto</span>
                             </MetodoLabel>
 
-                            {metodoPagamento === 'boleto' && (
+                            {nomeDoMetodo === 'boleto' && (
                                 <CampoInformacoes>
                                     <p>Até 5% de desconto. Você poderá visualizar ou imprimir o boleto após a finalização do pedido.</p>
                                     <br />
@@ -518,18 +552,18 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="pix"
-                                name="metodoPagamento"
+                                name="nomeDoMetodo"
                                 value="pix"
-                                checked={metodoPagamento === 'pix'}
-                                onChange={handleMetodoChange}
+                                checked={nomeDoMetodo === 'pix'}
+                                onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="pix" selecionado={metodoPagamento === 'pix'}>
+                            <MetodoLabel htmlFor="pix" selecionado={nomeDoMetodo === 'pix'}>
                                 <RadioContainer>
-                                    <RadioVisual selecionado={metodoPagamento === 'pix'} />
+                                    <RadioVisual selecionado={nomeDoMetodo === 'pix'} />
                                 </RadioContainer>
                                 <span>Pix</span>
                             </MetodoLabel>
-                            {metodoPagamento === 'pix' && (
+                            {nomeDoMetodo === 'pix' && (
                                 <CampoInformacoes>
                                     <p>Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.</p>
                                 </CampoInformacoes>
@@ -553,7 +587,7 @@ export default function Checkout() {
 
                         <div style={{ width: "100%", textAlign: "center" }}>
                             <BotaoPersonalizado
-                                width={"75%"}
+                                width={"100%"}
                                 height={"45px"}
                                 color="amarelo"
                                 type="submit"
