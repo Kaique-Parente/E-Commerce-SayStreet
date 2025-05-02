@@ -3,17 +3,14 @@
 import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useState, useEffect } from "react";
 
-export default function TransportadorasGroup({ transportadora, setTransportadora }) {
+export default function TransportadorasGroup({ transportadora, setTransportadora, isDisabled }) {
     const [dataEntrega, setDataEntrega] = useState("");
 
-    // Função para calcular a data de entrega (data atual + X dias)
     useEffect(() => {
-        // Se não houver transportadora selecionada, não faz nada
         if (!transportadora) return;
 
         const dataAtual = new Date();
 
-        // Definir os prazos de entrega de acordo com a transportadora selecionada
         switch (transportadora) {
             case "transportadora1":
                 dataAtual.setDate(dataAtual.getDate() + 5); // 5 dias
@@ -48,6 +45,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <FormControlLabel
                         value="20"
+                        disabled={isDisabled}
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -61,9 +59,10 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                             }
                         }}
                     />
-                    <p style={{marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 5)).toLocaleDateString()}</p>
+                    <p style={{color: isDisabled ? "rgba(0, 0, 0, 0.38)" : "#252B36F2", marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 5)).toLocaleDateString()}</p>
                     <FormControlLabel
                         value="25"
+                        disabled={isDisabled}
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>
@@ -77,9 +76,10 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                             }
                         }}
                     />
-                    <p style={{marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString()}</p>
+                    <p style={{color: isDisabled ? "rgba(0, 0, 0, 0.38)" : "#252B36F2", marginBottom: "5px"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleDateString()}</p>
                     <FormControlLabel
                         value="30"
+                        disabled={isDisabled}
                         control={<Radio />}
                         label={
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: "100%" }}>
@@ -93,7 +93,7 @@ export default function TransportadorasGroup({ transportadora, setTransportadora
                             }
                         }}
                     />
-                    <p>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 2)).toLocaleDateString()}</p>
+                    <p style={{color: isDisabled ? "rgba(0, 0, 0, 0.38)" : "#252B36F2"}}>Chegará até: {new Date(new Date().setDate(new Date().getDate() + 2)).toLocaleDateString()}</p>
                 </div>
             </RadioGroup>
         </FormControl>
