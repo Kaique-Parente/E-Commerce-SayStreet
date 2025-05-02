@@ -28,6 +28,7 @@ public class EnderecoModel {
     
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
+    //@Column(name = "endereco_id")
     private Long id;
 
     @Column(nullable = false)
@@ -62,4 +63,5 @@ public class EnderecoModel {
     @ToString.Exclude
     @JsonBackReference
     private ClienteModel cliente;
+    
 }

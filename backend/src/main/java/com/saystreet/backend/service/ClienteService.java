@@ -32,7 +32,7 @@ public class ClienteService {
     @Autowired
     ClienteRepository clienteRepository;
 
-    public ClienteModel login(ClienteModel user) throws Exception{
+    public ClienteModel login(ClienteModel user) throws Exception {
         Optional<ClienteModel> clienteOpt = clienteRepository.findByEmail(user.getEmail());
         System.out.println("EMAILLLL:" + user.getEmail());
 
@@ -70,11 +70,13 @@ public class ClienteService {
         }
 
         if (!CpfValidator.isValidCPF(clienteDto.getCpf())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Este CPF não é válido. Por favor, digite um CPF válido.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Este CPF não é válido. Por favor, digite um CPF válido.");
         }
 
         if (!NameValidator.validaNome(clienteDto.getNome())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Este nome não é válido. Por favor, digite um nome válido.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Este nome não é válido. Por favor, digite um nome válido.");
         }
 
         String encryptedPassword = PasswordEncryptionUtil.encrypt(clienteDto.getSenha());
@@ -88,6 +90,9 @@ public class ClienteService {
                 .senha(encryptedPassword)
                 .status(true)
                 .build();
+
+        EnderecoModel enderecoFatura = converterDtoParaModel(clienteDto.getEnderecoFatura());
+        cliente.setEnderecoFatura(enderecoFatura);
 
         List<EnderecoModel> enderecos = new ArrayList<>();
         boolean temPradrao = false;
@@ -118,7 +123,7 @@ public class ClienteService {
         }
 
         if (!temPradrao && !enderecos.isEmpty()) {
-            enderecos.get(0).setEnderecoPadrao(true);
+            cliente.getEnderecoFatura().setEnderecoPadrao(true);
         }
 
         cliente.setEnderecos(enderecos);
@@ -166,20 +171,12 @@ public class ClienteService {
         cliente.setStatus(!dto.isStatus());
 
         cliente.getEnderecos().clear();
-        boolean temPradrao = false;
 
         if (dto.getEnderecos() != null && !dto.getEnderecos().isEmpty()) {
             for (EnderecosDto enderecoDTO : dto.getEnderecos()) {
                 boolean isPrincipal = enderecoDTO.isEnderecoPadrao();
-
-                if (isPrincipal) {
-                    if (temPradrao) {
-                        throw new IllegalArgumentException("Só pode haver um endereço padrão.");
-                    }
-                    temPradrao = true;
-                }
-
-                cliente.getEnderecos().add(EnderecoModel.builder()
+        
+                EnderecoModel endereco = EnderecoModel.builder()
                         .cep(enderecoDTO.getCep())
                         .logradouro(enderecoDTO.getLogradouro())
                         .complemento(enderecoDTO.getComplemento())
@@ -190,16 +187,48 @@ public class ClienteService {
                         .numero(enderecoDTO.getNumero())
                         .enderecoPadrao(isPrincipal)
                         .cliente(cliente)
-                        .build());
+                        .build();
+        
+                cliente.getEnderecos().add(endereco);
+
+                if (dto.getEnderecoFatura() != null &&
+                    enderecoDTO.getCep().equals(dto.getEnderecoFatura().getCep()) &&
+                    enderecoDTO.getNumero().equals(dto.getEnderecoFatura().getNumero()) &&
+                    enderecoDTO.getLogradouro().equals(dto.getEnderecoFatura().getLogradouro()) &&
+                    enderecoDTO.getUf().equals(dto.getEnderecoFatura().getUf())) {
+        
+                    cliente.setEnderecoFatura(endereco);
+                }
             }
         }
-
+        
         clienteRepository.save(cliente);
 
         return "Cliente atualizado com sucesso!";
     }
 
+    // Método para listar
     public List<ClienteModel> listAll() {
         return this.clienteRepository.findAll();
+    }
+
+    // Método para converter o EnderecoDto para EnderecoModel para que assim eu
+    // passe na criação do Objeto
+    public EnderecoModel converterDtoParaModel(EnderecosDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        return EnderecoModel.builder()
+                .cep(dto.getCep())
+                .logradouro(dto.getLogradouro())
+                .complemento(dto.getComplemento())
+                .bairro(dto.getBairro())
+                .localidade(dto.getLocalidade())
+                .uf(dto.getUf())
+                .estado(dto.getEstado())
+                .numero(dto.getNumero())
+                .enderecoPadrao(dto.isEnderecoPadrao())
+                .build();
     }
 }

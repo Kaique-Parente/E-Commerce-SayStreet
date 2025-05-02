@@ -27,6 +27,8 @@ public class ClienteDto {
     private String senha;
 
     private boolean status;
+
+    private EnderecosDto enderecoFatura;
     
     // Implementar o endereço:
     private List<EnderecosDto> enderecos;
