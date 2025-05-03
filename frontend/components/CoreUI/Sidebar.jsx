@@ -75,7 +75,7 @@ export const Sidebar = () => {
           </CNavItem>
           <CNavItem>
             <LinkContainer>
-              <Link href="#">
+              <Link href="/perfil/meus-pedidos">
                 <Image src={"/web/sidebar/sacola.png"} width={28} height={28} alt='sacola' /> Meus pedidos
               </Link>
             </LinkContainer>
