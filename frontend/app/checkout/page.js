@@ -10,6 +10,7 @@ import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { formatCvvCartao, formatNomeCartao, formatNumeroCartao, formatValidadeCartao } from '@/utils/regex';
 import BotaoPersonalizado from '@/components/ClientComponents/BotaoPersonalizado';
+import Image from 'next/image';
 
 const Container = styled.div`
   width: 100%;
@@ -40,7 +41,7 @@ const MetodoLabel = styled.label.withConfig({
 })`
   display: flex;
   align-items: center;
-  gap: 15px;
+  justify-content: space-between;
   padding: 15px;
 
   border-radius: ${props => props.selecionado ? '10px 10px 0px 0px' : '10px'};
@@ -60,6 +61,11 @@ const MetodoLabel = styled.label.withConfig({
     font-size: 16px;
     font-weight: 500;
     color: #333;
+  }
+
+  .pagamento-icone{
+    display: flex;
+    gap: 15px;
   }
 `;
 
@@ -347,16 +353,6 @@ export default function Checkout() {
                 alert("Nome no cartão muito curto.");
                 return;
             }
-
-            alert("Clickey Cartao");
-        }
-
-        if (nomeDoMetodo === "boleto") {
-            alert("Clickey Boleto");
-        }
-
-        if (nomeDoMetodo === "pix") {
-            alert("Clickey Pix");
         }
 
         if (nomeDoMetodo !== "" && nomeDoMetodo !== undefined) {
@@ -420,10 +416,14 @@ export default function Checkout() {
                                 onChange={handleNomeDoMetodoChange}
                             />
                             <MetodoLabel htmlFor="cartao" selecionado={nomeDoMetodo === 'cartao'}>
-                                <RadioContainer>
-                                    <RadioVisual selecionado={nomeDoMetodo === 'cartao'} />
-                                </RadioContainer>
-                                <span>Cartão de Crédito</span>
+                                <div className='pagamento-icone'>
+                                    <RadioContainer>
+                                        <RadioVisual selecionado={nomeDoMetodo === 'cartao'} />
+                                    </RadioContainer>
+                                    <span>Cartão de Crédito</span>
+                                </div>
+
+                                <Image width={32} height={32} src={"/web/paymentMethods/cartao.png"} alt="Ícone cartao" />
                             </MetodoLabel>
                             {nomeDoMetodo === 'cartao' && (
                                 <CampoCartao>
@@ -537,10 +537,14 @@ export default function Checkout() {
                                 onChange={handleNomeDoMetodoChange}
                             />
                             <MetodoLabel htmlFor="boleto" selecionado={nomeDoMetodo === 'boleto'}>
-                                <RadioContainer>
-                                    <RadioVisual selecionado={nomeDoMetodo === 'boleto'} />
-                                </RadioContainer>
-                                <span>Boleto</span>
+                                <div className='pagamento-icone'>
+                                    <RadioContainer>
+                                        <RadioVisual selecionado={nomeDoMetodo === 'boleto'} />
+                                    </RadioContainer>
+                                    <span>Boleto</span>
+                                </div>
+
+                                <Image width={32} height={32} src={"/web/paymentMethods/boleto.png"} alt="Ícone boleto" />
                             </MetodoLabel>
 
                             {nomeDoMetodo === 'boleto' && (
@@ -563,10 +567,14 @@ export default function Checkout() {
                                 onChange={handleNomeDoMetodoChange}
                             />
                             <MetodoLabel htmlFor="pix" selecionado={nomeDoMetodo === 'pix'}>
-                                <RadioContainer>
-                                    <RadioVisual selecionado={nomeDoMetodo === 'pix'} />
-                                </RadioContainer>
-                                <span>Pix</span>
+                                <div className='pagamento-icone'>
+                                    <RadioContainer>
+                                        <RadioVisual selecionado={nomeDoMetodo === 'pix'} />
+                                    </RadioContainer>
+                                    <span>Pix</span>
+                                </div>
+
+                                <Image width={32} height={32} src={"/web/paymentMethods/pix.svg"} alt="Ícone pix" />
                             </MetodoLabel>
                             {nomeDoMetodo === 'pix' && (
                                 <CampoInformacoes>
@@ -582,20 +590,20 @@ export default function Checkout() {
                             <h2>Resumo do Pedido</h2>
                             <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
                             <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                            <p>Desconto: 
+                            <p>Desconto:
                                 <span style={{ color: "#005c53" }}>
                                     R$ -{parseFloat((valorTotal * desconto)).toFixed(2)}
                                 </span>
                             </p>
                             <div className="total-pedido">
-                                <h3>Valor Total: 
+                                <h3>Valor Total:
                                     <span>
                                         R$ {parseFloat(valorTotal + frete - (valorTotal * desconto)).toFixed(2)}
                                     </span>
                                 </h3>
-                                <p>(em até <span>10x</span> de 
+                                <p>(em até <span>10x</span> de
                                     <span>R$ {parseFloat((valorTotal + frete - (valorTotal * desconto)) / 10).toFixed(2)}
-                                    </span> 
+                                    </span>
                                     sem juros)
                                 </p>
                             </div>
