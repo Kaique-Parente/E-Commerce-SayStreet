@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class ClienteDto {
 
+    private Long id;
+    
     private String nome;
 
     private String cpf;

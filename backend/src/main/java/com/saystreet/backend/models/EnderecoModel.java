@@ -1,7 +1,7 @@
 package com.saystreet.backend.models;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,10 +27,10 @@ import lombok.ToString;
 @Setter
 @Builder
 public class EnderecoModel {
-    
+
     @Id
-    @GeneratedValue (strategy = GenerationType.SEQUENCE)
-    //@Column(name = "endereco_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    // @Column(name = "endereco_id")
     private Long id;
 
     @Column(nullable = false)
@@ -42,16 +43,16 @@ public class EnderecoModel {
     private String complemento;
 
     @Column(nullable = false)
-    private String bairro; 
+    private String bairro;
 
     @Column(nullable = false)
     private String localidade;
 
     @Column(nullable = false)
-    private String  uf;
+    private String uf;
 
     @Column(nullable = false)
-    private String estado; 
+    private String estado;
 
     @Column(nullable = false)
     private Integer numero;
@@ -64,5 +65,8 @@ public class EnderecoModel {
     @ToString.Exclude
     @JsonBackReference
     private ClienteModel cliente;
-    
+
+    @OneToOne(mappedBy = "enderecoEntrega")
+    @JsonIgnore
+    private PedidoModel pedido;
 }
