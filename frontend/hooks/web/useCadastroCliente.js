@@ -29,7 +29,10 @@ export const useCadastroCliente = () => {
     }
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handleSenhaChange = (e) => setSenha(e.target.value);
-    const handleDataNascimentoChange = (e) => setDataNascimento(e.target.value);
+    const handleDataNascimentoChange = (e) => {
+        setDataNascimento(e.target.value);
+    };
+    
     const handleGeneroChange = (e) => setGenero(e.target.value);
 
     const handleLogradouroChange = (e) => setLogradouro(e.target.value);
