@@ -182,6 +182,18 @@ export default function Cadastrar() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        const [dia, mes, ano] = dataNascimento.split("/").map(Number);
+        if (
+            !dia || !mes || !ano ||
+            dia < 1 || dia > 31 ||
+            mes < 1 || mes > 12 ||
+            ano < 1900 || ano > new Date().getFullYear()
+        ) {
+            alert("Data de nascimento fora do intervalo permitido.");
+            return;
+        }
+    
         if (enderecos.length === 0) {
             alert("Cadastre pelo menos um endereço antes de continuar.");
             return;
