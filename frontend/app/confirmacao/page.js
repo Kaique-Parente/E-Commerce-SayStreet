@@ -102,6 +102,7 @@ const CardProduct = styled.div`
 
             background: none;
             border: none;
+            cursor: pointer;
 
             position: absolute;
         }
@@ -116,8 +117,9 @@ const CardProduct = styled.div`
     }
 
     .btn-remover{
-        background: rgba(0, 0, 0, 0.38);
-        color: rgba(0, 0, 0, 0.38);;
+        background: aliceblue;
+        color: red;
+        cursor: pointer;
         
         display: flex;
         align-items: center;
@@ -179,8 +181,9 @@ const RadioVisual = styled.div.withConfig({
   height: 15px;
 
   position: absolute;
-  top: 17%;
-  right: 17%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
   border-radius: 50%;
   background-color: ${props => props.selecionado ? 'rgba(0, 0, 0, 0.38)' : 'transparent'};
@@ -395,8 +398,10 @@ export default function Confirmacao() {
         frete,
         setFrete,
         enderecoSelecionado,
+        setEnderecoSelecionado,
         valorTotal,
         valorTotalFrete,
+        setValorTotalFrete,
         metodoPagamento,
         desconto,
         numeroParcelas,
@@ -413,6 +418,9 @@ export default function Confirmacao() {
     const [enderecos, setEnderecos] = useState(user?.enderecos);
     const [enderecoFatura, setEnderecoFatura] = useState(user?.enderecoFatura);
     const [nomeDoMetodo, setNomeDoMetodo] = useState('');
+
+    const [valorDesconto, setValorDesconto] = useState(0.0);
+    const [valorFinal, setValorFinal] = useState(0.0);
 
     useEffect(() => {
         if (frete <= 0.00) {
@@ -467,28 +475,24 @@ export default function Confirmacao() {
             setCep("");
             setFrete(0.0);
             setMostrarOpcoes(false);
+            setValorDesconto(0.0);
+            setValorFinal(0.0);
+            setValorTotalFrete(0.0);
+        } else {
+            const subtotal = valorTotal + frete;
+            const updateDesconto = desconto * valorTotal;
+            const valorComDesconto = valorTotal - updateDesconto;
+            const valorFinalComFrete = valorComDesconto + frete;
+    
+            setValorTotalFrete(subtotal);
+            setValorDesconto(updateDesconto);
+            setValorFinal(valorFinalComFrete);
         }
-    }, [carrinho]);
-
-    const handleCepChange = (e) => {
-        const cepValue = e.target.value;
-
-        const onlyNumbers = cepValue.replace(/\D/g, "");
-
-        if (onlyNumbers.length <= 5) {
-            setCep(onlyNumbers);
-        } else if (onlyNumbers.length <= 8) {
-            setCep(onlyNumbers.replace(/(\d{5})(\d{3})/, "$1-$2"))
-        }
-    };
+    }, [carrinho, valorTotal, frete, desconto]);
 
     const handleSlugClick = (nome, id) => {
         const slug = `${normalizeSlug(nome)}-${id}`;
         router.push(slug);
-    }
-
-    const handleMostrarOpcoes = () => {
-        setMostrarOpcoes(true);
     }
 
     const handleNomeDoMetodoChange = (e) => {
@@ -499,7 +503,9 @@ export default function Confirmacao() {
         const quantidade = Number(e.target.value);
     }
 
-    ///adwadwa
+    const handleEnderecoSelecionado = (e) => {
+        setEnderecoSelecionado(e.target.value);
+    }
 
     const handleFinalizarCompra = () => {
         console.log(session);
@@ -510,7 +516,6 @@ export default function Confirmacao() {
                     cliente: user,
                     produtos: carrinho,
                     metodoPagamento: metodoPagamento,
-                    desconto: desconto,
                     frete: frete,
                 }
 
@@ -569,7 +574,8 @@ export default function Confirmacao() {
                                                 <h3>Quantidade</h3>
                                                 <div className="seta-container">
                                                     <button className="seta seta-esquerda"
-                                                        disabled={true}
+                                                        onClick={() => decrementarQuantidade(item.produtoId, item.produtoTamanho)}
+                                                        disabled={item.quantidade <= 1}
                                                     >
                                                         <Image
                                                             width={18}
@@ -580,7 +586,7 @@ export default function Confirmacao() {
                                                     </button>
                                                     <p>{item.quantidade}</p>
                                                     <button className="seta seta-direita"
-                                                        disabled={true}
+                                                        onClick={() => incrementarQuantidade(item.produtoId, item.produtoTamanho)}
                                                     >
                                                         <Image
                                                             width={18}
@@ -592,7 +598,7 @@ export default function Confirmacao() {
                                                 </div>
                                                 <div>
                                                     <button className="btn-remover"
-                                                        disabled={true}>
+                                                        onClick={() => removerProduto(item.produtoId, item.produtoTamanho)}>
                                                         <Image width={16} height={16} src={"/backoffice/lixo.svg"} alt="Ícone de Lixo" />
                                                         <span>Remover</span>
                                                     </button>
@@ -800,10 +806,10 @@ export default function Confirmacao() {
 
                                 <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
                                 <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                                <p>Desconto: <span style={{ color: "#005c53" }}>R$ -{parseFloat(desconto).toFixed(2)}</span></p>
+                                <p>Desconto: <span style={{ color: "#005c53" }}>R$ -{parseFloat(valorDesconto).toFixed(2)}</span></p>
                                 <div className="total-pedido">
-                                    <h3>Valor Total: <span>R$ {parseFloat(valorTotalFrete).toFixed(2)}</span></h3>
-                                    <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorTotalFrete / 10).toFixed(2)}</span> sem juros)</p>
+                                    <h3>Valor Total: <span>R$ {parseFloat(valorFinal).toFixed(2)}</span></h3>
+                                    <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorFinal / 10).toFixed(2)}</span> sem juros)</p>
                                 </div>
                             </div>
 
@@ -815,8 +821,8 @@ export default function Confirmacao() {
                                     </div>
                                     <div className="input-container">
                                         <div style={{ width: "100%", padding: "12px", border: "1px solid rgba(0, 0, 0, 0.38)", borderRadius: "8px" }}>
-                                            <p>{enderecoFatura.logradouro + ", " + enderecoFatura.numero}</p>
-                                            <p>{"CEP: " + enderecoFatura.cep}</p>
+                                            <p>{enderecoFatura?.logradouro + ", " + enderecoFatura?.numero}</p>
+                                            <p>{"CEP: " + enderecoFatura?.cep}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -834,7 +840,7 @@ export default function Confirmacao() {
                                                 id="demo-simple-select"
                                                 value={enderecoSelecionado}
                                                 label="Selecionar endereço"
-                                                disabled={true}
+                                                onChange={handleEnderecoSelecionado}
                                             >
                                                 {enderecos?.map((endereco, index) => (
                                                     <MenuItem key={endereco.id || index} value={endereco.logradouro}>
@@ -847,7 +853,7 @@ export default function Confirmacao() {
                                         </FormControl>
                                     </div>
                                     {mostrarOpcoes && (
-                                        <TransportadorasGroup isDisabled={true} transportadora={frete} setTransportadora={setFrete} />
+                                        <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
                                     )}
                                 </div>
                             </div>
