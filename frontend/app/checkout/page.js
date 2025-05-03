@@ -78,8 +78,9 @@ const RadioVisual = styled.div.withConfig({
   height: 15px;
 
   position: absolute;
-  top: 17%;
-  right: 17%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
   border-radius: 50%;
   background-color: ${props => props.selecionado ? 'rgba(255, 227, 23, 95)' : 'transparent'};
@@ -270,19 +271,23 @@ export default function Checkout() {
     }, [])
 
     useEffect(() => {
+        router.refresh();
+    }, [user])
+
+    useEffect(() => {
         setValorTotalFrete(valorTotal + frete);
     }, [valorTotal, frete])
 
     useEffect(() => {
         switch (nomeDoMetodo) {
             case "boleto":
-                setDesconto(valorTotalFrete * 0.05);
+                setDesconto(0.05);
                 break;
             case "pix":
-                setDesconto(valorTotalFrete * 0.2);
+                setDesconto(0.2);
                 break;
             case "cartao":
-                setDesconto(valorTotalFrete * 0.1);
+                setDesconto(0.1);
                 break;
         }
 
@@ -301,7 +306,7 @@ export default function Checkout() {
 
         switch (quantidade) {
             case 1:
-                setDesconto(valorTotalFrete * 0.1);
+                setDesconto(0.1);
                 break;
             default:
                 setDesconto(0.0);
@@ -577,10 +582,22 @@ export default function Checkout() {
                             <h2>Resumo do Pedido</h2>
                             <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
                             <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                            <p>Desconto: <span style={{ color: "#005c53" }}>R$ -{parseFloat(desconto).toFixed(2)}</span></p>
+                            <p>Desconto: 
+                                <span style={{ color: "#005c53" }}>
+                                    R$ -{parseFloat((valorTotal * desconto)).toFixed(2)}
+                                </span>
+                            </p>
                             <div className="total-pedido">
-                                <h3>Valor Total: <span>R$ {parseFloat(valorTotalFrete - desconto).toFixed(2)}</span></h3>
-                                <p>(em até <span>10x</span> de <span>R$ {parseFloat((valorTotalFrete - desconto) / 10).toFixed(2)}</span> sem juros)</p>
+                                <h3>Valor Total: 
+                                    <span>
+                                        R$ {parseFloat(valorTotal + frete - (valorTotal * desconto)).toFixed(2)}
+                                    </span>
+                                </h3>
+                                <p>(em até <span>10x</span> de 
+                                    <span>R$ {parseFloat((valorTotal + frete - (valorTotal * desconto)) / 10).toFixed(2)}
+                                    </span> 
+                                    sem juros)
+                                </p>
                             </div>
                         </div>
 
