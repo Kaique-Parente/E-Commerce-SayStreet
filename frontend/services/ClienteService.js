@@ -64,3 +64,12 @@ export async function buscarCep(cep){
         headers: { 'Content-Type': 'application/json' }
     });
 }
+
+export async function gerarPedido(dadosPedido){
+    const url = `${BASE_URL}/pedido/gerar`;
+    return await handleRequest(url, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosPedido)
+    })
+}
