@@ -34,45 +34,49 @@ import lombok.Setter;
 public class ClienteModel {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cliente_id")
     private Long id;
 
     @Column(name = "cliente_nome", nullable = false)
     private String nome;
 
-    @Column(name = "cliente_cpf",nullable = false, unique = true)
+    @Column(name = "cliente_cpf", nullable = false, unique = true)
     private String cpf;
 
     @Column(name = "cliente_genero", nullable = false)
     private String genero;
 
-    
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
 
-    @Column(name = "cliente_email",nullable = false, unique = true)
+    @Column(name = "cliente_email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "cliente_senha", nullable = false)
     private String senha;
 
-    @Column(name = "cliente_status", nullable =  false)
-    private Boolean status;
+    @Column(name = "cliente_status", nullable = false)
+    private boolean status;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "endereco_fatura_id", nullable = true)
     private EnderecoModel enderecoFatura;
 
-    @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, 
-    orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cliente", cascade = { CascadeType.PERSIST,
+            CascadeType.MERGE }, orphanRemoval = true, fetch = FetchType.LAZY)
     @Setter(value = AccessLevel.NONE)
     @Builder.Default
     @JsonManagedReference
     @Column(nullable = true)
     private List<EnderecoModel> enderecos = new ArrayList<>();
-    
-    public void setEnderecos(List<EnderecoModel> enderecos){
+
+    @OneToMany(mappedBy = "cliente", cascade = { CascadeType.PERSIST,
+            CascadeType.MERGE }, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Setter(value = AccessLevel.NONE)
+    private List<PedidoModel> pedidos = new ArrayList<>();
+
+    public void setEnderecos(List<EnderecoModel> enderecos) {
         enderecos.forEach(endereco -> endereco.setCliente(this));
         this.enderecos = enderecos;
     }
