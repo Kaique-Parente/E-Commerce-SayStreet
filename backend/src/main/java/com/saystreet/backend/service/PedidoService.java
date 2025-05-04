@@ -110,6 +110,7 @@ public class PedidoService {
         double totalComDesconto = tipo.aplicarDesconto(valorTotal + pedido.getFrete());
         pedido.setValorTotal(totalComDesconto);
 
+        cliente.getPedidos().add(pedido);
         pedidoRepository.save(pedido);
 
         return pedido;
