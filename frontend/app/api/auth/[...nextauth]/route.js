@@ -51,7 +51,8 @@ const handler = NextAuth({
           genero: session.genero,
           enderecos: session.enderecos,
           enderecoFatura: session.enderecoFatura,
-          status: session.status
+          status: session.status,
+          pedidos: session.pedidos,
         };
         console.log(token);
       }

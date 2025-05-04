@@ -273,6 +273,7 @@ export default function MeusDados() {
                     enderecos: dadosCliente.enderecos,
                     enderecoFatura: dadosCliente.enderecoFatura,
                     status: user.status,
+                    pedidos: user.pedidos,
                 });
             }
 
