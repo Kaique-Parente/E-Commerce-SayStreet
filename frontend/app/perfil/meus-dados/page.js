@@ -111,6 +111,7 @@ export default function MeusDados() {
     const { data: session, update } = useSession();
 
     const user = session?.user;
+    const router = useRouter();
 
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -177,8 +178,26 @@ export default function MeusDados() {
 
     const [enderecos, setEnderecos] = useState([]);
     const [enderecoFatura, setEnderecoFatura] = useState({});
-    const router = useRouter();
 
+    useEffect(() => {
+        if (!session) {
+            router.push("/login");
+        }
+    }, [])
+
+    if (!session) {
+        return (
+            <div style={{
+                padding: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh'
+            }}>
+                <h1>Carregando...</h1>
+            </div>
+        );
+    }
 
     useEffect(() => {
         if (user) {
