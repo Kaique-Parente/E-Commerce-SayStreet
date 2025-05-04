@@ -175,7 +175,7 @@ public class ClienteService {
         if (dto.getEnderecos() != null && !dto.getEnderecos().isEmpty()) {
             for (EnderecosDto enderecoDTO : dto.getEnderecos()) {
                 boolean isPrincipal = enderecoDTO.isEnderecoPadrao();
-        
+
                 EnderecoModel endereco = EnderecoModel.builder()
                         .cep(enderecoDTO.getCep())
                         .logradouro(enderecoDTO.getLogradouro())
@@ -188,20 +188,20 @@ public class ClienteService {
                         .enderecoPadrao(isPrincipal)
                         .cliente(cliente)
                         .build();
-        
-                cliente.getEnderecos().add(endereco);
 
                 if (dto.getEnderecoFatura() != null &&
-                    enderecoDTO.getCep().equals(dto.getEnderecoFatura().getCep()) &&
-                    enderecoDTO.getNumero().equals(dto.getEnderecoFatura().getNumero()) &&
-                    enderecoDTO.getLogradouro().equals(dto.getEnderecoFatura().getLogradouro()) &&
-                    enderecoDTO.getUf().equals(dto.getEnderecoFatura().getUf())) {
-        
+                        enderecoDTO.getCep().equals(dto.getEnderecoFatura().getCep()) &&
+                        enderecoDTO.getNumero().equals(dto.getEnderecoFatura().getNumero()) &&
+                        enderecoDTO.getLogradouro().equals(dto.getEnderecoFatura().getLogradouro()) &&
+                        enderecoDTO.getUf().equals(dto.getEnderecoFatura().getUf())) {
+
                     cliente.setEnderecoFatura(endereco);
+                } else {
+                    cliente.getEnderecos().add(endereco);
                 }
             }
         }
-        
+
         clienteRepository.save(cliente);
 
         return "Cliente atualizado com sucesso!";

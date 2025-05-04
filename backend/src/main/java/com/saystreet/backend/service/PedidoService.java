@@ -60,7 +60,7 @@ public class PedidoService {
         endereco.setEstado(enderecoDto.getEstado());
         endereco.setNumero(enderecoDto.getNumero());
         endereco.setEnderecoPadrao(true);
-        endereco.setCliente(cliente); // Vincula o cliente no endereço
+        endereco.setCliente(null);
 
         pedido.setEnderecoEntrega(endereco);
 
@@ -72,7 +72,7 @@ public class PedidoService {
         List<ItemPedido> itens = new ArrayList<>();
 
         for (ItemPedidoDto itemDto : pedidoDto.getProdutos()) {
-            ProdutoModel produto = produtoRepository.findById(itemDto.getProduto().getProdutoId())
+            ProdutoModel produto = produtoRepository.findById(itemDto.getProdutoId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto não encontrado"));
 
             ItemPedido itemPedido = new ItemPedido();
