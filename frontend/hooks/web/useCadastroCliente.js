@@ -30,7 +30,13 @@ export const useCadastroCliente = () => {
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handleSenhaChange = (e) => setSenha(e.target.value);
     const handleDataNascimentoChange = (e) => {
-        setDataNascimento(e.target.value);
+        const value = e.target.value;
+    
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+    
+        if (value.length <= 10 && (value === '' || regex.test(value))) {
+            setDataNascimento(value);
+        }
     };
     
     const handleGeneroChange = (e) => setGenero(e.target.value);
