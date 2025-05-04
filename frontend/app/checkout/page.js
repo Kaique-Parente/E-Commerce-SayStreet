@@ -263,7 +263,7 @@ export default function Checkout() {
     const [cvvCartao, setCvvCartao] = useState('');
     const [cartaoFocus, setCartaoFocus] = useState('');
 
-    const [nomeDoMetodo, setNomeDoMetodo] = useState('');
+    const [tipoPagamento, setTipoPagamento] = useState('');
 
     const { data: session, status } = useSession();
     const user = session?.user;
@@ -285,26 +285,26 @@ export default function Checkout() {
     }, [valorTotal, frete])
 
     useEffect(() => {
-        switch (nomeDoMetodo) {
-            case "boleto":
+        switch (tipoPagamento) {
+            case "BOLETO":
                 setDesconto(0.05);
                 break;
-            case "pix":
+            case "PIX":
                 setDesconto(0.2);
                 break;
-            case "cartao":
+            case "CARTAO":
                 setDesconto(0.1);
                 break;
         }
 
-    }, [nomeDoMetodo])
+    }, [tipoPagamento])
 
     useEffect(() => {
         console.log(desconto);
     }, [desconto])
 
     const handleNomeDoMetodoChange = (e) => {
-        setNomeDoMetodo(e.target.value);
+        setTipoPagamento(e.target.value);
     };
 
     const handleNumeroParcelas = (e) => {
@@ -323,7 +323,7 @@ export default function Checkout() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (nomeDoMetodo === 'cartao') {
+        if (tipoPagamento === 'CARTAO') {
             const numero = numeroCartao.replace(/\s/g, '');
             const [mes, ano] = validadeCartao.split('/');
             const agora = new Date();
@@ -355,14 +355,14 @@ export default function Checkout() {
             }
         }
 
-        if (nomeDoMetodo !== "" && nomeDoMetodo !== undefined) {
+        if (tipoPagamento !== "" && tipoPagamento !== undefined) {
             let updateMetodoPagamento = {
-                nomeDoMetodo: nomeDoMetodo
+                tipoPagamento: tipoPagamento
             };
 
-            if (nomeDoMetodo === "cartao") {
+            if (tipoPagamento === "CARTAO") {
                 updateMetodoPagamento = {
-                    nomeDoMetodo: nomeDoMetodo,
+                    tipoPagamento: tipoPagamento,
                     numeroCartao: numeroCartao,
                     nomeNoCartao: nomeNoCartao,
                     validadeCartao: validadeCartao,
@@ -410,22 +410,22 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="cartao"
-                                name="nomeDoMetodo"
-                                value="cartao"
-                                checked={nomeDoMetodo === 'cartao'}
+                                name="tipoPagamento"
+                                value="CARTAO"
+                                checked={tipoPagamento === "CARTAO"}
                                 onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="cartao" selecionado={nomeDoMetodo === 'cartao'}>
+                            <MetodoLabel htmlFor="cartao" selecionado={tipoPagamento === "CARTAO"}>
                                 <div className='pagamento-icone'>
                                     <RadioContainer>
-                                        <RadioVisual selecionado={nomeDoMetodo === 'cartao'} />
+                                        <RadioVisual selecionado={tipoPagamento === "CARTAO"} />
                                     </RadioContainer>
                                     <span>Cartão de Crédito</span>
                                 </div>
 
                                 <Image width={32} height={32} src={"/web/paymentMethods/cartao.png"} alt="Ícone cartao" />
                             </MetodoLabel>
-                            {nomeDoMetodo === 'cartao' && (
+                            {tipoPagamento === "CARTAO" && (
                                 <CampoCartao>
                                     <Cards
                                         number={numeroCartao || ''}
@@ -531,15 +531,15 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="boleto"
-                                name="nomeDoMetodo"
-                                value="boleto"
-                                checked={nomeDoMetodo === 'boleto'}
+                                name="tipoPagamento"
+                                value="BOLETO"
+                                checked={tipoPagamento === "BOLETO"}
                                 onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="boleto" selecionado={nomeDoMetodo === 'boleto'}>
+                            <MetodoLabel htmlFor="boleto" selecionado={tipoPagamento === "BOLETO"}>
                                 <div className='pagamento-icone'>
                                     <RadioContainer>
-                                        <RadioVisual selecionado={nomeDoMetodo === 'boleto'} />
+                                        <RadioVisual selecionado={tipoPagamento === "BOLETO"} />
                                     </RadioContainer>
                                     <span>Boleto</span>
                                 </div>
@@ -547,7 +547,7 @@ export default function Checkout() {
                                 <Image width={32} height={32} src={"/web/paymentMethods/boleto.png"} alt="Ícone boleto" />
                             </MetodoLabel>
 
-                            {nomeDoMetodo === 'boleto' && (
+                            {tipoPagamento === "BOLETO" && (
                                 <CampoInformacoes>
                                     <p>Até 5% de desconto. Você poderá visualizar ou imprimir o boleto após a finalização do pedido.</p>
                                     <br />
@@ -561,22 +561,22 @@ export default function Checkout() {
                             <HiddenRadio
                                 type="radio"
                                 id="pix"
-                                name="nomeDoMetodo"
-                                value="pix"
-                                checked={nomeDoMetodo === 'pix'}
+                                name="tipoPagamento"
+                                value="PIX"
+                                checked={tipoPagamento === "PIX"}
                                 onChange={handleNomeDoMetodoChange}
                             />
-                            <MetodoLabel htmlFor="pix" selecionado={nomeDoMetodo === 'pix'}>
+                            <MetodoLabel htmlFor="pix" selecionado={tipoPagamento === "PIX"}>
                                 <div className='pagamento-icone'>
                                     <RadioContainer>
-                                        <RadioVisual selecionado={nomeDoMetodo === 'pix'} />
+                                        <RadioVisual selecionado={tipoPagamento === "PIX"} />
                                     </RadioContainer>
                                     <span>Pix</span>
                                 </div>
 
                                 <Image width={32} height={32} src={"/web/paymentMethods/pix.svg"} alt="Ícone pix" />
                             </MetodoLabel>
-                            {nomeDoMetodo === 'pix' && (
+                            {tipoPagamento === "PIX" && (
                                 <CampoInformacoes>
                                     <p>Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.</p>
                                 </CampoInformacoes>
