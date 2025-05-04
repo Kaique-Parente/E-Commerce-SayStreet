@@ -20,6 +20,7 @@ import { editarCliente } from "@/services/ClienteService";
 
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
+import { gerarPedido } from "@/services/PedidoService";
 
 const Container = styled.div`
     width: 100%;
@@ -417,7 +418,7 @@ export default function Confirmacao() {
 
     const [enderecos, setEnderecos] = useState(user?.enderecos);
     const [enderecoFatura, setEnderecoFatura] = useState(user?.enderecoFatura);
-    const [nomeDoMetodo, setNomeDoMetodo] = useState('');
+    const [tipoPagamento, setTipoPagamento] = useState('');
 
     const [valorDesconto, setValorDesconto] = useState(0.0);
     const [valorFinal, setValorFinal] = useState(0.0);
@@ -496,7 +497,7 @@ export default function Confirmacao() {
     }
 
     const handleNomeDoMetodoChange = (e) => {
-        setNomeDoMetodo(e.target.value);
+        setTipoPagamento(e.target.value);
     };
 
     const handleNumeroParcelas = (e) => {
@@ -507,20 +508,55 @@ export default function Confirmacao() {
         setEnderecoSelecionado(e.target.value);
     }
 
-    const handleFinalizarCompra = () => {
+    const handleFinalizarCompra = async () => {
         console.log(session);
 
         if (frete > 0.0) {
             if (session !== undefined && session !== null) {
+                const objEnderecoEntrega = user.enderecos.find(
+                    (end) => end.logradouro === enderecoSelecionado
+                )
+
+                const produtosFormatados = carrinho.map((item) => ({
+                    produtoId: item.produtoId,
+                    quantidade: item.quantidade,
+                }));
+
                 const pedido = {
-                    cliente: user,
-                    produtos: carrinho,
+                    cliente: { id: user.id },
+                    enderecoEntrega: objEnderecoEntrega,
+                    produtos: produtosFormatados,
                     metodoPagamento: metodoPagamento,
                     frete: frete,
                 }
 
                 console.log(pedido);
 
+                try {
+                    const response = await gerarPedido(pedido);
+                    console.log(response);
+    
+                    if (response) {
+                        alert("Pedido realizado com sucesso!");
+    
+                        await update({
+                            id: user.id,
+                            nome: user.nome,
+                            email: user.email,
+                            cpf: user.cpf,
+                            dataNascimento: user.dataNascimento,
+                            genero: user.genero,
+                            enderecos: user.enderecos,
+                            status: user.status,
+                            pedidos: response,
+                        });
+                    }
+
+                } catch (error) {
+                    console.error("Erro ao tentar atualizar os dados:", error);
+                    alert("Ocorreu um erro inesperado. Tente novamente.");
+                }
+                
                 /*
                 router.push("/checkout")
                 console.log("Logado!");
@@ -631,19 +667,19 @@ export default function Confirmacao() {
                                     <HiddenRadio
                                         type="radio"
                                         id="cartao"
-                                        name="nomeDoMetodo"
-                                        value="cartao"
-                                        checked={metodoPagamento.nomeDoMetodo === 'cartao'}
+                                        name="tipoPagamento"
+                                        value="CARTAO"
+                                        checked={metodoPagamento.tipoPagamento === "CARTAO"}
                                         onChange={handleNomeDoMetodoChange}
                                         disabled
                                     />
-                                    <MetodoLabel htmlFor="cartao" selecionado={metodoPagamento.nomeDoMetodo === 'cartao'}>
+                                    <MetodoLabel htmlFor="cartao" selecionado={metodoPagamento.tipoPagamento === "CARTAO"}>
                                         <RadioContainer>
-                                            <RadioVisual selecionado={metodoPagamento.nomeDoMetodo === 'cartao'} />
+                                            <RadioVisual selecionado={metodoPagamento.tipoPagamento === "CARTAO"} />
                                         </RadioContainer>
                                         <span>Cartão de Crédito</span>
                                     </MetodoLabel>
-                                    {metodoPagamento.nomeDoMetodo === 'cartao' && (
+                                    {metodoPagamento.tipoPagamento === "CARTAO" && (
                                         <CampoCartao>
                                             <Cards
                                                 number={metodoPagamento?.numeroCartao || ''}
@@ -749,20 +785,20 @@ export default function Confirmacao() {
                                     <HiddenRadio
                                         type="radio"
                                         id="boleto"
-                                        name="nomeDoMetodo"
-                                        value="boleto"
-                                        checked={metodoPagamento.nomeDoMetodo === 'boleto'}
+                                        name="tipoPagamento"
+                                        value="BOLETO"
+                                        checked={metodoPagamento.tipoPagamento === "BOLETO"}
                                         onChange={handleNomeDoMetodoChange}
                                         disabled
                                     />
-                                    <MetodoLabel htmlFor="boleto" selecionado={metodoPagamento.nomeDoMetodo === 'boleto'}>
+                                    <MetodoLabel htmlFor="boleto" selecionado={metodoPagamento.tipoPagamento === "BOLETO"}>
                                         <RadioContainer>
-                                            <RadioVisual selecionado={metodoPagamento.nomeDoMetodo === 'boleto'} />
+                                            <RadioVisual selecionado={metodoPagamento.tipoPagamento === "BOLETO"} />
                                         </RadioContainer>
                                         <span>Boleto</span>
                                     </MetodoLabel>
 
-                                    {metodoPagamento.nomeDoMetodo === 'boleto' && (
+                                    {metodoPagamento.tipoPagamento === "BOLETO" && (
                                         <CampoInformacoes>
                                             <p>Até 5% de desconto. Você poderá visualizar ou imprimir o boleto após a finalização do pedido.</p>
                                             <br />
@@ -776,19 +812,19 @@ export default function Confirmacao() {
                                     <HiddenRadio
                                         type="radio"
                                         id="pix"
-                                        name="nomeDoMetodo"
-                                        value="pix"
-                                        checked={metodoPagamento.nomeDoMetodo === 'pix'}
+                                        name="tipoPagamento"
+                                        value="PIX"
+                                        checked={metodoPagamento.tipoPagamento === "PIX"}
                                         onChange={handleNomeDoMetodoChange}
                                         disabled
                                     />
-                                    <MetodoLabel htmlFor="pix" selecionado={metodoPagamento.nomeDoMetodo === 'pix'}>
+                                    <MetodoLabel htmlFor="pix" selecionado={metodoPagamento.tipoPagamento === "PIX"}>
                                         <RadioContainer>
-                                            <RadioVisual selecionado={metodoPagamento.nomeDoMetodo === 'pix'} />
+                                            <RadioVisual selecionado={metodoPagamento.tipoPagamento === "PIX"} />
                                         </RadioContainer>
                                         <span>Pix</span>
                                     </MetodoLabel>
-                                    {metodoPagamento.nomeDoMetodo === 'pix' && (
+                                    {metodoPagamento.tipoPagamento === "PIX" && (
                                         <CampoInformacoes>
                                             <p>Até 20% de desconto com aprovação imediata que torna a expedição mais rápida do pedido.</p>
                                         </CampoInformacoes>
