@@ -11,16 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.saystreet.backend.dto.ClienteDto;
 import com.saystreet.backend.dto.EnderecosDto;
-import com.saystreet.backend.exceptions.CpfAlreadyExistsException;
-import com.saystreet.backend.exceptions.EmailAlreadyExistsException;
-import com.saystreet.backend.exceptions.InvalidCpfException;
 import com.saystreet.backend.exceptions.InvalidNameException;
 import com.saystreet.backend.exceptions.InvalidPasswordException;
 import com.saystreet.backend.exceptions.UnauthorizedAccessException;
 import com.saystreet.backend.exceptions.UserInactiveException;
 import com.saystreet.backend.models.ClienteModel;
 import com.saystreet.backend.models.EnderecoModel;
-import com.saystreet.backend.models.UserModel;
 import com.saystreet.backend.repository.ClienteRepository;
 import com.saystreet.backend.security.CpfValidator;
 import com.saystreet.backend.security.NameValidator;
@@ -168,6 +164,11 @@ public class ClienteService {
             cliente.setSenha(encryptedPassword);
         }
 
+        if (dto.getEnderecoFatura() != null) {
+            EnderecoModel enderecoFatura = converterDtoParaModel(dto.getEnderecoFatura());
+            cliente.setEnderecoFatura(enderecoFatura);
+        }
+
         cliente.setStatus(!dto.isStatus());
 
         cliente.getEnderecos().clear();
@@ -189,16 +190,7 @@ public class ClienteService {
                         .cliente(cliente)
                         .build();
 
-                if (dto.getEnderecoFatura() != null &&
-                        enderecoDTO.getCep().equals(dto.getEnderecoFatura().getCep()) &&
-                        enderecoDTO.getNumero().equals(dto.getEnderecoFatura().getNumero()) &&
-                        enderecoDTO.getLogradouro().equals(dto.getEnderecoFatura().getLogradouro()) &&
-                        enderecoDTO.getUf().equals(dto.getEnderecoFatura().getUf())) {
-
-                    cliente.setEnderecoFatura(endereco);
-                } else {
-                    cliente.getEnderecos().add(endereco);
-                }
+                cliente.getEnderecos().add(endereco);
             }
         }
 

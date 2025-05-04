@@ -1,12 +1,8 @@
 package com.saystreet.backend.controller;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saystreet.backend.dto.ClienteDto;
-import com.saystreet.backend.exceptions.InvalidPasswordException;
-import com.saystreet.backend.exceptions.UnauthorizedAccessException;
-import com.saystreet.backend.exceptions.UserInactiveException;
 import com.saystreet.backend.models.ClienteModel;
-import com.saystreet.backend.models.UserModel;
-import com.saystreet.backend.security.PasswordEncryptionUtil;
 import com.saystreet.backend.service.ClienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
