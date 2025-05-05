@@ -93,6 +93,12 @@ export const CarrinhoProvider = ({ children }) => {
         });
     };
 
+    //Função para limpar o carrinho
+    const limparCarrinho = () => {
+        setCarrinho([]);
+        localStorage.removeItem("carrinho");
+    };
+
     // Calcular a quantidade total de itens no carrinho
     const quantidadeTotal = carrinho.reduce((total, item) => total + item.quantidade, 0);
 
@@ -105,6 +111,7 @@ export const CarrinhoProvider = ({ children }) => {
                 incrementarQuantidade,
                 decrementarQuantidade,
                 removerProduto,
+                limparCarrinho,
                 enderecoSelecionado,
                 setEnderecoSelecionado,
                 frete, 
