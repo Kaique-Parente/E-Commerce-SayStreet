@@ -474,6 +474,9 @@ export default function Confirmacao() {
     const [numeroPedido, setNumeroPedido] = useState(0);
     const [valorTotalPedido, setValorTotalPedido] = useState(0.0);
 
+    const [hasErrorModel, setHasErrorModel] = useState(false);
+    const [errorMessageModal, setErrorMessageModal] = useState("");
+
     useEffect(() => {
         if (frete <= 0.00) {
             router.push("/carrinho");
@@ -574,7 +577,7 @@ export default function Confirmacao() {
                 }
 
                 console.log(pedido);
-                
+
                 try {
                     const response = await gerarPedido(pedido);
                     console.log(response);
@@ -598,6 +601,9 @@ export default function Confirmacao() {
                         setTimeout(() => {
                             setOpenModel(true);
                         }, 2000);
+                    }else {
+                        setErrorMessageModal("Problema com o servidor");
+                        setOpenModel(true);
                     }
 
                 } catch (error) {
@@ -706,7 +712,7 @@ export default function Confirmacao() {
 
                                                 <div>
                                                     <h3>Valor total</h3>
-                                                    <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((item.produtoPreco * item.quantidade))}</p>           
+                                                    <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((item.produtoPreco * item.quantidade))}</p>
                                                 </div>
                                             </div>
                                         </CardProduct>
@@ -902,13 +908,13 @@ export default function Confirmacao() {
                                 <p>Desconto: <span style={{ color: "#005c53" }}>
                                     -
                                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorDesconto)}
-                                    </span>
+                                </span>
                                 </p>
                                 <div className="total-pedido">
                                     <h3>Valor Total: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorFinal)}</span></h3>
                                     <p>(em até <span>10x</span> de <span>
                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorFinal / 10)}
-                                        </span> sem juros)</p>
+                                    </span> sem juros)</p>
                                 </div>
                             </div>
 
@@ -974,13 +980,28 @@ export default function Confirmacao() {
                             aria-describedby="modal-modal-description"
                         >
                             <Box sx={style}>
-                                <Image width={128} height={128} src={"/web/sucesso.png"} alt="Ícone de sucesso" />
+                                {hasErrorModel ? (
+                                    <Image width={128} height={128} src={"/web/sucesso.png"} alt="Ícone de sucesso" />
+                                ) : (
+                                    <Image width={128} height={128} src={"/web/falha.png"} alt="Ícone de falha" />
+                                )}
                                 <ModalContent>
-                                    <h2>Pedido realizado com sucesso!</h2>
-                                    <p><strong>Número do pedido:</strong> {numeroPedido}</p>
-                                    <p><strong>Valor total: </strong>
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalPedido)}
-                                    </p>
+                                    {hasErrorModel ? (
+                                        <div>
+                                            <h2>Não foi possível realizar o seu pedido!</h2>
+                                            <p><strong>Error: </strong> {errorMessageModal}</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <h2>Pedido realizado com sucesso!</h2>
+                                            <p><strong>Número do pedido:</strong> {numeroPedido}</p>
+                                            <p><strong>Valor total: </strong>
+                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalPedido)}
+                                            </p>
+                                        </div>
+
+                                    )}
+
                                     <BotaoPersonalizado
                                         width={"130px"}
                                         height={"40px"}
