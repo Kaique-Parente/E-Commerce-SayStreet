@@ -536,6 +536,7 @@ export default function Carrinho() {
                         dataNascimento: dadosCliente.dataNascimento,
                         genero: dadosCliente.genero,
                         enderecos: dadosCliente.enderecos,
+                        enderecoFatura: user.enderecoFatura,
                         status: user.status,
                     });
                 }
