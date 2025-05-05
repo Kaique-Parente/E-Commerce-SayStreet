@@ -46,7 +46,7 @@ public class ClienteModel {
 
     @Column(name = "cliente_genero", nullable = false)
     private String genero;
-    
+
     @Column(name = "data_nascimento", nullable = false)
     private Date dataNascimento;
 
@@ -70,11 +70,6 @@ public class ClienteModel {
     @JsonManagedReference
     @Column(nullable = true)
     private List<EnderecoModel> enderecos = new ArrayList<>();
-
-    @OneToMany(mappedBy = "cliente", cascade = { CascadeType.PERSIST,
-            CascadeType.MERGE }, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Setter(value = AccessLevel.NONE)
-    private List<PedidoModel> pedidos = new ArrayList<>();
 
     public void setEnderecos(List<EnderecoModel> enderecos) {
         enderecos.forEach(endereco -> endereco.setCliente(this));

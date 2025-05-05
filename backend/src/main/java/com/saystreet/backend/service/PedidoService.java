@@ -110,9 +110,16 @@ public class PedidoService {
         double totalComDesconto = tipo.aplicarDesconto(valorTotal + pedido.getFrete());
         pedido.setValorTotal(totalComDesconto);
 
-        cliente.getPedidos().add(pedido);
         pedidoRepository.save(pedido);
 
         return pedido;
+    }
+
+    public List<PedidoModel> listarPedidos(Long clienteId){
+        List<PedidoModel> pedidos = pedidoRepository.findByClienteId(clienteId);
+        if(pedidos.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum pedido encontrado para este cliente.");
+        }
+        return pedidos;
     }
 }
