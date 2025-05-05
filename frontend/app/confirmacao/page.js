@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 import normalizeSlug from "@/utils/normalizeSlug";
 import { useSession } from "next-auth/react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, InputLabel, MenuItem, Modal, Select, Switch } from "@mui/material";
 import { useDadosCliente } from "@/hooks/web/useDadosCliente";
 import InputPersonalizado from "@/components/ClientComponents/InputPersonalizado";
 import { editarCliente } from "@/services/ClienteService";
@@ -339,6 +339,52 @@ const DetailsContainer = styled.div`
     }
 `
 
+const ModalContent = styled.div`
+    display: flex; 
+    flex-direction: column;
+    gap: 8px;
+
+    position: relative;
+    color: #005C53;
+
+    h2{
+        margin-bottom: 10px;
+    }
+
+    p{
+        font-size: 18px;
+    }
+
+    button {
+        position: absolute;
+        bottom: -60px;
+        right: 0px;
+        
+        font-size: 14px;
+        font-weight: bold;
+    }
+`
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+
+    width: 700,
+    height: 270,
+    bgcolor: 'background.paper',
+    borderRadius: '12px',
+
+    boxShadow: 10,
+    p: 4,
+
+};
+
 export default function Confirmacao() {
     const {
         nome,
@@ -396,6 +442,7 @@ export default function Confirmacao() {
         incrementarQuantidade,
         decrementarQuantidade,
         removerProduto,
+        limparCarrinho,
         frete,
         setFrete,
         enderecoSelecionado,
@@ -422,6 +469,10 @@ export default function Confirmacao() {
 
     const [valorDesconto, setValorDesconto] = useState(0.0);
     const [valorFinal, setValorFinal] = useState(0.0);
+
+    const [openModel, setOpenModel] = useState(false);
+    const [numeroPedido, setNumeroPedido] = useState(0);
+    const [valorTotalPedido, setValorTotalPedido] = useState(0.0);
 
     useEffect(() => {
         if (frete <= 0.00) {
@@ -484,7 +535,7 @@ export default function Confirmacao() {
             const updateDesconto = desconto * valorTotal;
             const valorComDesconto = valorTotal - updateDesconto;
             const valorFinalComFrete = valorComDesconto + frete;
-    
+
             setValorTotalFrete(subtotal);
             setValorDesconto(updateDesconto);
             setValorFinal(valorFinalComFrete);
@@ -506,6 +557,12 @@ export default function Confirmacao() {
 
     const handleEnderecoSelecionado = (e) => {
         setEnderecoSelecionado(e.target.value);
+    }
+
+    const handleCloseModel = () => {
+        limparCarrinho();
+        setOpenModel(false);
+        router.push("/");
     }
 
     const handleFinalizarCompra = async () => {
@@ -531,14 +588,12 @@ export default function Confirmacao() {
                 }
 
                 console.log(pedido);
-
+                
                 try {
                     const response = await gerarPedido(pedido);
                     console.log(response);
-    
+
                     if (response) {
-                        alert("Pedido realizado com sucesso!");
-    
                         await update({
                             id: user.id,
                             nome: user.nome,
@@ -547,20 +602,22 @@ export default function Confirmacao() {
                             dataNascimento: user.dataNascimento,
                             genero: user.genero,
                             enderecos: user.enderecos,
+                            enderecoFatura: user.enderecoFatura,
                             status: user.status,
-                            pedidos: response,
                         });
+
+                        setValorTotalPedido(response.valorTotal);
+                        setNumeroPedido(response.id);
+
+                        setTimeout(() => {
+                            setOpenModel(true);
+                        }, 2000);
                     }
 
                 } catch (error) {
                     console.error("Erro ao tentar atualizar os dados:", error);
                     alert("Ocorreu um erro inesperado. Tente novamente.");
                 }
-                
-                /*
-                router.push("/checkout")
-                console.log("Logado!");
-                */
             } else {
                 router.push("/login")
             }
@@ -903,6 +960,30 @@ export default function Confirmacao() {
                                 </BotaoPersonalizado>
                             </div>
                         </DetailsContainer>
+
+                        <Modal
+                            open={openModel}
+                            onClose={handleCloseModel}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={style}>
+                                <Image width={128} height={128} src={"/web/sucesso.png"} alt="Ícone de sucesso" />
+                                <ModalContent>
+                                    <h2>Pedido realizado com sucesso!</h2>
+                                    <p><strong>Número do pedido:</strong> {numeroPedido}</p>
+                                    <p><strong>Valor total:</strong> {valorTotalPedido}</p>
+                                    <BotaoPersonalizado
+                                        width={"130px"}
+                                        height={"40px"}
+                                        color="amarelo"
+                                        onClick={handleCloseModel}
+                                    >
+                                        Fechar Janela
+                                    </BotaoPersonalizado>
+                                </ModalContent>
+                            </Box>
+                        </Modal>
                     </div>
                 </div>
 
