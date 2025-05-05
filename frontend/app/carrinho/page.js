@@ -537,7 +537,6 @@ export default function Carrinho() {
                         genero: dadosCliente.genero,
                         enderecos: dadosCliente.enderecos,
                         status: user.status,
-                        pedidos: user.pedidos,
                     });
                 }
 
