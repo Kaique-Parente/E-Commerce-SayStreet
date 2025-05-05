@@ -481,20 +481,6 @@ export default function Confirmacao() {
         }
     }, [])
 
-    if (frete <= 0.00) {
-        return (
-            <div style={{
-                padding: '2rem',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh'
-            }}>
-                <h1>Carregando...</h1>
-            </div>
-        );
-    }
-
     useEffect(() => {
         if (frete <= 0.00) {
             setMostrarOpcoes(false);
@@ -626,6 +612,20 @@ export default function Confirmacao() {
         }
     }
 
+    if (frete <= 0.00) {
+        return (
+            <div style={{
+                padding: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh'
+            }}>
+                <h1>Carregando...</h1>
+            </div>
+        );
+    }
+
     return (
         <>
             <NavBar />
@@ -701,12 +701,12 @@ export default function Confirmacao() {
                                             <div className="valores">
                                                 <div>
                                                     <h3>Valor unitário</h3>
-                                                    <p>R$ {item.produtoPreco}</p>
+                                                    <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.produtoPreco)}</p>
                                                 </div>
 
                                                 <div>
                                                     <h3>Valor total</h3>
-                                                    <p>R$ {(item.produtoPreco * item.quantidade).toFixed(2)}</p>
+                                                    <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((item.produtoPreco * item.quantidade))}</p>           
                                                 </div>
                                             </div>
                                         </CardProduct>
@@ -897,12 +897,18 @@ export default function Confirmacao() {
                                     <h2>Resumo dos valores</h2>
                                 </div>
 
-                                <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
-                                <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
-                                <p>Desconto: <span style={{ color: "#005c53" }}>R$ -{parseFloat(valorDesconto).toFixed(2)}</span></p>
+                                <p>Valor dos produtos: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal)}</span></p>
+                                <p>Frete: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(frete)}</span></p>
+                                <p>Desconto: <span style={{ color: "#005c53" }}>
+                                    -
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorDesconto)}
+                                    </span>
+                                </p>
                                 <div className="total-pedido">
-                                    <h3>Valor Total: <span>R$ {parseFloat(valorFinal).toFixed(2)}</span></h3>
-                                    <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorFinal / 10).toFixed(2)}</span> sem juros)</p>
+                                    <h3>Valor Total: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorFinal)}</span></h3>
+                                    <p>(em até <span>10x</span> de <span>
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorFinal / 10)}
+                                        </span> sem juros)</p>
                                 </div>
                             </div>
 
@@ -972,7 +978,9 @@ export default function Confirmacao() {
                                 <ModalContent>
                                     <h2>Pedido realizado com sucesso!</h2>
                                     <p><strong>Número do pedido:</strong> {numeroPedido}</p>
-                                    <p><strong>Valor total:</strong> {valorTotalPedido}</p>
+                                    <p><strong>Valor total: </strong>
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalPedido)}
+                                    </p>
                                     <BotaoPersonalizado
                                         width={"130px"}
                                         height={"40px"}

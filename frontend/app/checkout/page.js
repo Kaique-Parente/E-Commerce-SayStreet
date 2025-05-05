@@ -588,21 +588,23 @@ export default function Checkout() {
                     <DetailsContainer>
                         <div className="resumo-pedido">
                             <h2>Resumo do Pedido</h2>
-                            <p>Valor dos produtos: <span>R$ {parseFloat(valorTotal).toFixed(2)}</span></p>
-                            <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
+                            <p>Valor dos produtos: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal)}</span></p>
+                            <p>Frete: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(frete)}</span></p>
                             <p>Desconto:
                                 <span style={{ color: "#005c53" }}>
-                                    R$ -{parseFloat((valorTotal * desconto)).toFixed(2)}
+                                    -
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((valorTotal * desconto))}
                                 </span>
                             </p>
                             <div className="total-pedido">
                                 <h3>Valor Total:
                                     <span>
-                                        R$ {parseFloat(valorTotal + frete - (valorTotal * desconto)).toFixed(2)}
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal + frete - (valorTotal * desconto))}
                                     </span>
                                 </h3>
                                 <p>(em até <span>10x</span> de
-                                    <span>R$ {parseFloat((valorTotal + frete - (valorTotal * desconto)) / 10).toFixed(2)}
+                                    <span>
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((valorTotal + frete - (valorTotal * desconto)) / 10)}
                                     </span>
                                     sem juros)
                                 </p>

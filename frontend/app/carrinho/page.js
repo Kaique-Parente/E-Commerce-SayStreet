@@ -670,12 +670,12 @@ export default function Carrinho() {
                                                 <div className="valores">
                                                     <div>
                                                         <h3>Valor unitário</h3>
-                                                        <p>R$ {item.produtoPreco}</p>
+                                                        <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.produtoPreco)}</p>
                                                     </div>
 
                                                     <div>
                                                         <h3>Valor total</h3>
-                                                        <p>R$ {(item.produtoPreco * item.quantidade).toFixed(2)}</p>
+                                                        <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.produtoPreco * item.quantidade)}</p>
                                                     </div>
                                                 </div>
                                             </CardProduct>
@@ -688,11 +688,11 @@ export default function Carrinho() {
                         <DetailsContainer>
                             <div className="resumo-pedido">
                                 <h2>Resumo do Pedido</h2>
-                                <p>Valor dos produtos: <span>R$ {parseFloat(valorTotalProdutos).toFixed(2)}</span></p>
-                                <p>Frete: <span>R$ {parseFloat(frete).toFixed(2)}</span></p>
+                                <p>Valor dos produtos: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalProdutos)}</span></p>
+                                <p>Frete: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(frete)}</span></p>
                                 <div className="total-pedido">
-                                    <h3>Valor Total: <span>R$ {parseFloat(valorTotalComFrete).toFixed(2)}</span></h3>
-                                    <p>(em até <span>10x</span> de <span>R$ {parseFloat(valorTotalComFrete / 10).toFixed(2)}</span> sem juros)</p>
+                                    <h3>Valor Total: <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalComFrete)}</span></h3>
+                                    <p>(em até <span>10x</span> de <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalComFrete / 10)}</span> sem juros)</p>
                                 </div>
                             </div>
 
