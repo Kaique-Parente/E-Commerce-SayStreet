@@ -565,15 +565,19 @@ export default function Carrinho() {
     const handleFinalizarCompra = () => {
         console.log(session);
 
-        if (frete > 0.0) {
-            if (session !== undefined && session !== null) {
-                router.push("/checkout")
-                console.log("Logado!");
+        if(carrinho.length > 0){
+            if (frete > 0.0) {
+                if (session !== undefined && session !== null) {
+                    router.push("/checkout")
+                    console.log("Logado!");
+                } else {
+                    router.push("/login")
+                }
             } else {
-                router.push("/login")
+                alert("Selecione um frete e uma entregadora!");
             }
         } else {
-            alert("Selecione um frete e uma entregadora!");
+            alert("Adicione no mínimo um produto no carrinho!");
         }
     }
 
