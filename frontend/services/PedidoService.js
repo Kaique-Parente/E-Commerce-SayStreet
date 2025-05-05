@@ -31,3 +31,11 @@ export async function gerarPedido(dadosPedido){
         body: JSON.stringify(dadosPedido)
     })
 }
+
+export async function listarPedidos(clienteId){
+    const url = `${BASE_URL}/listar/${clienteId}`
+    return await handleRequest(url, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
