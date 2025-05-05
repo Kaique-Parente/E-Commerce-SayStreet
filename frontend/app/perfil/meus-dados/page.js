@@ -185,20 +185,6 @@ export default function MeusDados() {
         }
     }, [])
 
-    if (!session) {
-        return (
-            <div style={{
-                padding: '2rem',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh'
-            }}>
-                <h1>Carregando...</h1>
-            </div>
-        );
-    }
-
     useEffect(() => {
         if (user) {
             setNome(user.nome || '');
@@ -300,6 +286,20 @@ export default function MeusDados() {
             alert("Ocorreu um erro inesperado. Tente novamente.");
         }
     };
+
+    if (!session) {
+        return (
+            <div style={{
+                padding: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh'
+            }}>
+                <h1>Carregando...</h1>
+            </div>
+        );
+    }
 
     return (
         <Container>
