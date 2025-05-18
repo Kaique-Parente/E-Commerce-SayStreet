@@ -36,5 +36,11 @@ public class PedidoController {
     public List<PedidoModel> listar(@PathVariable Long clienteId){
       return pedidoService.listarPedidos(clienteId);
     }
+
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<PedidoModel> buscarId(@PathVariable Long id) throws Exception{
+      PedidoModel pedido = pedidoService.buscarPedidoId(id);
+      return ResponseEntity.ok(pedido);
+    }
     
 }

@@ -3,6 +3,7 @@ package com.saystreet.backend.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -121,5 +122,15 @@ public class PedidoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum pedido encontrado para este cliente.");
         }
         return pedidos;
+    }
+
+    public PedidoModel buscarPedidoId(Long pedidoId) throws Exception{
+        Optional<PedidoModel> pedidoExistente = pedidoRepository.findById(pedidoId);
+        
+        if(pedidoExistente.isPresent()){
+            return pedidoExistente.get();
+        }
+
+        throw new Exception("Pedido não econtrado!");
     }
 }
