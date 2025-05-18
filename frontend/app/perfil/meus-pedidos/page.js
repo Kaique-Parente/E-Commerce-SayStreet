@@ -98,14 +98,12 @@ export default function MeusPedidos() {
                     const url = `http://localhost:8080/pedido/listar/${user.id}`;
                     const response = await fetch(url);
                     if (!response.ok) {
-                        alert("Erro ao buscar pedidos");
                         setLoading(false);
                         return;
                     }
                     const data = await response.json();
                     setMeusPedidos(data);
                 } catch (error) {
-                    alert("Erro ao buscar pedidos");
                     console.error(error);
                 } finally {
                     setLoading(false); // desliga loading no final

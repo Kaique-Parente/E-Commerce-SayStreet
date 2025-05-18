@@ -118,8 +118,8 @@ const CardProduct = styled.div`
     }
 
     .btn-remover{
-        background: aliceblue;
-        color: red;
+        background: #b9bbbd;
+        color: #ff00005c;
         cursor: pointer;
         
         display: flex;
@@ -339,123 +339,7 @@ const DetailsContainer = styled.div`
     }
 `
 
-const ModalContent = styled.div`
-    display: flex; 
-    flex-direction: column;
-    gap: 8px;
-
-    position: relative;
-    color: #005C53;
-
-    h2{
-        margin-bottom: 10px;
-    }
-
-    p{
-        font-size: 18px;
-    }
-
-    button {
-        position: absolute;
-        bottom: -60px;
-        right: 0px;
-        
-        font-size: 14px;
-        font-weight: bold;
-    }
-`
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-
-    width: 700,
-    height: 270,
-    bgcolor: 'background.paper',
-    borderRadius: '12px',
-
-    boxShadow: 10,
-    p: 4,
-
-};
-
 export default function PedidoDetalhes({ params }) {
-    const {
-        nome,
-        cpf,
-        email,
-        senha,
-        dataNascimento,
-        genero,
-        setNome,
-        setEmail,
-        setSenha,
-        setCpf,
-        setDataNascimento,
-        setGenero,
-        handleNomeChange,
-        handleCpfChange,
-        handleEmailChange,
-        handleSenhaChange,
-        handleDataNascimentoChange,
-        handleGeneroChange,
-
-        logradouro,
-        numero,
-        complemento,
-        cep,
-        cidade,
-        uf,
-        principal,
-        bairro,
-        setLogradouro,
-        setNumero,
-        setComplemento,
-        setCep,
-        setCidade,
-        setUf,
-        setPrincipal,
-        setCepValido,
-        setBairro,
-
-        handleLogradouroChange,
-        handleNumeroChange,
-        handleComplementoChange,
-        handleCidadeChange,
-        handleUfChange,
-        handlePrincipalChange,
-        handleBairroChange,
-
-        cepValido,
-        handleCepValidate,
-    } = useDadosCliente();
-
-    const {
-        carrinho,
-        adicionarItem,
-        incrementarQuantidade,
-        decrementarQuantidade,
-        removerProduto,
-        limparCarrinho,
-        frete,
-        setFrete,
-        enderecoSelecionado,
-        setEnderecoSelecionado,
-        valorTotal,
-        valorTotalFrete,
-        setValorTotalFrete,
-        metodoPagamento,
-        desconto,
-        numeroParcelas,
-        setNumeroParcelas,
-    } = useCarrinho();
-
     const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
 
     const router = useRouter();
@@ -463,20 +347,16 @@ export default function PedidoDetalhes({ params }) {
     const { data: session, status, update } = useSession();
     const user = session?.user;
 
-    const [enderecos, setEnderecos] = useState(user?.enderecos);
-    const [enderecoFatura, setEnderecoFatura] = useState(user?.enderecoFatura);
+    const [enderecoSelecionado, setEnderecoSelecionado] = useState({});
+    const [enderecoSelecionadoValue, setEnderecoSelecionadoValue] = useState("");
     const [tipoPagamento, setTipoPagamento] = useState('');
+    const [numeroParcelas, setNumeroParcelas] = useState(0);
 
+    const [frete, setFrete] = useState(0.0);
+    const [valorTotal, setValorTotal] = useState(0.0);
     const [valorDesconto, setValorDesconto] = useState(0.0);
     const [valorFinal, setValorFinal] = useState(0.0);
-
-    const [openModel, setOpenModel] = useState(false);
-    const [numeroPedido, setNumeroPedido] = useState(0);
-    const [valorTotalPedido, setValorTotalPedido] = useState(0.0);
-
-    const [hasErrorModel, setHasErrorModel] = useState(false);
-    const [errorMessageModal, setErrorMessageModal] = useState("");
-
+    const [valorTotalFrete, setValorTotalFrete] = useState(0.0);
 
     const [pedidoId, setPedidoId] = useState();
     const [pedidoDetalhes, setPedidoDetalhes] = useState({});
@@ -522,51 +402,49 @@ export default function PedidoDetalhes({ params }) {
     }
 
     useEffect(() => {
-        if (frete <= 0.00) {
-            setMostrarOpcoes(false);
-        } else {
-            setMostrarOpcoes(true);
-        }
-
-        if (user?.enderecos) {
-            setEnderecos(user.enderecos);
-        }
-
-        if (user?.enderecoFatura) {
-            setEnderecoFatura(user.enderecoFatura);
-        }
-
-    }, [user])
-
-    useEffect(() => {
-        setFrete(Number.parseFloat(frete));
-    }, [frete])
-
-    useEffect(() => {
-        if (enderecoSelecionado !== "" && enderecoSelecionado !== undefined) {
-            setMostrarOpcoes(true);
-        }
-    }, [enderecoSelecionado])
-
-    useEffect(() => {
-        if (carrinho.length === 0) {
-            setCep("");
-            setFrete(0.0);
-            setMostrarOpcoes(false);
+        if (!pedidoDetalhes?.item || pedidoDetalhes.item.length === 0) {
             setValorDesconto(0.0);
             setValorFinal(0.0);
-            setValorTotalFrete(0.0);
-        } else {
-            const subtotal = valorTotal + frete;
-            const updateDesconto = desconto * valorTotal;
-            const valorComDesconto = valorTotal - updateDesconto;
-            const valorFinalComFrete = valorComDesconto + frete;
-
-            setValorTotalFrete(subtotal);
-            setValorDesconto(updateDesconto);
-            setValorFinal(valorFinalComFrete);
+            setValorTotal(0.0);
+            return;
         }
-    }, [carrinho, valorTotal, frete, desconto]);
+
+        const enderecoEntrega = pedidoDetalhes?.enderecoEntrega;
+        setEnderecoSelecionadoValue(enderecoEntrega?.logradouro)
+        setEnderecoSelecionado(enderecoEntrega);
+        setMostrarOpcoes(true);
+
+        const valorTotalCalculado = pedidoDetalhes.item.reduce((acc, item) => {
+            return acc + (item.produto?.produtoPreco || 0) * (item.qtdProduto || 1);
+        }, 0);
+
+        const tipoPagamento = pedidoDetalhes?.metodoPagamento?.tipoPagamento;
+        const parcelas = pedidoDetalhes?.metodoPagamento?.numeroParcelas;
+        const numeroParcelas = parcelas === null ? 0 : parcelas;
+
+        let percentualDesconto = 0;
+
+        if (tipoPagamento === "PIX") {
+            percentualDesconto = 0.20;
+        } else if (tipoPagamento === "BOLETO") {
+            percentualDesconto = 0.05;
+        } else if (tipoPagamento === "CARTAO" && Number(numeroParcelas) === 1) {
+            percentualDesconto = 0.10;
+        }
+
+        const valorDescontoCalculado = valorTotalCalculado * percentualDesconto;
+        const valorComDesconto = valorTotalCalculado - valorDescontoCalculado;
+        const fretePedido = pedidoDetalhes?.frete || 0;
+        const valorTotalFrete = valorTotalCalculado + fretePedido;
+        const valorFinalComFrete = valorComDesconto + fretePedido;
+
+        setFrete(fretePedido);
+        setValorTotal(valorTotalCalculado);
+        setValorTotalFrete(valorTotalFrete);
+        setValorDesconto(valorDescontoCalculado);
+        setValorFinal(valorFinalComFrete);
+        setNumeroParcelas(numeroParcelas);
+    }, [pedidoDetalhes]);
 
     const handleSlugClick = (nome, id) => {
         const slug = `${normalizeSlug(nome)}-${id}`;
@@ -585,76 +463,6 @@ export default function PedidoDetalhes({ params }) {
         setEnderecoSelecionado(e.target.value);
     }
 
-    const handleCloseModel = () => {
-        limparCarrinho();
-        setOpenModel(false);
-        router.push("/");
-    }
-
-    const handleFinalizarCompra = async () => {
-        console.log(session);
-
-        if (frete > 0.0) {
-            if (session !== undefined && session !== null) {
-                const objEnderecoEntrega = user.enderecos.find(
-                    (end) => end.logradouro === enderecoSelecionado
-                )
-
-                const produtosFormatados = carrinho.map((item) => ({
-                    produtoId: item.produtoId,
-                    quantidade: item.quantidade,
-                }));
-
-                const pedido = {
-                    cliente: { id: user.id },
-                    enderecoEntrega: objEnderecoEntrega,
-                    produtos: produtosFormatados,
-                    metodoPagamento: metodoPagamento,
-                    frete: frete,
-                }
-
-                console.log(pedido);
-
-                try {
-                    const response = await gerarPedido(pedido);
-                    console.log(response);
-
-                    if (response) {
-                        await update({
-                            id: user.id,
-                            nome: user.nome,
-                            email: user.email,
-                            cpf: user.cpf,
-                            dataNascimento: user.dataNascimento,
-                            genero: user.genero,
-                            enderecos: user.enderecos,
-                            enderecoFatura: user.enderecoFatura,
-                            status: user.status,
-                        });
-
-                        setValorTotalPedido(response.valorTotal);
-                        setNumeroPedido(response.id);
-
-                        setTimeout(() => {
-                            setOpenModel(true);
-                        }, 2000);
-                    } else {
-                        setErrorMessageModal("Problema com o servidor");
-                        setOpenModel(true);
-                    }
-
-                } catch (error) {
-                    console.error("Erro ao tentar atualizar os dados:", error);
-                    alert("Ocorreu um erro inesperado. Tente novamente.");
-                }
-            } else {
-                router.push("/login")
-            }
-        } else {
-            alert("Selecione um frete e uma entregadora!");
-        }
-    }
-
     return (
         <>
             <NavBar />
@@ -663,7 +471,7 @@ export default function PedidoDetalhes({ params }) {
                     <div className="title-icon" style={{ margin: "30px 0px" }}>
                         <Image width={32} height={32} src={"/web/sidebar/carrinho.png"} alt="Ícone carrinho de compras" />
                         <h1 style={{ color: "rgb(0, 92, 83)" }}>
-                            Resumo do pedido
+                            Detalhes do pedido
                         </h1>
                     </div>
                     <div style={{ display: "flex", gap: "30px" }}>
@@ -697,8 +505,7 @@ export default function PedidoDetalhes({ params }) {
                                                 <h3>Quantidade</h3>
                                                 <div className="seta-container">
                                                     <button className="seta seta-esquerda"
-                                                        onClick={() => decrementarQuantidade(item.produto?.produtoId, item.produto?.produtoTamanho)}
-                                                        disabled={item.produto?.quantidade <= 1}
+                                                        disabled={true}
                                                     >
                                                         <Image
                                                             width={18}
@@ -709,7 +516,7 @@ export default function PedidoDetalhes({ params }) {
                                                     </button>
                                                     <p>{item.qtdProduto}</p>
                                                     <button className="seta seta-direita"
-                                                        onClick={() => incrementarQuantidade(item.produto?.produtoId, item.produto?.produtoTamanho)}
+                                                        disabled={true}
                                                     >
                                                         <Image
                                                             width={18}
@@ -721,7 +528,7 @@ export default function PedidoDetalhes({ params }) {
                                                 </div>
                                                 <div>
                                                     <button className="btn-remover"
-                                                        onClick={() => removerProduto(item.produto?.produtoId, item.produto?.produtoTamanho)}>
+                                                        disabled={true}>
                                                         <Image width={16} height={16} src={"/backoffice/lixo.svg"} alt="Ícone de Lixo" />
                                                         <span>Remover</span>
                                                     </button>
@@ -943,19 +750,6 @@ export default function PedidoDetalhes({ params }) {
                             </div>
 
                             <div>
-                                <div style={{ marginBottom: "20px" }} className="frete">
-                                    <div className="title-icon">
-                                        <Image width={24} height={24} src={"/web/sidebar/endereco.png"} alt="Ícone de pin endereco" />
-                                        <h2>Endereço de Faturamento</h2>
-                                    </div>
-                                    <div className="input-container">
-                                        <div style={{ width: "100%", padding: "12px", border: "1px solid rgba(0, 0, 0, 0.38)", borderRadius: "8px" }}>
-                                            <p>{enderecoFatura?.logradouro + ", " + enderecoFatura?.numero}</p>
-                                            <p>{"CEP: " + enderecoFatura?.cep}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="frete">
                                     <div className="title-icon">
                                         <Image width={24} height={24} src={"/web/sidebar/caminhao.png"} alt="Ícone de caminhão" />
@@ -967,81 +761,37 @@ export default function PedidoDetalhes({ params }) {
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                value={enderecoSelecionado}
+                                                value={enderecoSelecionadoValue}
                                                 label="Selecionar endereço"
                                                 onChange={handleEnderecoSelecionado}
+                                                disabled={true}
                                             >
-                                                {enderecos?.map((endereco, index) => (
-                                                    <MenuItem key={endereco.id || index} value={endereco.logradouro}>
-                                                        {endereco.logradouro + ", " + endereco.numero}
-                                                        <br />
-                                                        {"CEP: " + endereco.cep}
-                                                    </MenuItem>
-                                                ))}
+
+                                                <MenuItem value={enderecoSelecionado?.logradouro}>
+                                                    {enderecoSelecionado?.logradouro + ", " + enderecoSelecionado?.numero}
+                                                    <br />
+                                                    {"CEP: " + enderecoSelecionado?.cep}
+                                                </MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
                                     {mostrarOpcoes && (
-                                        <TransportadorasGroup transportadora={frete} setTransportadora={setFrete} />
+                                        <TransportadorasGroup isDisabled={true} transportadora={frete} setTransportadora={setFrete} />
                                     )}
                                 </div>
                             </div>
 
                             <div style={{ display: "flex", flexDirection: "column", gap: "15px", alignItems: "center", marginTop: "5px" }}>
-                                <BotaoPersonalizado onClick={handleFinalizarCompra} width={"100%"} height={"50px"} color={"amarelo"}>
-                                    Finalizar a Compra
-                                </BotaoPersonalizado>
-                                <BotaoPersonalizado onClick={() => router.back("/checkout")} width={"80%"} height={"50px"} color={"marrom"}>
+                                <BotaoPersonalizado onClick={() => router.push("/perfil/meus-pedidos")} width={"80%"} height={"50px"} color={"marrom"}>
                                     Voltar
                                 </BotaoPersonalizado>
                             </div>
                         </DetailsContainer>
-
-                        <Modal
-                            open={openModel}
-                            onClose={handleCloseModel}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                        >
-                            <Box sx={style}>
-                                {hasErrorModel ? (
-                                    <Image width={128} height={128} src={"/web/sucesso.png"} alt="Ícone de sucesso" />
-                                ) : (
-                                    <Image width={128} height={128} src={"/web/falha.png"} alt="Ícone de falha" />
-                                )}
-                                <ModalContent>
-                                    {hasErrorModel ? (
-                                        <div>
-                                            <h2>Não foi possível realizar o seu pedido!</h2>
-                                            <p><strong>Error: </strong> {errorMessageModal}</p>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <h2>Pedido realizado com sucesso!</h2>
-                                            <p><strong>Número do pedido:</strong> {numeroPedido}</p>
-                                            <p><strong>Valor total: </strong>
-                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotalPedido)}
-                                            </p>
-                                        </div>
-
-                                    )}
-
-                                    <BotaoPersonalizado
-                                        width={"130px"}
-                                        height={"40px"}
-                                        color="amarelo"
-                                        onClick={handleCloseModel}
-                                    >
-                                        Fechar Janela
-                                    </BotaoPersonalizado>
-                                </ModalContent>
-                            </Box>
-                        </Modal>
                     </div>
                 </div>
 
                 <Footer />
             </Container>
         </>
-    );
+    )
 }
