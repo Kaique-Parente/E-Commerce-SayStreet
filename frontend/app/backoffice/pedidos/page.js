@@ -239,6 +239,12 @@ export default function Pedidos() {
         }
     };
 
+    const pedidosFormatados = pedidos.map(pedido => ({
+        ...pedido,
+        dataPedido: new Date(pedido.dataPedido).toLocaleString('pt-BR'),
+        valorTotal: pedido.valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), // moeda brasileira
+    }));
+
     return (
         <Container>
             <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
@@ -246,7 +252,7 @@ export default function Pedidos() {
                 <span>Voltar</span>
             </BackButton>
             <ContentContainer>
-                <div style={{display: "flex", justifyContent: "space-between", marginBottom: "30px"}}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "30px" }}>
                     <div>
                         <h1>Lista de Pedidos</h1>
                     </div>
@@ -278,7 +284,7 @@ export default function Pedidos() {
                     <Tabela
                         title="Produtos"
                         tableHeader={tableHeaderPedidos}
-                        rows={pedidos}
+                        rows={pedidosFormatados}
                         nomeFiltro={nomeFiltro}
                         campoFiltro={"id"}
                         fontHeader={12}
