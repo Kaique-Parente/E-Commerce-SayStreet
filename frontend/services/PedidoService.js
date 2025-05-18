@@ -39,3 +39,11 @@ export async function listarPedidos(clienteId){
         headers: { 'Content-Type': 'application/json' }
     })
 }
+
+export async function buscarPedidoId(pedidoId){
+    const url = `${BASE_URL}/buscar/${pedidoId}`
+    return await handleRequest(url, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
