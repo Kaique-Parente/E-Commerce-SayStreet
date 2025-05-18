@@ -3,6 +3,7 @@ import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado
 import { listarPedidos } from "@/services/PedidoService";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -80,6 +81,7 @@ export default function MeusPedidos() {
     const { data: session } = useSession();
     const user = session?.user;
 
+    const router = useRouter(); 
     const [meusPedidos, setMeusPedidos] = useState([]);
     const [loading, setLoading] = useState(true); // novo estado
 
