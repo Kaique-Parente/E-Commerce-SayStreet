@@ -143,7 +143,7 @@ export default function MeusPedidos() {
                                     <p><strong>Número do Pedido:</strong> {pedido.id}</p>
                                     <p><strong>Data da compra:</strong> {dataPedidoFormatada}</p>
                                 </div>
-                                <BotaoPersonalizado onClick={() => console.log("detalhes")} width={"25%"} height={"40px"} color={"amarelo"}>
+                                <BotaoPersonalizado onClick={() => router.push(`./meus-pedidos/${pedido.id}`)} width={"25%"} height={"40px"} color={"amarelo"}>
                                     Detalhes
                                 </BotaoPersonalizado>
                             </CardHeaderProduto>

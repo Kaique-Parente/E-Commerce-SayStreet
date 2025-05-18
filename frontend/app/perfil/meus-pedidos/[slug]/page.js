@@ -103,7 +103,6 @@ const CardProduct = styled.div`
 
             background: none;
             border: none;
-            cursor: pointer;
 
             position: absolute;
         }
@@ -120,7 +119,6 @@ const CardProduct = styled.div`
     .btn-remover{
         background: #b9bbbd;
         color: #ff00005c;
-        cursor: pointer;
         
         display: flex;
         align-items: center;
