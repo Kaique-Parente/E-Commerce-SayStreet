@@ -3,6 +3,8 @@ package com.saystreet.backend.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -114,5 +116,15 @@ public class PedidoService {
         pedidoRepository.save(pedido);
 
         return pedido;
+    }
+
+    public PedidoModel buscarPorId(Long id) {
+        Optional<PedidoModel> pedidoOpt = pedidoRepository.findById(id);
+
+        if(pedidoOpt.isPresent()){
+            PedidoModel pedido = pedidoOpt.get();
+            return pedido;
+        }
+        throw new NoSuchElementException("Pedido não encontrado!");
     }
 }
