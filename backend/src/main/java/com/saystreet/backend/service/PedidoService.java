@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import com.saystreet.backend.dto.EnderecosDto;
 import com.saystreet.backend.dto.ItemPedidoDto;
 import com.saystreet.backend.dto.MetodoPagamentoDto;
 import com.saystreet.backend.dto.PedidoDto;
+import com.saystreet.backend.dto.PedidoResumoDto;
 import com.saystreet.backend.models.ClienteModel;
 import com.saystreet.backend.models.EnderecoModel;
 import com.saystreet.backend.models.ItemPedido;
@@ -116,21 +119,33 @@ public class PedidoService {
         return pedido;
     }
 
-    public List<PedidoModel> listarPedidos(Long clienteId){
-        List<PedidoModel> pedidos = pedidoRepository.findByClienteId(clienteId);
-        if(pedidos.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum pedido encontrado para este cliente.");
-        }
-        return pedidos;
-    }
-
-    public PedidoModel buscarPedidoId(Long pedidoId) throws Exception{
+    public PedidoModel buscarPedidoId(Long pedidoId) throws Exception {
         Optional<PedidoModel> pedidoExistente = pedidoRepository.findById(pedidoId);
-        
-        if(pedidoExistente.isPresent()){
+
+        if (pedidoExistente.isPresent()) {
             return pedidoExistente.get();
         }
 
         throw new Exception("Pedido não econtrado!");
+    }
+
+    public String alterarStatus(Long id, String status) throws Exception {
+        PedidoModel pedidoOpt = buscarPedidoId(id);
+
+        pedidoOpt.setStatus(status);
+        pedidoRepository.save(pedidoOpt);
+        return "Status do pedido alterado com sucesso!";
+    }
+
+    public List<PedidoResumoDto> listarResumo() {
+        List<PedidoModel> pedidos = pedidoRepository.findAll();
+
+        return pedidos.stream()
+                .map(pedido -> new PedidoResumoDto(
+                        pedido.getId(),
+                        pedido.getDataPedido(),
+                        pedido.getValorTotal(),
+                        pedido.getStatus()))
+                .collect(Collectors.toList()); //Transforma todo os elementos acima em uma lista
     }
 }
