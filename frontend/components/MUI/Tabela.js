@@ -199,7 +199,7 @@ export default function Tabela(props) {
   };
 
   const filteredRows = props.rows.filter(row =>
-    row.nome.toLowerCase().includes(props.nomeFiltro.toLowerCase())
+    row.nome?.toLowerCase().includes(props.nomeFiltro.toLowerCase())
   );
 
   const emptyRows =
