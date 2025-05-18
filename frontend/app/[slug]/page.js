@@ -103,7 +103,7 @@ export default function ProdutoDetalhes({ params }) {
             if (response != null) {
                 setProduto(response);
             } else {
-                alert("Produto não encontrado");
+                router.push("/");
             }
         } catch (error) {
             console.log(error);
