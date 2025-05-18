@@ -196,6 +196,40 @@ export default function Pedidos() {
       //  handleViewProduto
     } = usePedidos();
 
+    const pedidosXM = [
+    {
+        id: 1012,
+        dataPedido: '2025-05-04T20:49:09.451+00:00',
+        valorTotal: 399.90,
+        status: 'Aguardando Pagamento',
+    },
+    {
+        id: 1013,
+        dataPedido: '2025-05-05T13:27:31.200+00:00',
+        valorTotal: 1280.00,
+        status: 'Pagamento Aprovado',
+    },
+    {
+        id: 1014,
+        dataPedido: '2025-05-06T09:15:44.100+00:00',
+        valorTotal: 229.50,
+        status: 'Em Separação',
+    },
+    {
+        id: 1015,
+        dataPedido: '2025-05-06T17:42:12.980+00:00',
+        valorTotal: 712.30,
+        status: 'Enviado',
+    },
+    {
+        id: 1016,
+        dataPedido: '2025-05-07T11:08:00.000+00:00',
+        valorTotal: 89.90,
+        status: 'Entregue',
+    },
+];
+
+
     const tableHeaderPedidos = [
         {
             id: 'id',
@@ -210,16 +244,16 @@ export default function Pedidos() {
             label: 'Data do Pedido',
         },
         {
-            id: 'status',
-            numeric: true,
-            disablePadding: false,
-            label: 'Status',
-        },
-        {
             id: 'valorTotal',
             numeric: true,
             disablePadding: false,
             label: 'Valor Total',
+        },
+        {
+            id: 'status',
+            numeric: false,
+            disablePadding: false,
+            label: 'Status',
         },
     ];
 
@@ -289,7 +323,7 @@ export default function Pedidos() {
 
                     <SearchContainer>
                         <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/backoffice/pesquisar.png" />
-                        <input type="text" id="nome" placeholder="Pesquisar por Nome:"
+                        <input type="text" id="nome" placeholder="Pesquisar Número do Pedido:"
                             value={nomeFiltro} onChange={handleNomeFiltro}
                         />
                     </SearchContainer>
@@ -339,8 +373,9 @@ export default function Pedidos() {
                     <Tabela
                         title="Produtos"
                         tableHeader={tableHeaderPedidos}
-                        rows={pedidos}
+                        rows={pedidosXM}
                         nomeFiltro={nomeFiltro}
+                        campoFiltro={"id"}
                         fontHeader={12}
                         visibilityDense={false}
                         disableHead={true}
@@ -352,6 +387,8 @@ export default function Pedidos() {
                         //handleViewRow={handleViewProduto}
                         handleAlternarStatus={handleAlternarStatus}
                     />
+
+                    <button onClick={() => atualizarTabela}>Atualizar</button>
                 </div>
             </ContentContainer>
         </Container>

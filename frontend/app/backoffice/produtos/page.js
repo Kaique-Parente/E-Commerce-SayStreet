@@ -350,6 +350,7 @@ export default function Produtos() {
                         tableHeader={tableHeaderSetores}
                         rows={produtos}
                         nomeFiltro={nomeFiltro}
+                        campoFiltro={"nome"}
                         fontHeader={12}
                         visibilityDense={false}
                         disableHead={true}
