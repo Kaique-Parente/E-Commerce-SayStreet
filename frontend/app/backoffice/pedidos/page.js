@@ -3,6 +3,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { useRouter, useSearchParams } from "next/navigation";
 import Tabela from "@/components/MUI/Tabela";
 import useUsers from "@/hooks/useUsers";
@@ -35,7 +36,7 @@ const ContentContainer = styled.div`
 
 const InputContainer = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     gap: 5px;
 
@@ -100,6 +101,7 @@ const TextModal = styled.div`
         display: flex;
         justify-content: center;
         margin-top: 60px;
+        z-index: 10000;
 
         gap: 40px;
     }
@@ -117,25 +119,6 @@ const TextModal = styled.div`
 
     .botoes button:nth-child(1) {
         background-color: red;
-    }
-`
-
-const ViewContainerCarousel = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    width: 300px;
-`
-
-const ViewContainerContent = styled.div`
-    button {
-        background-color: gray;
-        color: white;
-
-        border: none;
-        border-radius: 12px;
-
-        padding: 8px;
     }
 `
 
@@ -171,64 +154,20 @@ export default function Pedidos() {
 
     const {
         pedidos,
-        hiddenModel,
-        lastStatus,
-        lastProdutoChange,
-        idUpdateProduto,
         nomeFiltro,
         hiddenView,
-        viewImages,
-      //  produtoView,
         setPedidos,
-        setHiddenModel,
-        setLastStatus,
-        setLastProdutoChange,
-        setIdUpdateProduto,
         setNomeFiltro,
-        setHiddenView,
-        setViewImages,
-       // setProdutoView,
         atualizarTabela,
-        handleConfirmModel,
-        handleCloseModel,
         handleNomeFiltro,
-        handleAlternarStatus,
-      //  handleViewProduto
+        handleChangeStatusPedido,
+        openConfirmModal,
+        setOpenConfirmModal,
+        novoStatusTemp,
+        setNovoStatusTemp,
+        pedidoSelecionado,
+        setPedidoSelecionado
     } = usePedidos();
-
-    const pedidosXM = [
-    {
-        id: 1012,
-        dataPedido: '2025-05-04T20:49:09.451+00:00',
-        valorTotal: 399.90,
-        status: 'Aguardando Pagamento',
-    },
-    {
-        id: 1013,
-        dataPedido: '2025-05-05T13:27:31.200+00:00',
-        valorTotal: 1280.00,
-        status: 'Pagamento Aprovado',
-    },
-    {
-        id: 1014,
-        dataPedido: '2025-05-06T09:15:44.100+00:00',
-        valorTotal: 229.50,
-        status: 'Em Separação',
-    },
-    {
-        id: 1015,
-        dataPedido: '2025-05-06T17:42:12.980+00:00',
-        valorTotal: 712.30,
-        status: 'Enviado',
-    },
-    {
-        id: 1016,
-        dataPedido: '2025-05-07T11:08:00.000+00:00',
-        valorTotal: 89.90,
-        status: 'Entregue',
-    },
-];
-
 
     const tableHeaderPedidos = [
         {
@@ -244,17 +183,17 @@ export default function Pedidos() {
             label: 'Data do Pedido',
         },
         {
-            id: 'valorTotal',
-            numeric: true,
-            disablePadding: false,
-            label: 'Valor Total',
-        },
-        {
             id: 'status',
             numeric: false,
             disablePadding: false,
             label: 'Status',
         },
+        {
+            id: 'valorTotal',
+            numeric: true,
+            disablePadding: false,
+            label: 'Valor Total',
+        }
     ];
 
     const [setor, setSetor] = useState('');
@@ -263,14 +202,6 @@ export default function Pedidos() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const handleAlterarProduto = async (id) => {
-        const produtoEncontrado = pedidos.find((produto) => produto.id === id);
-        console.log(pedidos);
-
-        if (produtoEncontrado) {
-            router.push(`./alterar-produto?id=${produtoEncontrado.id}&setor=${setor}`);
-        }
-    };
 
     useEffect(() => {
         atualizarTabela();
@@ -284,15 +215,30 @@ export default function Pedidos() {
             setViewButtonVisible(true);
         }
     }, [setor])
-/*
-    useEffect(() => {
-        if (produtoView !== null) {
-            const images = produtoView.imagens?.map(item => item.url) || [];
-            console.log('Produto View: ' + produtoView);
-            setViewImages(images);
+
+    const confirmarAlteracaoStatus = () => {
+        alterarStatusPedido(pedidoSelecionado, novoStatusTemp);
+        setOpenConfirmModal(false);
+    };
+
+    const alterarStatusPedido = async (pedidoId, status) => {
+        try {
+            const response = await fetch(`http://localhost:8080/pedido/alterar-status/${pedidoId}?status=${status}`, {
+                method: "PUT",
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (response.ok) {
+                atualizarTabela();
+            } else {
+                const errorMessage = await response.text();
+                alert(`Erro ao alterar o status: ${errorMessage}`);
+            }
+        } catch (error) {
+            alert(`Erro de conexão: ${error.message}`);
         }
-    }, [produtoView])
-*/
+    };
+
     return (
         <Container>
             <BackButton onClick={() => router.push(`./home?setor=${setor}`)}>
@@ -300,26 +246,10 @@ export default function Pedidos() {
                 <span>Voltar</span>
             </BackButton>
             <ContentContainer>
-                <div>
-                    <h1>Lista de Pedidos</h1>
-                </div>
-
-                <InputContainer>
-                    <CreateContainer>
-                        <Link
-                            href={`./cadastrar-produto?setor=${setor}`}
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "10px",
-
-                                cursor: "pointer"
-                            }}
-                        >
-                            <Image width={14} height={14} alt='Um icone de mais' src="/backoffice/mais.png" />
-                            <span>Novo Produto</span>
-                        </Link>
-                    </CreateContainer>
+                <div style={{display: "flex", justifyContent: "space-between", marginBottom: "30px"}}>
+                    <div>
+                        <h1>Lista de Pedidos</h1>
+                    </div>
 
                     <SearchContainer>
                         <SearchIcon width={18} height={18} alt='Um icone de lupa' src="/backoffice/pesquisar.png" />
@@ -327,53 +257,28 @@ export default function Pedidos() {
                             value={nomeFiltro} onChange={handleNomeFiltro}
                         />
                     </SearchContainer>
-                </InputContainer>
+                </div>
 
                 <div>
-                    <Modal isOpen={!hiddenModel} onClose={() => setHiddenModel(true)}>
+
+                    <Modal isOpen={openConfirmModal} onClose={() => setOpenConfirmModal(false)}>
                         <TextModal>
-                            <h3>Você tem certeza que deseja
-                                <span style={{ fontWeight: "bold", color: lastStatus === "Ativar" ? "green" : "red" }}> {lastStatus}
-                                </span>
-                                <span> este produto?</span></h3>
+                            <h3 style={{ fontWeight: "400" }}>Deseja realmente alterar o status do pedido #{pedidoSelecionado} para
+                                <br />
+                                <span style={{ fontWeight: "bold", textDecoration: "underline" }}>{novoStatusTemp}</span>?
+                            </h3>
 
                             <div className="botoes">
-                                <button onClick={handleCloseModel}>Cancelar</button>
-                                <button onClick={handleConfirmModel}>Confirmar</button>
+                                <button onClick={() => setOpenConfirmModal(false)}>Cancelar</button>
+                                <button onClick={confirmarAlteracaoStatus}>Confirmar</button>
                             </div>
                         </TextModal>
                     </Modal>
-                    {/* 
-                    <ModalView isOpen={!hiddenView} onClose={() => setHiddenView(true)}>
-                        <ViewContainerCarousel>
-                            <h1>{produtoView ? produtoView.produtoNome : ""}</h1>
-                            <CarouselWithIndicatorsBack images={viewImages} />
-                        </ViewContainerCarousel>
-                        <ViewContainerContent>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <span>Avaliação: </span>
-                                <Rating
-                                    name="simple-uncontrolled"
-                                    className="input-styles"
-                                    disabled={true}
-                                    value={produtoView ? produtoView.produtoAvaliacao : 0.5}
-                                    precision={0.5}
-                                    defaultValue={0.5}
-                                    size="large"
-                                />
-                            </div>
 
-                            <p>Preço: R$ {produtoView ? produtoView.produtoPreco : 0.0}</p>
-                            <p>Quantidade disponível: {produtoView ? produtoView.produtoQtd : 0}</p>
-                            <button disabled>Comprar</button>
-                        </ViewContainerContent>
-
-                    </ModalView>
-                    */}
                     <Tabela
                         title="Produtos"
                         tableHeader={tableHeaderPedidos}
-                        rows={pedidosXM}
+                        rows={pedidos}
                         nomeFiltro={nomeFiltro}
                         campoFiltro={"id"}
                         fontHeader={12}
@@ -383,12 +288,12 @@ export default function Pedidos() {
                         height={580}
                         rowsPerPage={15}
                         viewButton={viewButtonVisible}
-                        handleAlterarRow={handleAlterarProduto}
-                        //handleViewRow={handleViewProduto}
-                        handleAlternarStatus={handleAlternarStatus}
+                        isPedido={true}
+                        onStatusSelect={handleChangeStatusPedido}
+                    //handleAlterarRow={handleAlterarProduto}
+                    //handleViewRow={handleViewProduto}
+                    //handleAlternarStatus={handleAlternarStatus}
                     />
-
-                    <button onClick={() => atualizarTabela}>Atualizar</button>
                 </div>
             </ContentContainer>
         </Container>
