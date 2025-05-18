@@ -32,7 +32,15 @@ export async function gerarPedido(dadosPedido){
     })
 }
 
-export async function listarPedidos(clienteId){
+export async function listarPedidos(){
+    const url = `${BASE_URL}/listar`
+    return await handleRequest(url, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+export async function buscarPedidosIdCliente(clienteId){
     const url = `${BASE_URL}/listar/${clienteId}`
     return await handleRequest(url, {
         method: "GET",

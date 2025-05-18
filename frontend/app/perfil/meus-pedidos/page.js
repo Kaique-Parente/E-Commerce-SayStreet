@@ -1,6 +1,6 @@
 "use client"
 import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado";
-import { listarPedidos } from "@/services/PedidoService";
+import { buscarPedidosIdCliente } from "@/services/PedidoService";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
