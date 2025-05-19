@@ -122,7 +122,7 @@ export default function Home() {
                                 <span>Listar Produto</span>
                             </a>
 
-                            <a onClick={() => router.push(`./users?setor=${setor}`)} style={{ cursor: "pointer" }}>
+                            <a onClick={() => router.push(`./pedidos?setor=${setor}`)} style={{ cursor: "pointer" }}>
                                 <span>Listar Pedido</span>
                             </a>
                         </>

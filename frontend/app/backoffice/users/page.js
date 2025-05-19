@@ -273,6 +273,7 @@ export default function Users() {
                         tableHeader={tableHeaderSetores}
                         rows={usuarios}
                         nomeFiltro={nomeFiltro}
+                        campoFiltro={"nome"}
                         fontHeader={12}
                         visibilityDense={false}
                         disableHead={true}

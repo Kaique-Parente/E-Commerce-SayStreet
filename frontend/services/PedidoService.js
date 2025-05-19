@@ -32,10 +32,34 @@ export async function gerarPedido(dadosPedido){
     })
 }
 
-export async function listarPedidos(clienteId){
+export async function listarResumoPedidos(){
+    const url = `${BASE_URL}/lista-resumo`
+    return await handleRequest(url, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+export async function buscarPedidosIdCliente(clienteId){
     const url = `${BASE_URL}/listar/${clienteId}`
     return await handleRequest(url, {
         method: "GET",
         headers: { 'Content-Type': 'application/json' }
     })
+}
+
+export async function buscarPedidoId(pedidoId){
+    const url = `${BASE_URL}/buscar/${pedidoId}`
+    return await handleRequest(url, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+
+export async function alterarStatusPedido(id, status) {
+    const url = `${BASE_URL}/alterar-status/${id}?status=${status}`;
+    return await handleRequest(url, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' }
+    });
 }

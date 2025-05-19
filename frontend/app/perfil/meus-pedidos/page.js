@@ -1,8 +1,9 @@
 "use client"
 import BotaoPersonalizado from "@/components/ClientComponents/BotaoPersonalizado";
-import { listarPedidos } from "@/services/PedidoService";
+import { buscarPedidosIdCliente } from "@/services/PedidoService";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -80,6 +81,7 @@ export default function MeusPedidos() {
     const { data: session } = useSession();
     const user = session?.user;
 
+    const router = useRouter(); 
     const [meusPedidos, setMeusPedidos] = useState([]);
     const [loading, setLoading] = useState(true); // novo estado
 
@@ -96,14 +98,12 @@ export default function MeusPedidos() {
                     const url = `http://localhost:8080/pedido/listar/${user.id}`;
                     const response = await fetch(url);
                     if (!response.ok) {
-                        alert("Erro ao buscar pedidos");
                         setLoading(false);
                         return;
                     }
                     const data = await response.json();
                     setMeusPedidos(data);
                 } catch (error) {
-                    alert("Erro ao buscar pedidos");
                     console.error(error);
                 } finally {
                     setLoading(false); // desliga loading no final
@@ -143,7 +143,7 @@ export default function MeusPedidos() {
                                     <p><strong>Número do Pedido:</strong> {pedido.id}</p>
                                     <p><strong>Data da compra:</strong> {dataPedidoFormatada}</p>
                                 </div>
-                                <BotaoPersonalizado onClick={() => console.log("detalhes")} width={"25%"} height={"40px"} color={"amarelo"}>
+                                <BotaoPersonalizado onClick={() => router.push(`./meus-pedidos/${pedido.id}`)} width={"25%"} height={"40px"} color={"amarelo"}>
                                     Detalhes
                                 </BotaoPersonalizado>
                             </CardHeaderProduto>

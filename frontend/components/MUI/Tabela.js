@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import RadiusButton from './RadiusButton';
 import styled from 'styled-components';
+import { MenuItem, Select } from '@mui/material';
 
 const TableCellContainer = styled.div`
 
@@ -199,7 +200,9 @@ export default function Tabela(props) {
   };
 
   const filteredRows = props.rows.filter(row =>
-    row.nome.toLowerCase().includes(props.nomeFiltro.toLowerCase())
+    String(row[props.campoFiltro] || '')
+      .toLowerCase()
+      .includes(props.nomeFiltro.toLowerCase())
   );
 
   const emptyRows =
@@ -212,6 +215,10 @@ export default function Tabela(props) {
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [filteredRows, order, orderBy, page, rowsPerPage]
   );
+  
+  React.useEffect(() => {
+    setPage(0); // sempre volta para a primeira página ao mudar o filtro
+  }, [props.nomeFiltro]);
 
   let ids = props.tableHeader.map(element => element.id);
   ids = ids.filter(element => element !== 'nomeS');
@@ -260,7 +267,20 @@ export default function Tabela(props) {
                       if (ids.includes(key)) {
                         return (
                           <TableCell key={cellIndex} align="left">
-                            {key === "status" ? (value === true ? "Ativo" : "Inativo") : value}
+                            {
+                              key === "status"
+                                ? props.isPedido
+                                  ? value
+                                  : value === true
+                                    ? "Ativo"
+                                    : "Inativo"
+                                : key === "valorTotal" || key === "preco"
+                                  ? value.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                  })
+                                  : value
+                            }
                           </TableCell>
                         );
                       }
@@ -268,24 +288,39 @@ export default function Tabela(props) {
 
                     <TableCell>
                       <TableCellContainer>
-                        <button onClick={() => props.handleAlterarRow(row.id)}>
-                          <Image width={14} height={14} alt='Um icone de lápis' src="/backoffice/editar.png" />
-                          Alterar
-                        </button>
-                        {props.viewButton ? (
-                          <button className='btn-view' onClick={() => props.handleViewRow(row.id)}>
-                            <Image width={14} height={14} alt='Um icone de lápis' src="/backoffice/view.png" />
-                            Visualizar
-                          </button>
+                        {props.isPedido ? (
+                          <Select
+                            value={row.status}
+                            onChange={(e) => props.onStatusSelect(row.id, e.target.value)}
+                            size="small"
+                            style={{ minWidth: 180 }}
+                          >
+                            <MenuItem value="Aguardando Pagamento.">Aguardando Pagamento</MenuItem>
+                            <MenuItem value="Pagamento Rejeitado">Pagamento Rejeitado</MenuItem>
+                            <MenuItem value="Pagamento com Sucesso">Pagamento com Sucesso</MenuItem>
+                            <MenuItem value="Aguardando Retirada">Aguardando Retirada</MenuItem>
+                            <MenuItem value="Em Trânsito">Em Trânsito</MenuItem>
+                            <MenuItem value="Entregue">Entregue</MenuItem>
+                          </Select>
                         ) : (
                           <>
+                            <button onClick={() => props.handleAlterarRow(row.id)}>
+                              <Image width={14} height={14} alt='Um ícone de lápis' src="/backoffice/editar.png" />
+                              Alterar
+                            </button>
+                            {props.viewButton && (
+                              <button className='btn-view' onClick={() => props.handleViewRow(row.id)}>
+                                <Image width={14} height={14} alt='Um ícone de olho' src="/backoffice/view.png" />
+                                Visualizar
+                              </button>
+                            )}
+                            <RadiusButton
+                              checked={row.status}
+                              handleChange={props.handleAlternarStatus}
+                              rowId={row.id}
+                            />
                           </>
                         )}
-                        <RadiusButton
-                          checked={row.status}
-                          handleChange={props.handleAlternarStatus}
-                          rowId={row.id}
-                        />
                       </TableCellContainer>
                     </TableCell>
                   </TableRow>
