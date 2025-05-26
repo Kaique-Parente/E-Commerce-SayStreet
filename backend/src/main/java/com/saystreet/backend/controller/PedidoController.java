@@ -40,21 +40,26 @@ public class PedidoController {
 
   @Operation(summary = "Buscar pedido", description = "Método para buscar um pedido pelo ID.", tags = "Pedido")
   @GetMapping("/buscar/{id}")
-  public ResponseEntity<PedidoModel> buscarId(@PathVariable Long id) throws Exception{
+  public ResponseEntity<PedidoModel> buscarId(@PathVariable Long id) throws Exception {
     PedidoModel pedido = pedidoService.buscarPedidoId(id);
     return ResponseEntity.ok(pedido);
   }
 
   @Operation(summary = "Alterar Status do pedido", description = "Método para alterar o status de um pedido", tags = "Pedido")
   @PutMapping("/alterar-status/{id}")
-  public ResponseEntity<String> alterarStatus(@PathVariable Long id, @RequestParam String status) throws Exception{
-          return ResponseEntity.ok(pedidoService.alterarStatus(id, status));
+  public ResponseEntity<String> alterarStatus(@PathVariable Long id, @RequestParam String status) throws Exception {
+    return ResponseEntity.ok(pedidoService.alterarStatus(id, status));
+  }
+
+  @GetMapping("/listar/{clienteId}")
+  public List<PedidoModel> listar(@PathVariable Long clienteId) {
+    return pedidoService.listarPedidos(clienteId);
   }
 
   @Operation(summary = "Listar pedido resumido", description = "Método para listar todos os pedidos resumido", tags = "Pedido")
   @GetMapping("/lista-resumo")
-    public ResponseEntity<List<PedidoResumoDto>> listarResumo() {
-        List<PedidoResumoDto> pedidos = pedidoService.listarResumo();
-        return ResponseEntity.ok(pedidos);
-    }
+  public ResponseEntity<List<PedidoResumoDto>> listarResumo() {
+    List<PedidoResumoDto> pedidos = pedidoService.listarResumo();
+    return ResponseEntity.ok(pedidos);
+  }
 }

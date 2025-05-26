@@ -148,4 +148,12 @@ public class PedidoService {
                         pedido.getStatus()))
                 .collect(Collectors.toList()); //Transforma todo os elementos acima em uma lista
     }
+
+    public List<PedidoModel> listarPedidos(Long clienteId){
+        List<PedidoModel> pedidos = pedidoRepository.findByClienteId(clienteId);
+        if(pedidos.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum pedido encontrado para este cliente.");
+        }
+        return pedidos;
+    }
 }
