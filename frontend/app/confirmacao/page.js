@@ -583,18 +583,6 @@ export default function Confirmacao() {
                     console.log(response);
 
                     if (response) {
-                        await update({
-                            id: user.id,
-                            nome: user.nome,
-                            email: user.email,
-                            cpf: user.cpf,
-                            dataNascimento: user.dataNascimento,
-                            genero: user.genero,
-                            enderecos: user.enderecos,
-                            enderecoFatura: user.enderecoFatura,
-                            status: user.status,
-                        });
-
                         setValorTotalPedido(response.valorTotal);
                         setNumeroPedido(response.id);
 
@@ -980,7 +968,7 @@ export default function Confirmacao() {
                             aria-describedby="modal-modal-description"
                         >
                             <Box sx={style}>
-                                {hasErrorModel ? (
+                                {!hasErrorModel ? (
                                     <Image width={128} height={128} src={"/web/sucesso.png"} alt="Ícone de sucesso" />
                                 ) : (
                                     <Image width={128} height={128} src={"/web/falha.png"} alt="Ícone de falha" />
