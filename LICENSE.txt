@@ -1,0 +1,14 @@
+Licença Proprietária
+
+Copyright (c) 2025 Kaique Parente da Silva. Todos os direitos reservados.
+
+Este código-fonte é fornecido sob uma licença proprietária. O comprador tem permissão para usar este código exclusivamente para fins internos ou pessoais, em seus próprios projetos ou sistemas, sem redistribuição ou revenda. O código não pode ser utilizado para desenvolver produtos ou serviços que serão comercializados ou distribuídos., e para realizar modificações exclusivamente para seu uso interno.
+
+O comprador **não** tem permissão para:
+1. Redistribuir, sublicenciar ou revender o código.
+2. Modificar o código para redistribuição ou uso comercial sem permissão expressa por escrito.
+3. Usar o código para fins ilegais ou para competir diretamente com o autor do código (incluindo, mas não se limitando a, desenvolvimento de soluções similares com a intenção de comercializar ou distribuir).
+
+O código será fornecido "no estado em que se encontra", sem garantia de qualquer tipo, expressa ou implícita, incluindo, mas não se limitando a garantias de comercialização, adequação a um propósito específico ou não infração. O autor não será responsável por qualquer dano resultante do uso do código.
+
+Para obter mais informações sobre licenciamento exclusivo, suporte ou atualizações, entre em contato através de kaique.parente22@outlook.com
