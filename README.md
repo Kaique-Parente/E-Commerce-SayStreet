@@ -1,8 +1,15 @@
 # 🛒 E-commerce Full Stack  
 
+<div style="display: flex">
+  <img src="./banner-site2.jpeg" alt="Landing Page">
+ 
+</div>
+
 Este projeto é um sistema completo de **E-commerce** desenvolvido com foco em escalabilidade, boas práticas e experiência do usuário. Ele permite que clientes realizem cadastro, login, navegação por produtos, adição ao carrinho, cadastro de endereços e finalização de pedidos com pagamento simulado.  
 
 Além disso, há um **backoffice administrativo** para gestão de produtos, usuários e pedidos.  
+
+### 🎬 **Vídeo Completo**: [aqui.](https://nodejs.org/)
 
 ---
 
