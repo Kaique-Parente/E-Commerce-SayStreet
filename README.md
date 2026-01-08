@@ -9,7 +9,7 @@ Este projeto é um sistema completo de **E-commerce** desenvolvido com foco em e
 
 Além disso, há um **backoffice administrativo** para gestão de produtos, usuários e pedidos.  
 
-### 🎬 **Vídeo Completo**: [aqui.](https://nodejs.org/)
+### 🎬 **Vídeo Completo**: [aqui.](https://www.linkedin.com/feed/update/urn:li:activity:7415138987360751616/)
 
 ---
 
